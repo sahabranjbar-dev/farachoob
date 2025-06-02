@@ -4,5 +4,14 @@
   },
   "About": {
     "title": "درباره ما"
+  },
+  "ModeToggle": {
+    "Light": "روشن",
+    "Dark": "تاریک",
+    "System": "سیستم"
+  },
+  "Header": {
+    "login": "ورود",
+    "register": "ثبت نام"
   }
 }

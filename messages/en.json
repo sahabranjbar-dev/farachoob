@@ -4,5 +4,14 @@
   },
   "About": {
     "title": "About"
+  },
+  "ModeToggle": {
+    "Light": "Light",
+    "Dark": "Dark",
+    "System": "System"
+  },
+  "Header": {
+    "login": "Login",
+    "register": "Register"
   }
 }
