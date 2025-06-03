@@ -13,5 +13,12 @@
   "Header": {
     "login": "Login",
     "register": "Register"
+  },
+  "SideBarHeader": {
+    "Home": "Home",
+    "Products": "Products",
+    "Contact-us": "Contact us",
+    "About-us": "About us",
+    "Search": "Products Search"
   }
 }

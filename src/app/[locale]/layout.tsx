@@ -1,15 +1,16 @@
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import "@/app/[locale]/globals.css";
+import "../../app/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Vazirmatn } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 const vazirMatn = Vazirmatn({
   subsets: ["arabic"],
-  weight: "500",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 export default async function LocaleLayout({
   children,
@@ -25,15 +26,17 @@ export default async function LocaleLayout({
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className={`${vazirMatn.className} `}>
+    <html lang={locale} suppressHydrationWarning dir="rtl">
+      <body className={`${vazirMatn.className}`} style={vazirMatn.style}>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <div className="container mx-auto">
-              <Header />
-              {children}
-              <Footer />
-            </div>
+            <SidebarProvider>
+              <div className="container mx-auto">
+                <Header />
+                {children}
+                <Footer />
+              </div>
+            </SidebarProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

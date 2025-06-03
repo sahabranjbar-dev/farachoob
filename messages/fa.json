@@ -11,7 +11,14 @@
     "System": "سیستم"
   },
   "Header": {
-    "login": "ورود",
-    "register": "ثبت نام"
+    "Login": "ورود",
+    "Register": "ثبت نام"
+  },
+  "SideBarHeader": {
+    "Home": "صفحه نخست",
+    "Products": "محصولات",
+    "Contact-us": "ارتباط با ما",
+    "About-us": "درباره ما",
+    "Search": "جست‌وجوی محصولات"
   }
 }
