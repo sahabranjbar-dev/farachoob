@@ -36,7 +36,7 @@ const StickyNav = () => {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-0 right-0 w-full bg-white border-t shadow-lg">
+    <div className="md:hidden fixed bottom-0 right-0 w-full bg-white border-t shadow-lg z-50 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex justify-between items-end p-2 h-16 my-2">
         {items.map((item) => (
           <div
