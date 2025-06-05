@@ -6,12 +6,13 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Vazirmatn } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import StickyNav from "@/components/StickyNav";
 
 const vazirMatn = Vazirmatn({
   subsets: ["arabic"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
+
 export default async function LocaleLayout({
   children,
   params,
@@ -19,7 +20,6 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  // Ensure that the incoming `locale` is valid
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
@@ -30,13 +30,12 @@ export default async function LocaleLayout({
       <body className={`${vazirMatn.className}`} style={vazirMatn.style}>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <SidebarProvider>
-              <div className="container mx-auto">
-                <Header />
-                {children}
-                <Footer />
-              </div>
-            </SidebarProvider>
+            <div className="container mx-auto">
+              <Header />
+              {children}
+              <Footer />
+              <StickyNav />
+            </div>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

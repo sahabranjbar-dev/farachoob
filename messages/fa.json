@@ -12,13 +12,31 @@
   },
   "Header": {
     "Login": "ورود",
-    "Register": "ثبت نام"
+    "Register": "ثبت نام",
+    "Your-cart": "سبد خرید {name}",
+    "Cart": "سبد خرید",
+    "Search": "جست‌وجوی محصولات"
   },
   "SideBarHeader": {
     "Home": "صفحه نخست",
     "Products": "محصولات",
     "Contact-us": "ارتباط با ما",
     "About-us": "درباره ما",
+    "Menu": "منو",
     "Search": "جست‌وجوی محصولات"
+  },
+  "StickyNav": {
+    "Cart": "سبد خرید",
+    "Home": "صفحه نخست",
+    "Category": "دسته‌بندی",
+    "Profile": "پروفایل"
+  },
+  "Navbar": {
+    "Home": "صفحه نخست",
+    "Products": "محصولات",
+    "Contact-us": "ارتباط با ما",
+    "About-us": "درباره ما",
+    "Brands": "برندها",
+    "Magazines": "مجلات"
   }
 }

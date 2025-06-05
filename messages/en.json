@@ -11,14 +11,32 @@
     "System": "System"
   },
   "Header": {
-    "login": "Login",
-    "register": "Register"
+    "Login": "Login",
+    "Register": "Register",
+    "Your-cart": "{name} cart",
+    "Cart": "cart",
+    "Search": "Products Search"
   },
   "SideBarHeader": {
     "Home": "Home",
     "Products": "Products",
     "Contact-us": "Contact us",
     "About-us": "About us",
+    "Menu": "menu",
     "Search": "Products Search"
+  },
+  "StickyNav": {
+    "Cart": "cart",
+    "Home": "Home",
+    "Category": "category",
+    "Profile": "profile"
+  },
+  "Navbar": {
+    "Home": "Home",
+    "Products": "Products",
+    "Contact-us": "Contact us",
+    "About-us": "About us",
+    "Brands": "Brands",
+    "Magazines": "Magazines"
   }
 }

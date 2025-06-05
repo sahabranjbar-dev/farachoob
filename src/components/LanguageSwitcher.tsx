@@ -17,7 +17,7 @@ export default function LanguageSwitcher() {
 
   return (
     <Link href={basePath} locale={otherLocale}>
-      <Button variant="link" className="cursor-pointer">
+      <Button variant="link" className="cursor-pointer text-2xl">
         {otherLocale === "fa" ? "🇮🇷" : "🇬🇧"}
       </Button>
     </Link>
