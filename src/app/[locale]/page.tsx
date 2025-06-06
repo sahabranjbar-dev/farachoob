@@ -1,9 +1,7 @@
 "use client";
 
 import MakeTrust from "@/components/MakeTrust";
-import Navbar from "@/components/Navbar";
 import NewestProducts from "@/components/NewestProducts";
-import Services from "@/components/Services";
 import Slider from "@/components/Slider";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -37,7 +35,9 @@ export default function HomePage() {
 
   return (
     <div className="">
-      <Slider intems={items} />
+      <div className="container mx-auto border m-4 rounded-b-2xl overflow-hidden">
+        <Slider intems={items} />
+      </div>
       <MakeTrust />
       {/* <Services /> */}
 
