@@ -7,43 +7,23 @@ const Services = () => {
       {
         id: 1,
         title: "تضمین قیمت",
-        image: "/icons8-jalousie-50.png",
+        image: "/price.svg",
         description:
           "ما تضمین می‌کنیم که بهترین قیمت را برای محصولات خود ارائه می‌دهیم.",
       },
       {
-        id: 2,
-        title: "ارسال رایگان",
-        image: "/icons8-jalousie-50.png",
-        description: "ارسال رایگان برای سفارشات بالای 500 هزار تومان.",
-      },
-      {
         id: 3,
         title: "پشتیبانی 24/7",
-        image: "/icons8-jalousie-50.png",
+        image: "/support.svg",
         description:
           "تیم پشتیبانی ما در تمام ساعات شبانه‌روز آماده پاسخگویی به شماست.",
       },
       {
         id: 4,
         title: "بازگشت وجه",
-        image: "/icons8-jalousie-50.png",
+        image: "/pay.svg",
         description:
           "در صورت نارضایتی، می‌توانید محصول را بازگردانید و وجه خود را دریافت کنید.",
-      },
-      {
-        id: 5,
-        title: "کیفیت بالا",
-        image: "/icons8-jalousie-50.png",
-        description:
-          "محصولات ما با بالاترین کیفیت و استانداردها تولید می‌شوند.",
-      },
-      {
-        id: 6,
-        title: "تنوع محصولات",
-        image: "/icons8-jalousie-50.png",
-        description:
-          "ما انواع مختلفی از محصولات را برای سلیقه‌های مختلف ارائه می‌دهیم.",
       },
     ],
     []

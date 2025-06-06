@@ -42,7 +42,7 @@ const Header = () => {
               src="/logo.webp"
               width={100}
               height={100}
-              className="bg-primary p-2 rounded-2xl dark:bg-transparent"
+              className="bg-orange-400 p-2 rounded-2xl dark:bg-transparent"
             />
           </Link>
           <div className="hidden md:flex justify-between items-center gap-4">
