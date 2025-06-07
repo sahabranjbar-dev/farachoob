@@ -42,7 +42,7 @@ const Navbar = () => {
     [t]
   );
   return (
-    <div className="hidden md:block">
+    <div className="hidden md:block text-nowrap">
       <NavigationMenu>
         <NavigationMenuList className="bg-white dark:bg-gray-800 flex flex-row-reverse">
           {items.map((item) => {

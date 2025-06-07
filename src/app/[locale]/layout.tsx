@@ -33,9 +33,9 @@ export default async function LocaleLayout({
             <div className="container mx-auto">
               <Header />
               {children}
-              <Footer />
               <StickyNav />
             </div>
+            <Footer />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

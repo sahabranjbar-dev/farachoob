@@ -15,7 +15,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
         className="flex justify-center items-center flex-row-reverse border cursor-pointer"
       >
         <LogIn className="rotate-180" />
-        <span>{t("Login") + " | " + t("Register")}</span>
+        <span>{t("Login") + " / " + t("Register")}</span>
       </Button>
     </div>
   );

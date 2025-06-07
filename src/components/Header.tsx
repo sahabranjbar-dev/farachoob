@@ -1,18 +1,16 @@
 "use client";
 
 import { AlignJustify, Search, ShoppingCart } from "lucide-react";
-import LanguageSwitcher from "./LanguageSwitcher";
-import { ModeToggle } from "./ModeToggle";
-import { Button } from "./ui/button";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import LanguageSwitcher from "./LanguageSwitcher";
 import LoginAndRegister from "./LoginAndRegister";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
-import SideBarMenu from "./SideBarMenu";
-import { cn } from "@/lib/utils";
-import { Input } from "./ui/input";
+import { ModeToggle } from "./ModeToggle";
 import Navbar from "./Navbar";
+import SideBarMenu from "./SideBarMenu";
+import { Input } from "./ui/input";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
 
 const Header = () => {
   const t = useTranslations("Header");
@@ -25,9 +23,7 @@ const Header = () => {
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <AlignJustify className="h-5 w-5" />
-              </Button>
+              <AlignJustify size={24} />
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <SideBarMenu />
@@ -67,15 +63,12 @@ const Header = () => {
           {/* Cart Sidebar */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">{t("Cart")}</span>
-              </Button>
+              <ShoppingCart size={24} />
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-md">
               <div className="py-4">
                 <SheetTitle className="text-lg font-semibold absolute left-5 top-5">
-                  {t("Your-cart", { name: "یوزر" })}
+                  {t("Your-cart", { name: "userName" })}
                 </SheetTitle>
                 {/* Your cart content here */}
               </div>

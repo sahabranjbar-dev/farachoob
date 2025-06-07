@@ -41,8 +41,6 @@ const MakeTrust = () => {
     []
   );
 
-  console.log(data.length, "length wkefownd;g");
-
   return (
     <div className="container mx-auto my-10 flex flex-col items-center gap-5">
       <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center">

@@ -1,5 +1,6 @@
 "use client";
 
+import HeroSection from "@/components/HeroSection";
 import MakeTrust from "@/components/MakeTrust";
 import NewestProducts from "@/components/NewestProducts";
 import Services from "@/components/Services";
@@ -36,8 +37,10 @@ export default function HomePage() {
 
   return (
     <div className="">
-      <div className="container mx-auto border m-4 rounded-b-2xl overflow-hidden">
-        <Slider intems={items} />
+      <div className="container mx-auto border m-4 mt-0 rounded-b-2xl overflow-hidden">
+        {/* <Slider intems={items} /> */}
+
+        <HeroSection />
       </div>
       <MakeTrust />
       <Services />

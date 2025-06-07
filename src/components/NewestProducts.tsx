@@ -1,8 +1,6 @@
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import Image from "next/image";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import ProductCard from "./ProductCard";
 
 const NewestProducts = () => {
@@ -22,6 +20,27 @@ const NewestProducts = () => {
         autoplay={{ delay: 2500, disableOnInteraction: false }}
         loop={true}
         className="mySwiper"
+        breakpoints={{
+          0: {
+            slidesPerView: 1,
+          },
+          320: {
+            slidesPerView: 1,
+          },
+          640: {
+            slidesPerView: 1,
+          },
+          768: {
+            slidesPerView: 2,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+          1280: {
+            slidesPerView: 4,
+          },
+        }}
+        style={{ width: "100%", height: "auto" }}
       >
         <SwiperSlide>
           <ProductCard
