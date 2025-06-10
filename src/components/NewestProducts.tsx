@@ -48,7 +48,7 @@ const NewestProducts = () => {
             imageAlt="Product 1"
             title="محصول 1"
             description="توضیحات محصول 1"
-            price="$100.00"
+            price="100000000"
             onAddToCart={() => alert("محصول 1 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}
@@ -60,7 +60,7 @@ const NewestProducts = () => {
             imageAlt="Product 2"
             title="محصول 2"
             description="توضیحات محصول 2"
-            price="$150.00"
+            price="150000000"
             onAddToCart={() => alert("محصول 2 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}
@@ -72,7 +72,7 @@ const NewestProducts = () => {
             imageAlt="Product 1"
             title="محصول 1"
             description="توضیحات محصول 1"
-            price="$100.00"
+            price="100000000"
             onAddToCart={() => alert("محصول 1 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}
@@ -84,7 +84,7 @@ const NewestProducts = () => {
             imageAlt="Product 1"
             title="محصول 1"
             description="توضیحات محصول 1"
-            price="$100.00"
+            price="100000000"
             onAddToCart={() => alert("محصول 1 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}
@@ -96,7 +96,7 @@ const NewestProducts = () => {
             imageAlt="Product 1"
             title="محصول 1"
             description="توضیحات محصول 1"
-            price="$100.00"
+            price="100000000"
             onAddToCart={() => alert("محصول 1 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}
@@ -108,7 +108,7 @@ const NewestProducts = () => {
             imageAlt="Product 1"
             title="محصول 1"
             description="توضیحات محصول 1"
-            price="$100.00"
+            price="100000000"
             onAddToCart={() => alert("محصول 1 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}
@@ -120,7 +120,7 @@ const NewestProducts = () => {
             imageAlt="Product 1"
             title="محصول 1"
             description="توضیحات محصول 1"
-            price="$100.00"
+            price="100000000"
             onAddToCart={() => alert("محصول 1 به سبد خرید اضافه شد!")}
             className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             style={{ width: "100%", height: "auto" }}

@@ -19,7 +19,7 @@ const ProductCard = ({
   imageAlt = "Product Image",
   title = "Product Title",
   description = "Product description goes here.",
-  price = "$99.99",
+  price,
   onAddToCart = () => alert("Added to cart!"),
   className,
   style,
@@ -44,7 +44,9 @@ const ProductCard = ({
           {title}
         </h4>
         <p className="text-neutral-500 pt-2">{description}</p>
-        <p className="text-neutral-600 text-lg font-bold pt-2">{price}</p>
+        <p className="text-neutral-600 text-lg font-bold pt-2">
+          {Number(price).toLocaleString("fa")} تومان
+        </p>
         <button
           onClick={onAddToCart}
           className="text-neutral-200 px-6 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors text-nowrap"

@@ -47,21 +47,17 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <header
-      className="relative bg-orange-400 p-4 text-neutral-100 overflow-hidden"
-      dir="rtl"
-    >
+    <div className="relative bg-orange-400 p-4 text-neutral-100 overflow-hidden">
       <div
         ref={containerRef}
         className="flex flex-col md:flex-row items-start justify-between gap-8 p-4 md:p-8"
       >
         {/* متن و عنوان */}
         <div className="flex flex-col items-start text-center md:text-right z-10 max-w-xl translate-y-10">
-          <h1 className="relative text-2xl md:text-3xl font-extrabold tracking-tight p-2 leading-snug">
+          <h1 className="relative text-2xl md:text-4xl font-extrabold tracking-tight p-2 leading-snug text-neutral-100">
             <span className="relative z-10">
               بزرگترین تولید کننده‌ی میز و صندلی اداری در شمال کشور
             </span>
-            <span className="absolute bottom-1 right-0 h-3 w-[40%] bg-[#273F4F] z-0 hidden md:block" />
           </h1>
 
           <section className="m-2">
@@ -81,8 +77,8 @@ const HeroSection = () => {
             src="/effydesk.jpg"
             alt="Effy Desk"
             width={300}
-            height={500}
-            className="rounded-lg shadow-lg object-cover w-full h-auto"
+            height={300}
+            className="rounded-lg shadow-lg object-cover object-top-[30%] w-full h-96" // مثلا h-48 یا هر عدد دلخواه
             priority
           />
         </div>
@@ -95,7 +91,7 @@ const HeroSection = () => {
       <div className="absolute right-0 top-0 rotate-90 z-0">
         <SVGComponent />
       </div>
-    </header>
+    </div>
   );
 };
 
