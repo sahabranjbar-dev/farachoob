@@ -18,14 +18,14 @@ export default function LanguageSwitcher() {
   return (
     <>
       <Link href={basePath} locale={otherLocale}>
-        <Button variant="link" className="cursor-pointer border w-10 h-10 p-0">
-          {/* {otherLocale === "fa" ? "🇮🇷" : "🇬🇧"} */}
-          <DotLottieReact
+        <Button variant="link" className="cursor-pointer border p-2">
+          {otherLocale === "fa" ? "🇮🇷" : "🇬🇧"}
+          {/* <DotLottieReact
             src={"/lang.lottie"}
             loop
             autoplay={true}
             className="dark:bg-white "
-          />
+          /> */}
         </Button>
       </Link>
     </>
