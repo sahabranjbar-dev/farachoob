@@ -73,7 +73,7 @@ const MakeTrust = () => {
             transition={{ duration: 0.5, ease: "easeOut" }}
             whileHover={{ scale: 1.05 }}
           >
-            <div className="bg-gradient-to-br from-[#f4f4f4] to-[#e0e0e0] hover:shadow-xl transition-all duration-300 rounded-2xl p-6 flex flex-col items-center text-center">
+            <div className="max-h-full h-full min-h-full border hover:shadow-xl transition-all duration-300 rounded-2xl p-6 flex flex-col items-center text-center">
               <motion.img
                 src={item.icon}
                 alt={item.title}
