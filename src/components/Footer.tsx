@@ -1,9 +1,16 @@
+"use client";
+
 import SVGComponent from "@/assets/HeroPattern";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Instagram, Linkedin, Twitter } from "lucide-react";
 import React from "react";
 
 const Footer = () => {
+  const pathname = usePathname();
+
+  const isAuthPage = pathname?.startsWith("/auth");
+  console.log(isAuthPage, "isss");
+  if (isAuthPage) return;
   return (
     <footer
       className="bg-black text-white pt-16 pb-24 relative overflow-hidden"

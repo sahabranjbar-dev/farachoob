@@ -102,6 +102,7 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
       <body className={`${myFont.className}`} style={myFont.style}>

@@ -11,19 +11,32 @@ import Navbar from "./Navbar";
 import SideBarMenu from "./SideBarMenu";
 import { Input } from "./ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { motion } from "framer-motion";
+import { usePathname } from "@/i18n/navigation";
 
 const Header = () => {
   const t = useTranslations("Header");
+  const pathname = usePathname();
 
+  const isAuthPage = pathname?.startsWith("/auth");
+  console.log(isAuthPage, "isss");
+  if (isAuthPage) return;
   return (
-    <header className="sticky top-0 z-50 mt-4 shadow-md bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+    <motion.header
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="sticky top-0 z-50 mt-4 shadow-md bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg bg-opacity-80 dark:bg-opacity-80"
+    >
       {/* Top Header */}
       <div className="p-4 flex justify-between items-center bg-background">
         {/* Mobile Menu Sidebar */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <AlignJustify size={24} />
+              <motion.div whileTap={{ scale: 0.9 }}>
+                <AlignJustify size={24} />
+              </motion.div>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <SideBarMenu />
@@ -31,15 +44,22 @@ const Header = () => {
           </Sheet>
         </div>
 
+        {/* Logo & Toggles */}
         <div className="flex justify-between items-center gap-4">
           <Link href="/">
-            <Image
-              alt="logo"
-              src="/logo.webp"
-              width={100}
-              height={100}
-              className="bg-orange-400 p-2 rounded-2xl dark:bg-transparent"
-            />
+            <motion.div
+              whileHover={{ rotate: -5, scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="cursor-pointer"
+            >
+              <Image
+                alt="logo"
+                src="/logo.webp"
+                width={100}
+                height={100}
+                className="bg-orange-400 p-2 rounded-2xl dark:bg-transparent"
+              />
+            </motion.div>
           </Link>
           <div className="hidden md:flex justify-between items-center gap-4">
             <ModeToggle />
@@ -47,14 +67,20 @@ const Header = () => {
           </div>
         </div>
 
+        {/* Search Input */}
         <div className="relative hidden md:block">
           <Input
             type="text"
             placeholder={t("Search")}
-            className="rounded placeholder:font-light pl-8 w-80 bg-[#EBEBEB]"
+            className="rounded placeholder:font-light pl-8 w-80 bg-[#EBEBEB] focus:ring-2 focus:ring-blue-500 transition-all"
           />
-          <Search className="absolute left-2 top-2" size={"18px"} />
+          <Search
+            className="absolute left-2 top-2 text-gray-500"
+            size={"18px"}
+          />
         </div>
+
+        {/* Login and Cart */}
         <div className="flex justify-between items-center gap-2">
           <div className="hidden md:flex justify-between items-center flex-row-reverse gap-4">
             <LoginAndRegister nameSpace="Header" />
@@ -63,7 +89,9 @@ const Header = () => {
           {/* Cart Sidebar */}
           <Sheet>
             <SheetTrigger asChild>
-              <ShoppingCart size={24} />
+              <motion.div whileTap={{ scale: 0.9 }}>
+                <ShoppingCart size={24} />
+              </motion.div>
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-md">
               <div className="py-4">
@@ -77,8 +105,9 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Navbar */}
       <Navbar />
-    </header>
+    </motion.header>
   );
 };
 
