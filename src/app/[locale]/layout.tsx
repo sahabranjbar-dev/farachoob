@@ -108,11 +108,11 @@ export default async function LocaleLayout({
       <body className={`${myFont.className}`} style={myFont.style}>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <div className="container mx-auto">
+            <>
               <Header />
               {children}
               <StickyNav />
-            </div>
+            </>
             <Footer />
           </ThemeProvider>
         </NextIntlClientProvider>
