@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { User, Mail, Lock, Eye, EyeOff, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 
 type RegisterFormData = {
   name: string;
@@ -15,7 +15,7 @@ type RegisterFormData = {
 
 const RegisterPage = () => {
   const t = useTranslations("Register");
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -49,6 +49,7 @@ const RegisterPage = () => {
 
       if (response.ok) {
         setMessage({ type: "success", text: t("REGISTRATION_SUCCESS") });
+        router.replace("/auth/login");
       } else {
         setMessage({
           type: "error",

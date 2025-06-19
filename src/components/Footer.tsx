@@ -8,8 +8,8 @@ import React from "react";
 const Footer = () => {
   const pathname = usePathname();
 
-  const isAuthPage = pathname?.startsWith("/auth");
-  console.log(isAuthPage, "isss");
+  const isAuthPage =
+    pathname?.startsWith("/auth") || pathname?.startsWith("/dashboard");
   if (isAuthPage) return;
   return (
     <footer

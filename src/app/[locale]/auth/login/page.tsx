@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { User, Lock, Eye, EyeOff, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 
 type LoginFormData = {
@@ -50,6 +50,14 @@ const LoginPage = () => {
     }
   };
 
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  useEffect(() => {
+    if (error === "CredentialsSignin") {
+      setMessage({ type: "error", text: t("LOGIN_ERROR") });
+    }
+  }, [error]);
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-500 to-orange-800 p-4 relative overflow-hidden">
       <div className="hidden lg:block absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-orange-600 opacity-20 filter blur-xl"></div>

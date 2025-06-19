@@ -5,6 +5,7 @@ import { LogIn, User, ChevronDown, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSession, signOut } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
+import LogoutButton from "./LogoutButton";
 
 interface Props {
   nameSpace: string;
@@ -41,16 +42,15 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
             className="absolute right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
             role="menu"
           >
-            <button
-              onClick={() => {
-                signOut();
-                setOpen(false);
-              }}
-              className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-              role="menuitem"
-            >
-              {t("Logout")}
-            </button>
+            <div className="py-1">
+              <Link
+                href="/dashboard"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                داشبورد
+              </Link>
+              <LogoutButton />
+            </div>
           </div>
         )}
       </div>
