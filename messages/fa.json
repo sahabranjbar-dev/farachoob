@@ -15,7 +15,8 @@
     "Register": "ثبت نام",
     "Your-cart": "سبد خرید {name}",
     "Cart": "سبد خرید",
-    "Search": "جست‌وجوی محصولات"
+    "Search": "جست‌وجوی محصولات",
+    "Logout": "خروج"
   },
   "SideBarHeader": {
     "Home": "صفحه نخست",
@@ -46,7 +47,9 @@
     "SIGN_IN_HEADING": "ورود",
     "SIGN_IN_SUBHEADING": "اطلاعات کاربری خود را وارد کنید.",
     "USERNAME_LABEL": "نام کاربری",
+    "EMAIL_LABEL": "ایمیل",
     "USERNAME_REQUIRED": "نام کاربری الزامی است.",
+    "EMAIL_REQUIRED": "ایمیل الزامی است.",
     "USERNAME_MIN_LENGTH": "نام کاربری باید حداقل ۳ کاراکتر باشد.",
     "PASSWORD_LABEL": "رمز عبور",
     "PASSWORD_REQUIRED": "رمز عبور الزامی است.",
@@ -55,6 +58,7 @@
     "FORGOT_PASSWORD": "رمز عبور را فراموش کرده‌اید؟",
     "SIGN_IN_BUTTON": "ورود",
     "OR_SEPARATOR": "یا",
+    "EMAIL_INVALID": "ایمیل معتبر نمیباشد",
     "SIGN_IN_OTHER_BUTTON": "ورود با گوگل",
     "NO_ACCOUNT_QUESTION": "حساب کاربری ندارید؟",
     "SIGN_UP_LINK": "ثبت نام کنید",

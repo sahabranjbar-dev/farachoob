@@ -1,12 +1,17 @@
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
-import "../../app/globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import LocalFont from "next/font/local";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 import StickyNav from "@/components/StickyNav";
+import { ThemeProvider } from "@/components/theme-provider";
+import { routing } from "@/i18n/routing";
+import { getServerSession } from "next-auth";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import LocalFont from "next/font/local";
+import { notFound } from "next/navigation";
+import "../../app/globals.css";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { readFileSync } from "fs";
+import path from "path";
 
 const myFont = LocalFont({
   src: [
@@ -96,26 +101,32 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }) {
-  const { locale } = await params;
+  const { locale } = params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
+  const messages = JSON.parse(
+    readFileSync(path.resolve(`./messages/${locale}.json`), "utf-8")
+  );
+  const session = await getServerSession(authOptions);
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
       <body className={`${myFont.className}`} style={myFont.style}>
-        <NextIntlClientProvider>
-          <ThemeProvider attribute="class" defaultTheme="system">
-            <>
-              <Header />
-              {children}
-              <StickyNav />
-            </>
-            <Footer />
-          </ThemeProvider>
-        </NextIntlClientProvider>
+        <SessionProviderWrapper session={session}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <ThemeProvider attribute="class" defaultTheme="system">
+              <>
+                <Header />
+                {children}
+                <StickyNav />
+                <Footer />
+              </>
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </SessionProviderWrapper>
       </body>
     </html>
   );
