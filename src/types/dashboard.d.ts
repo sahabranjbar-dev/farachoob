@@ -1,9 +1,11 @@
-export type Role = "ADMIN" | "MANAGER" | "AGENT" | "CUSTOMER";
+// تعریف نقش‌ها به صورت رشته‌ای (string)
+export type Role = string;
 
 interface User {
   id: number;
   name: string | null;
   email: string;
-  roles: Role[];
+  roles: string[];
   createdAt: string;
+  permissions: string[];
 }

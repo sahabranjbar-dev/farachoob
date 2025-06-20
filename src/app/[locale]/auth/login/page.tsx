@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import Image from "next/image";
 
 type LoginFormData = {
   email: string; // بهتره با ایمیل لاگین کنیم چون شما تو authOptions ایمیل رو چک میکنی
@@ -68,14 +69,25 @@ const LoginPage = () => {
         <div className="hidden relative flex-1 bg-gradient-to-br from-orange-700 to-orange-900 p-8 text-white lg:flex flex-col justify-center items-center text-center lg:rounded-l-2xl lg:p-12 xl:p-16">
           <div className="absolute -bottom-10 left-10 h-48 w-48 rounded-full bg-orange-600 opacity-30 filter blur-lg"></div>
           <div className="absolute top-20 right-20 h-24 w-24 rounded-full bg-orange-500 opacity-40 filter blur-lg"></div>
+          <div className="mb-16">
+            <Link href="/">
+              <Image
+                alt="logo"
+                src="/logo.webp"
+                width={200}
+                height={200}
+                className="p-2 rounded-2xl dark:bg-transparent"
+              />
+            </Link>
+          </div>
           <div className="relative z-10 space-y-4">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
+            {/* <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
               {t("WELCOME")}
-            </h1>
+            </h1> */}
             <p className="text-lg md:text-xl font-semibold">
               {t("YOUR_HEADLINE_NAME")}
             </p>
-            <p className="text-sm md:text-base text-orange-100 leading-relaxed max-w-sm mx-auto">
+            <p className="text-sm md:text-base text-orange-100 leading-relaxed max-w-sm mx-auto text-justify">
               {t("INTRO_TEXT")}
             </p>
           </div>

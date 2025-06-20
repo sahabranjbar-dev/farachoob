@@ -27,10 +27,23 @@ model User {
 
 model Role {
   id          Int           @id @default(autoincrement())
-  name        String        @unique
+  farsiTitle  String?        @unique
+  englishTitle String?       @unique
   description String?
+  status      Boolean?       @default(true)
   permissions RolePermission[]
   users       UserRole[]
+}
+
+model Menu {
+  id           Int         @id @default(autoincrement())
+  title        String
+  href         String
+  icon         String? // اسم آیکن (اختیاری)
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId Int
+  status       Boolean     @default(true)
+  createdAt    DateTime    @default(now())
 }
 
 model Permission {
@@ -38,7 +51,9 @@ model Permission {
   name        String            @unique
   description String?
   roles       RolePermission[]
+  menus       Menu[] // اینو اضافه کن
 }
+
 
 model RolePermission {
   id           Int        @id @default(autoincrement())

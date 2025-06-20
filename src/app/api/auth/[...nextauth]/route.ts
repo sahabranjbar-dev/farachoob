@@ -1,3 +1,4 @@
+// auth/[...nextauth]/route.ts
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -19,44 +20,63 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // دریافت یوزر به همراه رول‌ها (include رول‌ها)
+        // پیدا کردن کاربر به همراه نقش‌ها و مجوزها
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
           include: {
             roles: {
               include: {
-                role: true,
+                role: {
+                  include: {
+                    permissions: {
+                      include: { permission: true },
+                    },
+                  },
+                },
               },
             },
           },
         });
+
         if (!user) return null;
 
-        // چک کردن رمز عبور
+        // بررسی رمز عبور
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
         if (!isValid) return null;
 
-        // استخراج آرایه رول‌ها (نام نقش‌ها)
-        const roles = user.roles.map((userRole) => userRole.role.name);
+        // استخراج نقش‌ها (فیلتر کردن مقادیر null)
+        const roles = user.roles
+          .map((userRole) => userRole.role.englishTitle)
+          .filter((role): role is string => role !== null);
+
+        // استخراج مجوزها (بدون تکرار)
+        const permissions = [
+          ...new Set(
+            user.roles.flatMap((userRole) =>
+              userRole.role.permissions.map((rp) => rp.permission.name)
+            )
+          ),
+        ];
 
         return {
           id: user.id.toString(),
           name: user.name,
           email: user.email,
-          roles, // آرایه رول‌ها
+          roles,
+          permissions,
         };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // وقتی لاگین می‌کنه، user موجوده و اطلاعات رو توکن می‌ریزیم
       if (user) {
         token.id = user.id;
         token.roles = user.roles;
+        token.permissions = user.permissions;
       }
       return token;
     },
@@ -64,6 +84,7 @@ export const authOptions: AuthOptions = {
       if (token && session.user) {
         session.user.id = token.id;
         session.user.roles = token.roles;
+        session.user.permissions = token.permissions;
       }
       return session;
     },

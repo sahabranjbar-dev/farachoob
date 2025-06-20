@@ -2,6 +2,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
+const roleRedirectMap: Record<string, string> = {
+  ADMIN: "/dashboard/admin",
+  MANAGER: "/dashboard/manager",
+  AGENT: "/dashboard/agent",
+  CUSTOMER: "/dashboard/customer",
+};
+
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
 
@@ -11,14 +18,11 @@ export default async function DashboardPage() {
 
   const roles = session.user.roles || [];
 
-  if (roles.includes("ADMIN")) {
-    redirect("/dashboard/admin");
-  } else if (roles.includes("MANAGER")) {
-    redirect("/dashboard/manager");
-  } else if (roles.includes("AGENT")) {
-    redirect("/dashboard/agent");
-  } else if (roles.includes("CUSTOMER")) {
-    redirect("/dashboard/customer");
+  // پیدا کردن اولین نقش که مسیرش تعریف شده
+  const matchedRole = roles.find((role) => roleRedirectMap[role.toUpperCase()]);
+
+  if (matchedRole) {
+    redirect(roleRedirectMap[matchedRole.toUpperCase()]);
   } else {
     redirect("/auth/login");
   }

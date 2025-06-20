@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { User, Mail, Lock, Eye, EyeOff, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import Image from "next/image";
 
 type RegisterFormData = {
   name: string;
@@ -110,8 +111,19 @@ const RegisterPage = () => {
           <div className="absolute -bottom-10 left-10 h-48 w-48 rounded-full bg-orange-600 opacity-30 filter blur-lg"></div>
           <div className="absolute top-20 right-20 h-24 w-24 rounded-full bg-orange-500 opacity-40 filter blur-lg"></div>
           <div className="relative z-10 space-y-4">
+            <div className="mb-16 justify-self-center ">
+              <Link href="/">
+                <Image
+                  alt="logo"
+                  src="/logo.webp"
+                  width={200}
+                  height={200}
+                  className="p-2 rounded-2xl dark:bg-transparent"
+                />
+              </Link>
+            </div>
             <h1 className="text-lg md:text-xl font-semibold">{t("WELCOME")}</h1>
-            <p className="text-sm md:text-base text-orange-100 leading-relaxed max-w-sm mx-auto">
+            <p className="text-sm md:text-base text-orange-100 leading-relaxed max-w-sm mx-auto text-justify">
               {t("INTRO_TEXT")}
             </p>
           </div>

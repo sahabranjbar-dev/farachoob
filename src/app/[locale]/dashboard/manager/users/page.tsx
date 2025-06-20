@@ -4,63 +4,52 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import UsersTable from "@/components/UsersTable";
 
-interface UserSession {
-  name: string;
-  email: string;
-  roles: string[]; // آرایه نقش‌ها
-}
-
 export default async function UsersPage() {
   const session = await getServerSession(authOptions);
 
-  // اگر سشن نیست => هدایت به صفحه ورود
   if (!session) {
     redirect("/auth/login");
-    return null; // برای جلوگیری از ادامه اجرا
+    return null;
   }
 
-  // تایپ کردن user و چک کردن roles به صورت ایمن
-  const user = session.user as unknown as UserSession;
+  const currentPath = "manager/users";
 
-  // بررسی نقش‌ها (اگر roles وجود ندارد یا نقش‌ها ادمین یا منیجر نبود => هدایت به صفحه unauthorized)
-  if (
-    !user.roles ||
-    !Array.isArray(user.roles) ||
-    (!user.roles.includes("ADMIN") && !user.roles.includes("MANAGER"))
-  ) {
+  // گرفتن منو و مجوز صفحه
+  const menu = await prisma.menu.findFirst({
+    where: { href: currentPath, status: true },
+    include: { permission: true },
+  });
+
+  if (!menu) {
     redirect("/dashboard/unauthorized");
     return null;
   }
 
-  // گرفتن لیست کاربران از دیتابیس
+  // بررسی مجوزهای کاربر
+  const userPermissions = session.user.permissions || [];
+  if (!userPermissions.includes(menu.permission.name)) {
+    redirect("/dashboard/unauthorized");
+    return null;
+  }
+
+  // گرفتن کاربران همراه با نقش‌ها (join با UserRole و Role)
   const users = await prisma.user.findMany({
-    select: {
-      id: true,
-      name: true,
-      email: true,
+    include: {
       roles: {
-        select: {
-          role: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          role: true, // برای دسترسی به داده‌های نقش
         },
       },
-      createdAt: true,
-    },
-    orderBy: {
-      createdAt: "desc",
     },
   });
 
-  // تبدیل نقش‌ها به آرایه رشته‌ای فقط نام نقش‌ها
-  const usersData = users.map((u) => ({
-    ...u,
-    id: u.id.toString(),
-    name: u.name ?? "بدون نام", // 👈 اگر name برابر null بود، مقدار جایگزین می‌دیم
-    roles: u.roles.map((ur) => ur.role.name),
-    createdAt: u.createdAt.toISOString(),
+  // ساخت آرایه کاربران به فرمتی که کامپوننت UsersTable نیاز داره
+  const usersData = users.map((user) => ({
+    id: user.id,
+    name: user.name ?? "",
+    email: user.email,
+    roles: user.roles.map((ur) => ur.role.englishTitle ?? ""),
+    createdAt: user.createdAt.toISOString(),
   }));
 
   return <UsersTable users={usersData} />;

@@ -11,22 +11,22 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-
   if (!session) {
     redirect("/auth/login");
   }
 
-  const { name, roles, image } = session.user as {
+  const { name, roles, image, permissions } = session.user as {
     name: string;
     roles: Role[];
     image?: string | null;
+    permissions: string[];
   };
 
   return (
     <SidebarProvider>
       <div className="flex min-h-screen min-w-screen max-w-screen">
         {/* Sidebar ثابت با عرض مشخص */}
-        <DashboardSidebar user={{ name, role: roles, image }} />
+        <DashboardSidebar user={{ name, permissions, image, roles }} />
 
         {/* Main content که بقیه عرض صفحه رو میگیره */}
         <div className="flex-1 flex flex-col min-h-screen overflow-hidden">

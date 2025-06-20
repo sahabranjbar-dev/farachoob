@@ -9,72 +9,30 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { Home, UserCog, Package, ClipboardList, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { Role } from "@/types/dashboard";
 import { motion } from "framer-motion";
+import * as Icons from "lucide-react";
+import useSWR from "swr";
+import { Role } from "@/types/dashboard";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Props {
-  user: { name: string; role: Role[]; image?: string | null };
+  user: {
+    name: string;
+    permissions: string[];
+    image?: string | null;
+    roles: Role[];
+  };
 }
-
-const roleLabels: Record<Role, string> = {
-  ADMIN: "مدیر کل",
-  MANAGER: "مدیر",
-  AGENT: "نماینده",
-  CUSTOMER: "مشتری",
-};
 
 export function DashboardSidebar({ user }: Props) {
   const pathname = usePathname();
 
-  const menuItems = [
-    { label: "صفحه اصلی", href: "/dashboard", icon: Home },
-    ...(user?.role?.includes("ADMIN")
-      ? [
-          {
-            label: "مدیریت کاربران",
-            href: "/dashboard/admin/users",
-            icon: UserCog,
-          },
-          {
-            label: "مدیریت محصولات",
-            href: "/dashboard/admin/products",
-            icon: Package,
-          },
-        ]
-      : user?.role?.includes("MANAGER")
-      ? [
-          {
-            label: "مدیریت سفارشات",
-            href: "/dashboard/manager/orders",
-            icon: ClipboardList,
-          },
-          {
-            label: "مدیریت کاربران",
-            href: "/dashboard/manager/users",
-            icon: ClipboardList,
-          },
-        ]
-      : user?.role?.includes("AGENT")
-      ? [
-          {
-            label: "سفارشات من",
-            href: "/dashboard/agent/orders",
-            icon: ClipboardList,
-          },
-        ]
-      : [
-          {
-            label: "سفارشات من",
-            href: "/dashboard/customer/orders",
-            icon: ClipboardList,
-          },
-        ]),
-  ];
-
+  const { data: menuItems = [] } = useSWR("/api/dashboard/menus", fetcher);
   return (
     <Sidebar className="bg-gray-100 dark:bg-gray-900 border-l shadow-lg">
       {/* Header */}
@@ -88,9 +46,6 @@ export function DashboardSidebar({ user }: Props) {
           </Avatar>
           <div>
             <div className="font-semibold text-base">{user.name}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              {user.role.map((r) => roleLabels[r]).join("، ")}
-            </div>
           </div>
         </div>
       </SidebarHeader>
@@ -98,12 +53,34 @@ export function DashboardSidebar({ user }: Props) {
       {/* Menu */}
       <SidebarContent>
         <SidebarGroup title="منو">
-          {menuItems.map((item) => {
+          {/* منو ثابت */}
+          <Link
+            href="/dashboard"
+            className={cn(
+              "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
+              pathname === "/dashboard" &&
+                "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+            )}
+          >
+            {pathname === "/dashboard" && (
+              <motion.div
+                layoutId="activeSidebarItem"
+                className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
+              />
+            )}
+            <Icons.Home size={20} />
+            <span>صفحه اصلی</span>
+          </Link>
+
+          {/* منوهای داینامیک */}
+          {menuItems.map((item: any) => {
             const isActive = pathname === item.href;
+            const IconComponent = (Icons as any)[item.icon] || Icons.Package;
+
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={`/dashboard/${item.href}`}
                 className={cn(
                   "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
                   isActive &&
@@ -116,8 +93,8 @@ export function DashboardSidebar({ user }: Props) {
                     className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
                   />
                 )}
-                <item.icon size={20} />
-                <span>{item.label}</span>
+                <IconComponent size={20} />
+                <span>{item.title}</span>
               </Link>
             );
           })}

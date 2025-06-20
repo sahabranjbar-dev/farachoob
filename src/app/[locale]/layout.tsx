@@ -12,6 +12,7 @@ import "../../app/globals.css";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { readFileSync } from "fs";
 import path from "path";
+import { Toaster } from "@/components/ui/sonner";
 
 const myFont = LocalFont({
   src: [
@@ -122,6 +123,7 @@ export default async function LocaleLayout({
                 <Header />
                 {children}
                 <StickyNav />
+                <Toaster />
                 <Footer />
               </>
             </ThemeProvider>
