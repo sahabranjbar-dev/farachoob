@@ -14,17 +14,33 @@ import {
 import { useTranslations } from "next-intl";
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const t = useTranslations("ModeToggle");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="cursor-pointer">
-          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90 animate-pulse" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-gray-600 hover:text-orange-500 transition-colors relative"
+        >
+          {/* Sun Icon */}
+          <Sun
+            className={`h-5 w-5 transition-transform ${
+              theme === "dark" ? "scale-0 rotate-90" : "scale-100 rotate-0"
+            }`}
+          />
+          {/* Moon Icon */}
+          <Moon
+            className={`h-5 w-5 absolute transition-transform ${
+              theme === "dark" ? "scale-100 rotate-0" : "scale-0 -rotate-90"
+            }`}
+          />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           {t("Light")}
