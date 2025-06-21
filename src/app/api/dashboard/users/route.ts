@@ -2,27 +2,75 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// گرفتن لیست کاربران
-export async function GET() {
+// --- Backend: Updated API with Filtering ---
+
+// /api/dashboard/users/route.ts
+
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+
+    // فیلترها
+    const name = searchParams.get("name") || undefined;
+    const email = searchParams.get("email") || undefined;
+    const role = searchParams.get("role") || undefined;
+    const from = searchParams.get("from") || undefined;
+    const to = searchParams.get("to") || undefined;
+
+    // پجینیشن
+    const page = Number(searchParams.get("page")) || 1;
+    const pageSize = Number(searchParams.get("pageSize")) || 10;
+
+    // سورت
+    const sortBy = searchParams.get("sortBy") || "createdAt";
+    const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
+
+    // فیلترها
+    const filters = {
+      AND: [
+        name ? { name: { contains: name } } : {},
+        email ? { email: { contains: email } } : {},
+        role ? { roles: { some: { id: Number(role) } } } : {},
+        from ? { createdAt: { gte: new Date(from) } } : {},
+        to ? { createdAt: { lte: new Date(to) } } : {},
+      ],
+    };
+
+    // گرفتن تعداد کل
+    const totalItems = await prisma.user.count({ where: filters });
+
+    // گرفتن دیتا با پجینیشن و سورت
     const users = await prisma.user.findMany({
+      where: filters,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { [sortBy]: sortOrder },
       select: {
         id: true,
         name: true,
         email: true,
         createdAt: true,
+        roles: { select: { id: true, role: true } },
       },
-      orderBy: { createdAt: "desc" },
     });
 
-    const usersData = users.map((user) => ({
+    // مپ کردن دیتا با شماره ردیف
+    const usersData = users.map((user, index) => ({
+      rowNumber: (page - 1) * pageSize + index + 1,
       id: user.id,
       name: user.name,
       email: user.email,
       createdAt: user.createdAt,
+      roles: user.roles.map((role) => role.role),
     }));
 
-    return NextResponse.json(usersData);
+    return NextResponse.json({
+      resultList: usersData,
+      totalItems,
+      page,
+      pageSize,
+      totalPages: Math.ceil(totalItems / pageSize),
+    });
   } catch (error) {
     return NextResponse.json(
       { message: "خطا در دریافت کاربران." },

@@ -1,22 +1,40 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+"use client";
+
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Role } from "@/types/dashboard";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { UserCircle2 } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/ModeToggle";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        در حال بارگذاری...
+      </div>
+    );
+  }
+
   if (!session) {
-    redirect("/auth/login");
+    return null; // چون useEffect ریدایرکت می‌کنه، اینجا چیزی رندر نمی‌کنیم.
   }
 
   const { name, roles, image, permissions } = session.user as {

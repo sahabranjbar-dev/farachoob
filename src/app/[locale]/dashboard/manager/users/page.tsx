@@ -1,3 +1,5 @@
+// app/manager/users/page.tsx
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
@@ -25,32 +27,12 @@ export default async function UsersPage() {
     return null;
   }
 
-  // بررسی مجوزهای کاربر
   const userPermissions = session.user.permissions || [];
   if (!userPermissions.includes(menu.permission.name)) {
     redirect("/dashboard/unauthorized");
     return null;
   }
 
-  // گرفتن کاربران همراه با نقش‌ها (join با UserRole و Role)
-  const users = await prisma.user.findMany({
-    include: {
-      roles: {
-        include: {
-          role: true, // برای دسترسی به داده‌های نقش
-        },
-      },
-    },
-  });
-
-  // ساخت آرایه کاربران به فرمتی که کامپوننت UsersTable نیاز داره
-  const usersData = users.map((user) => ({
-    id: user.id,
-    name: user.name ?? "",
-    email: user.email,
-    roles: user.roles.map((ur) => ur.role.englishTitle ?? ""),
-    createdAt: user.createdAt.toISOString(),
-  }));
-
-  return <UsersTable users={usersData} />;
+  // صفحه فقط مجوز رو چک میکنه و بقیه رو میسپره به کامپوننت
+  return <UsersTable />;
 }

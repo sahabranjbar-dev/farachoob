@@ -35,8 +35,10 @@ export function DashboardSidebar({ user }: Props) {
 
   const { data: menuItems = [], isLoading } = useSWR(
     "/api/dashboard/menus",
-    fetcher
+    fetcher,
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
+
   return (
     <Sidebar className="bg-gray-100 dark:bg-gray-900 border-l shadow-lg">
       {/* Header */}
