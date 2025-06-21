@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import useSWR from "swr";
 import { Role } from "@/types/dashboard";
+import { Skeleton } from "./ui/skeleton";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -32,7 +33,10 @@ interface Props {
 export function DashboardSidebar({ user }: Props) {
   const pathname = usePathname();
 
-  const { data: menuItems = [] } = useSWR("/api/dashboard/menus", fetcher);
+  const { data: menuItems = [], isLoading } = useSWR(
+    "/api/dashboard/menus",
+    fetcher
+  );
   return (
     <Sidebar className="bg-gray-100 dark:bg-gray-900 border-l shadow-lg">
       {/* Header */}
@@ -73,31 +77,40 @@ export function DashboardSidebar({ user }: Props) {
           </Link>
 
           {/* منوهای داینامیک */}
-          {menuItems.map((item: any) => {
-            const isActive = pathname === item.href;
-            const IconComponent = (Icons as any)[item.icon] || Icons.Package;
+          {isLoading ? (
+            <div>
+              <Skeleton className="w-[90%] h-8 m-2 p-2" />
+              <Skeleton className="w-[90%] h-8 m-2 p-2" />
+              <Skeleton className="w-[90%] h-8 m-2 p-2" />
+              <Skeleton className="w-[90%] h-8 m-2 p-2" />
+            </div>
+          ) : (
+            menuItems.map((item: any) => {
+              const isActive = pathname === item.href;
+              const IconComponent = (Icons as any)[item.icon] || Icons.Package;
 
-            return (
-              <Link
-                key={item.href}
-                href={`/dashboard/${item.href}`}
-                className={cn(
-                  "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
-                  isActive &&
-                    "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
-                )}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeSidebarItem"
-                    className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
-                  />
-                )}
-                <IconComponent size={20} />
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={item.href}
+                  href={`/dashboard/${item.href}`}
+                  className={cn(
+                    "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
+                    isActive &&
+                      "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+                  )}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeSidebarItem"
+                      className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
+                    />
+                  )}
+                  <IconComponent size={20} />
+                  <span>{item.title}</span>
+                </Link>
+              );
+            })
+          )}
         </SidebarGroup>
       </SidebarContent>
 
