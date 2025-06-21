@@ -2,12 +2,10 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
-// فقط متد POST رو هندل می‌کنیم
 export async function POST(req: Request) {
   try {
     const { name, email, password } = await req.json();
 
-    // چک کردن کامل بودن اطلاعات
     if (!name || !email || !password) {
       return NextResponse.json(
         { message: "لطفا همه فیلدها را کامل کنید." },
@@ -15,7 +13,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // چک کردن اینکه کاربر قبلا ثبت‌نام نکرده باشه
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
@@ -24,12 +21,30 @@ export async function POST(req: Request) {
       );
     }
 
-    // رمزنگاری رمز عبور
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ذخیره کاربر جدید
+    // پیدا کردن رول پیش‌فرض "مشتری"
+    const customerRole = await prisma.role.findFirst({
+      where: { englishTitle: "customer" }, // یا می‌تونی با farsiTitle جستجو کنی
+    });
+
+    if (!customerRole) {
+      return NextResponse.json(
+        { message: "نقش مشتری در دیتابیس پیدا نشد." },
+        { status: 500 }
+      );
+    }
+
+    // ساخت یوزر با رول پیش‌فرض
     await prisma.user.create({
-      data: { name, email, password: hashedPassword },
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        roles: {
+          create: [{ roleId: customerRole.id }],
+        },
+      },
     });
 
     return NextResponse.json(

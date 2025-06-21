@@ -15,7 +15,7 @@ datasource db {
 
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   email     String    @unique
   password  String
   name      String?
@@ -23,42 +23,39 @@ model User {
   createdAt DateTime  @default(now()) 
 }
 
-
-
 model Role {
-  id          Int           @id @default(autoincrement())
-  farsiTitle  String?        @unique
-  englishTitle String?       @unique
-  description String?
-  status      Boolean?       @default(true)
-  permissions RolePermission[]
-  users       UserRole[]
+  id           String           @id @default(uuid())
+  farsiTitle   String?          @unique
+  englishTitle String?          @unique
+  description  String?
+  status       Boolean?         @default(true)
+  permissions  RolePermission[]
+  users        UserRole[]
 }
 
 model Menu {
-  id           Int         @id @default(autoincrement())
+  id           String      @id @default(uuid())
   title        String
   href         String
   icon         String? // اسم آیکن (اختیاری)
-  permission   Permission @relation(fields: [permissionId], references: [id])
-  permissionId Int
+  permission   Permission  @relation(fields: [permissionId], references: [id])
+  permissionId String
   status       Boolean     @default(true)
   createdAt    DateTime    @default(now())
 }
 
 model Permission {
-  id          Int               @id @default(autoincrement())
-  name        String            @unique
+  id          String             @id @default(uuid())
+  name        String             @unique
   description String?
   roles       RolePermission[]
-  menus       Menu[] // اینو اضافه کن
+  menus       Menu[]
 }
 
-
 model RolePermission {
-  id           Int        @id @default(autoincrement())
-  roleId       Int
-  permissionId Int
+  id           String      @id @default(uuid())
+  roleId       String
+  permissionId String
 
   role       Role       @relation(fields: [roleId], references: [id])
   permission Permission @relation(fields: [permissionId], references: [id])
@@ -67,13 +64,12 @@ model RolePermission {
 }
 
 model UserRole {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  roleId Int
+  id     String  @id @default(uuid())
+  userId String
+  roleId String
 
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
 
   @@unique([userId, roleId])
 }
-

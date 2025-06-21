@@ -23,6 +23,7 @@ import useSWR from "swr";
 import { cn, fetcher } from "@/lib/utils";
 import UserFilter from "./UserFilter";
 import { Skeleton } from "./ui/skeleton";
+import PaginationWrapper from "./Pagination";
 
 interface Roles {
   id?: number;
@@ -52,7 +53,15 @@ export default function UsersTable() {
   const [isSaving, setIsSaving] = useState(false);
   const [rolesLoading, setRolesLoading] = useState(false);
 
-  const queryString = new URLSearchParams(filters).toString();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5); // تعداد آیتم‌های هر صفحه
+
+  const queryString = new URLSearchParams({
+    ...filters,
+    page: currentPage.toString(),
+    pageSize: pageSize.toString(),
+  }).toString();
+
   const {
     data: users = [],
     isLoading,
@@ -427,6 +436,14 @@ export default function UsersTable() {
             })}
           </TableBody>
         </Table>
+
+        <PaginationWrapper
+          totalCount={users.totalItems}
+          currentPage={currentPage}
+          totalPages={users?.totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+          totalCountName="کاربر"
+        />
       </div>
     </div>
   );
