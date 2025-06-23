@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
 
 type Permission = {
   id: number;
@@ -31,39 +32,52 @@ type FormValues = {
   title: string;
   href: string;
   icon?: string;
-  permissionId: number;
+  permissionId: string;
   status: boolean;
 };
 
 interface Props {
   initialData?: Partial<FormValues> | null | undefined;
-  permissions: Permission[];
+  // permissions: Permission[];
   onSuccess: () => void;
 }
 
 export default function MenuForm({
   initialData,
-  permissions,
+  // permissions,
   onSuccess,
 }: Props) {
+  const [permissions, setPermissions] = useState<
+    {
+      id?: string;
+      englishtitle?: string;
+      farsiTitle?: string;
+    }[]
+  >([]);
   const form = useForm<FormValues>({
     defaultValues: {
       title: "",
       href: "",
       icon: "",
-      permissionId: 0,
+      permissionId: "",
       status: true,
       ...initialData,
     },
   });
 
   useEffect(() => {
+    fetchPermissions();
     // اگر initialData داشت، فرم رو بروزرسانی کن
     if (initialData) {
       form.reset(initialData);
     }
   }, [initialData]);
 
+  const fetchPermissions = async () => {
+    const response = await axios.get("/api/dashboard/permissions");
+
+    setPermissions(response.data.resultList);
+  };
   async function onSubmit(data: FormValues) {
     try {
       const method = initialData?.id ? "PUT" : "POST";
@@ -72,7 +86,13 @@ export default function MenuForm({
       const res = await fetch("/api/dashboard/menus", {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          id: data.id,
+          href: data.href,
+          permissionId: data.permissionId,
+          title: data.title,
+          status: data.status,
+        }),
       });
 
       if (!res.ok) throw new Error("خطا در ذخیره‌سازی");
@@ -80,7 +100,7 @@ export default function MenuForm({
       onSuccess();
       form.reset();
     } catch (error) {
-      alert((error as Error).message);
+      // alert((error as Error).message);
     }
   }
 
@@ -137,22 +157,27 @@ export default function MenuForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>دسترسی</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={field.value ? String(field.value) : ""}
-                defaultValue=""
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="یک دسترسی انتخاب کنید" />
-                </SelectTrigger>
-                <SelectContent>
-                  {permissions.map((perm) => (
-                    <SelectItem key={perm.id} value={String(perm.id)}>
-                      {perm.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl onClick={() => {}}>
+                <Select
+                  value={field.value}
+                  onValueChange={(val) => field.onChange(val)}
+                >
+                  <SelectTrigger>
+                    {field.value}
+                    <SelectValue placeholder="انتخاب دسترسی" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {permissions.map((permission) => (
+                      <SelectItem
+                        key={permission.id}
+                        value={permission.id ?? ""}
+                      >
+                        {permission.farsiTitle}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

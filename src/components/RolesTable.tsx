@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -43,49 +43,82 @@ interface Role {
   englishTitle?: string | null;
   description?: string | null;
   status?: boolean | null;
+  createdAt?: Date;
+  UpdateAt?: Date;
+  rowNumber?: number;
+  permissions?: {
+    permission?: { id?: string; description?: string; name?: string };
+    permissionId?: string;
+  }[];
 }
 
-interface Props {
-  roles: Role[];
-}
+// interface Props {
+//   roles: Role[];
+// }
 
+interface Data {
+  totalItems?: number;
+  currentPage: number;
+  totalPages?: number;
+  resultList: Role[];
+}
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-export default function RolesTable({ roles }: Props) {
-  const { data, isLoading, mutate } = useSWR<Role[]>(
-    "/api/dashboard/roles",
-    fetcher,
-    {
-      fallbackData: roles,
-    }
-  );
+export default function RolesTable() {
+  // const { data, isLoading, mutate } = useSWR<Role[]>(
+  //   "/api/dashboard/roles",
+  //   fetcher,
+  //   {
+  //     fallbackData: roles,
+  //   }
+  // );
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [roleData, setRoleData] = useState<Role | null>(null);
+  const [data, setData] = useState<Data>({ currentPage: 1, resultList: [] });
+  const [permissions, setPermissions] = useState([]);
 
-  const handleRefresh = () => {
-    mutate();
-  };
+  // const handleRefresh = () => {
+  //   mutate();
+  // };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await axios.delete(`/api/dashboard/roles/${id}`).then((res) => {
-        toast.success(res.data.message);
-      });
-      mutate();
-    } catch (error) {
-      console.error("خطا در حذف نقش", error);
-      toast.error("خطا در حذف نقش");
-    }
-  };
+  // const handleDelete = async (id: number) => {
+  //   try {
+  //     await axios.delete(`/api/dashboard/roles/${id}`).then((res) => {
+  //       toast.success(res.data.message);
+  //     });
+  //     mutate();
+  //   } catch (error) {
+  //     console.error("خطا در حذف نقش", error);
+  //     toast.error("خطا در حذف نقش");
+  //   }
+  // };
 
-  if (!data?.length) {
+  async function fetchRoles() {
+    // setLoading(true);
+    const res = await fetch("/api/dashboard/roles");
+    const data = await res.json();
+    setData(data);
+    // setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+  if (!data?.resultList) {
     return (
       <div className="py-20 text-center text-gray-500 dark:text-gray-400">
         نقشی ثبت نشده است.
       </div>
     );
   }
+
+  const fetchPermission = async () => {
+    const response = await fetch("/api/dashboard/permissions");
+    const result = await response.json();
+
+    setPermissions(result.resultList);
+  };
 
   return (
     <>
@@ -96,13 +129,13 @@ export default function RolesTable({ roles }: Props) {
         </Button>
       </div>
       لیست نقش‌ها
-      <Button variant="ghost" size="icon" onClick={handleRefresh}>
+      <Button variant="ghost" size="icon">
         <RefreshCcw className="text-gray-500" />
       </Button>
       <Table className="w-full">
         <TableHeader>
           <TableRow>
-            <TableHead className="text-center">شناسه</TableHead>
+            <TableHead className="text-center">ردیف</TableHead>
             <TableHead className="text-center">عنوان فارسی</TableHead>
             <TableHead className="text-center">عنوان انگلیسی</TableHead>
             <TableHead className="text-center">توضیحات</TableHead>
@@ -111,12 +144,12 @@ export default function RolesTable({ roles }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((role) => (
+          {data?.resultList?.map((role) => (
             <TableRow
               key={role.id}
               className="hover:bg-gray-100 dark:hover:bg-gray-800"
             >
-              <TableCell className="text-center">{role.id}</TableCell>
+              <TableCell className="text-center">{role.rowNumber}</TableCell>
               <TableCell className="text-center">
                 {role.farsiTitle ?? "-"}
               </TableCell>
@@ -157,7 +190,7 @@ export default function RolesTable({ roles }: Props) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>انصراف</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(role.id)}>
+                      <AlertDialogAction onClick={() => {}}>
                         تایید
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -185,11 +218,15 @@ export default function RolesTable({ roles }: Props) {
             </DialogDescription>
           </DialogHeader>
           <RoleForm
-            initialData={roleData ?? undefined}
+            initialData={roleData ?? {}}
             onSuccess={() => {
               setOpenDialog(false);
-              mutate(); // 🔥 رفرش دیتا بعد از موفقیت
+              // mutate(); // 🔥 رفرش دیتا بعد از موفقیت
             }}
+            permissionOptions={permissions}
+            fetchRoles={fetchPermission}
+            isOpen={true}
+            onFilterChange={() => {}}
           />
         </DialogContent>
       </Dialog>

@@ -10,34 +10,37 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import useSWR from "swr";
 import { Role } from "@/types/dashboard";
 import { Skeleton } from "./ui/skeleton";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { usePathname } from "@/i18n/navigation";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Props {
   user: {
     name: string;
-    permissions: string[];
+    permissions?: string[];
     image?: string | null;
-    roles: Role[];
+    roles?: Role;
   };
 }
 
 export function DashboardSidebar({ user }: Props) {
-  const pathname = usePathname();
-
   const { data: menuItems = [], isLoading } = useSWR(
-    "/api/dashboard/menus",
+    "/api/dashboard/sidebarMenu",
     fetcher,
     { revalidateOnFocus: false, revalidateOnReconnect: false }
   );
+
+  const session = useSession();
+  const pathname = usePathname();
+  const role = session.data?.user.role;
 
   return (
     <Sidebar className="bg-gray-100 dark:bg-gray-900 border-l shadow-lg">
@@ -45,13 +48,13 @@ export function DashboardSidebar({ user }: Props) {
       <SidebarHeader>
         <div className="flex items-center gap-4 p-4">
           <Avatar className="w-12 h-12">
-            <AvatarImage src={user.image || ""} alt={user.name || "User"} />
+            <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
             <AvatarFallback className="text-lg">
-              {user.name?.charAt(0)}
+              {user?.name?.charAt(0)}
             </AvatarFallback>
           </Avatar>
           <div>
-            <div className="font-semibold text-base">{user.name}</div>
+            <div className="font-semibold text-base">{user?.name}</div>
           </div>
         </div>
       </SidebarHeader>
@@ -64,11 +67,11 @@ export function DashboardSidebar({ user }: Props) {
             href="/dashboard"
             className={cn(
               "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
-              pathname === "/dashboard" &&
+              pathname === `/dashboard/${role}` &&
                 "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
             )}
           >
-            {pathname === "/dashboard" && (
+            {pathname === `/dashboard/${role}` && (
               <motion.div
                 layoutId="activeSidebarItem"
                 className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
@@ -79,7 +82,7 @@ export function DashboardSidebar({ user }: Props) {
           </Link>
 
           {/* منوهای داینامیک */}
-          {isLoading ? (
+          {false ? (
             <div>
               <Skeleton className="w-[90%] h-8 m-2 p-2" />
               <Skeleton className="w-[90%] h-8 m-2 p-2" />
@@ -87,16 +90,16 @@ export function DashboardSidebar({ user }: Props) {
               <Skeleton className="w-[90%] h-8 m-2 p-2" />
             </div>
           ) : (
-            menuItems.map((item: any) => {
-              const isActive = pathname === item.href;
+            menuItems.resultList?.map((item: any) => {
+              const isActive = pathname.includes(item.href);
               const IconComponent = (Icons as any)[item.icon] || Icons.Package;
 
               return (
                 <Link
                   key={item.href}
-                  href={`/dashboard/${item.href}`}
+                  href={`/dashboard/${role}/${item.href}`}
                   className={cn(
-                    "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
+                    "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium my-2",
                     isActive &&
                       "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
                   )}

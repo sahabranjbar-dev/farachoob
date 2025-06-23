@@ -1,53 +1,29 @@
-"use client";
-
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Role } from "@/types/dashboard";
-import { Button } from "@/components/ui/button";
-import { UserCircle2 } from "lucide-react";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/ModeToggle";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { getServerSession } from "next-auth";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login");
-    }
-  }, [status, router]);
-
-  if (status === "loading") {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        در حال بارگذاری...
-      </div>
-    );
-  }
-
-  if (!session) {
-    return null; // چون useEffect ریدایرکت می‌کنه، اینجا چیزی رندر نمی‌کنیم.
-  }
-
-  const { name, roles, image, permissions } = session.user as {
-    name: string;
-    roles: Role[];
-    image?: string | null;
-    permissions: string[];
-  };
+  const session = await getServerSession(authOptions);
 
   return (
     <SidebarProvider>
       <div className="flex min-h-screen min-w-screen max-w-screen bg-gray-100 dark:bg-gray-900 transition-colors">
-        <DashboardSidebar user={{ name, permissions, image, roles }} />
+        <DashboardSidebar
+          user={{
+            name: session?.user.name ?? "user",
+            // TODO: check is necessery
+            permissions: session?.user.permissions,
+            roles: session?.user.role,
+            image: session?.user?.image,
+          }}
+        />
 
         <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
           {/* Header */}

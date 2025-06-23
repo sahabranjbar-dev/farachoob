@@ -1,4 +1,3 @@
-// auth/[...nextauth]/route.ts
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -7,9 +6,7 @@ import { prisma } from "@/lib/prisma";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -20,18 +17,13 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // پیدا کردن کاربر به همراه نقش‌ها و مجوزها
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
           include: {
-            roles: {
+            role: {
               include: {
-                role: {
-                  include: {
-                    permissions: {
-                      include: { permission: true },
-                    },
-                  },
+                permissions: {
+                  select: { permissionId: true },
                 },
               },
             },
@@ -40,32 +32,23 @@ export const authOptions: AuthOptions = {
 
         if (!user) return null;
 
-        // بررسی رمز عبور
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
         if (!isValid) return null;
 
-        // استخراج نقش‌ها (فیلتر کردن مقادیر null)
-        const roles = user.roles
-          .map((userRole) => userRole.role.englishTitle)
-          .filter((role): role is string => role !== null);
-
-        // استخراج مجوزها (بدون تکرار)
-        const permissions = [
-          ...new Set(
-            user.roles.flatMap((userRole) =>
-              userRole.role.permissions.map((rp) => rp.permission.name)
-            )
-          ),
-        ];
+        const roleId = user.role.id || "";
+        const role = user.role.englishTitle || "";
+        const permissions = user.role.permissions.map((rp) => rp.permissionId);
 
         return {
-          id: user.id.toString(),
+          id: user.id,
           name: user.name,
           email: user.email,
-          roles,
+          image: user.image,
+          role,
+          roleId,
           permissions,
         };
       },
@@ -75,16 +58,20 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.roles = user.roles;
+        token.role = user.role;
+        token.image = user.image;
+        token.roleId = user.roleId;
         token.permissions = user.permissions;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id;
-        session.user.roles = token.roles;
-        session.user.permissions = token.permissions;
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.image = token.image as string;
+        session.user.role = token.role as string;
+        session.user.roleId = token.roleId as string;
+        session.user.permissions = token.permissions as string[];
       }
       return session;
     },

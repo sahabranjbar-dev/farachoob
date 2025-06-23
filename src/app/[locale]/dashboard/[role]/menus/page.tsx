@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Table,
   TableBody,
@@ -21,11 +21,19 @@ import {
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import MenuForm from "./MenuForm";
+import PaginationWrapper from "@/components/Pagination";
 
 type Permission = {
   id: number;
   name: string;
 };
+
+interface MenuData {
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  resultList: Menu[];
+}
 
 type Menu = {
   id: number;
@@ -37,33 +45,31 @@ type Menu = {
 };
 
 export default function MenusPage() {
-  const [menus, setMenus] = useState<Menu[]>([]);
-  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [data, setData] = useState<MenuData>({
+    currentPage: 1,
+    resultList: [],
+    totalItems: 10,
+    totalPages: 10,
+  });
+  // const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [editMenu, setEditMenu] = useState<Menu | undefined | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   // دریافت منوها
   async function fetchMenus() {
     setLoading(true);
     const res = await fetch("/api/dashboard/menus");
     const data = await res.json();
-    setMenus(data);
+    setData(data);
     setLoading(false);
-  }
-
-  // دریافت permissions برای کمبو باکس
-  async function fetchPermissions() {
-    const res = await fetch("/api/dashboard/permissions");
-    const data = await res.json();
-    setPermissions(data);
   }
 
   useEffect(() => {
     fetchMenus();
-    fetchPermissions();
   }, []);
-
   // حذف منو
   async function handleDelete(id: number) {
     if (!confirm("آیا از حذف این منو مطمئن هستید؟")) return;
@@ -79,6 +85,17 @@ export default function MenusPage() {
     setOpenDialog(true);
   }
 
+  const tableHeader = useMemo(
+    () => [
+      { id: 1, title: "عنوان" },
+      { id: 2, title: "آدرس" },
+      { id: 3, title: "آیکن" },
+      { id: 4, title: "دسترسی" },
+      { id: 5, title: "وضعیت" },
+      { id: 6, title: "عملیات" },
+    ],
+    []
+  );
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -91,16 +108,17 @@ export default function MenusPage() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>عنوان</TableHead>
-            <TableHead>آدرس</TableHead>
-            <TableHead>آیکن</TableHead>
-            <TableHead>دسترسی</TableHead>
-            <TableHead>وضعیت</TableHead>
-            <TableHead className="text-center">عملیات</TableHead>
+            {tableHeader.map((item) => {
+              return (
+                <TableHead className="text-center font-bold" key={item.id}>
+                  {item.title}
+                </TableHead>
+              );
+            })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {menus.map((menu) => (
+          {data?.resultList?.map((menu) => (
             <TableRow key={menu.id}>
               <TableCell>{menu.title}</TableCell>
               <TableCell>{menu.href}</TableCell>
@@ -125,7 +143,7 @@ export default function MenusPage() {
               </TableCell>
             </TableRow>
           ))}
-          {menus.length === 0 && !loading && (
+          {data?.resultList?.length === 0 && !loading && (
             <TableRow>
               <TableCell colSpan={6} className="text-center py-6">
                 داده‌ای موجود نیست
@@ -134,6 +152,13 @@ export default function MenusPage() {
           )}
         </TableBody>
       </Table>
+      <PaginationWrapper
+        totalCount={data.totalItems}
+        currentPage={currentPage}
+        totalPages={data?.totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+        totalCountName="منو"
+      />
 
       {/* Dialog for Add/Edit Form */}
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -147,7 +172,7 @@ export default function MenusPage() {
             </DialogDescription>
           </DialogHeader>
           <MenuForm
-            permissions={permissions}
+            // permissions={permissions}
             initialData={
               editMenu
                 ? {

@@ -2,10 +2,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// --- Backend: Updated API with Filtering ---
-
-// /api/dashboard/users/route.ts
-
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -49,19 +45,40 @@ export async function GET(request: Request) {
         id: true,
         name: true,
         email: true,
+        mobile: true,
+        image: true,
         createdAt: true,
-        roles: { select: { id: true, role: true } },
+        role: {
+          select: {
+            id: true,
+            farsiTitle: true,
+            englishTitle: true,
+            permissions: {
+              select: {
+                permission: {
+                  select: {
+                    id: true,
+                    name: true,
+                    description: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
-    // مپ کردن دیتا با شماره ردیف
     const usersData = users.map((user, index) => ({
       rowNumber: (page - 1) * pageSize + index + 1,
       id: user.id,
       name: user.name,
       email: user.email,
       createdAt: user.createdAt,
-      roles: user.roles.map((role) => role.role),
+      mobile: user.mobile,
+      image: user.image,
+      role: user.role.farsiTitle,
+      permissions: user.role.permissions.map((item) => item.permission.name),
     }));
 
     return NextResponse.json({
@@ -80,92 +97,92 @@ export async function GET(request: Request) {
 }
 
 // ساخت کاربر (اختیاری اگر بخوای اضافه کنی)
-export async function POST(request: Request) {
-  try {
-    const { name, email, password, roles } = await request.json();
+// export async function POST(request: Request) {
+//   try {
+//     const { name, email, password, roles } = await request.json();
 
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { message: "اطلاعات ورودی ناقص است." },
-        { status: 400 }
-      );
-    }
+//     if (!name || !email || !password) {
+//       return NextResponse.json(
+//         { message: "اطلاعات ورودی ناقص است." },
+//         { status: 400 }
+//       );
+//     }
 
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password, // بهتره هش شده باشه
-        roles: {
-          create: roles.map((roleId: number) => ({
-            role: { connect: { id: roleId } },
-          })),
-        },
-      },
-    });
+//     const newUser = await prisma.user.create({
+//       data: {
+//         name,
+//         email,
+//         password, // بهتره هش شده باشه
+//         roles: {
+//           create: roles.map((roleId: number) => ({
+//             role: { connect: { id: roleId } },
+//           })),
+//         },
+//       },
+//     });
 
-    return NextResponse.json(newUser);
-  } catch (error) {
-    return NextResponse.json(
-      { message: "خطا در ساخت کاربر." },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json(newUser);
+//   } catch (error) {
+//     return NextResponse.json(
+//       { message: "خطا در ساخت کاربر." },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 // ویرایش کاربر
-export async function PUT(request: Request) {
-  try {
-    const { name, email, roleIds, id } = await request.json();
+// export async function PUT(request: Request) {
+//   try {
+//     const { name, email, roleIds, id } = await request.json();
 
-    if (!id || !name || !email || !Array.isArray(roleIds)) {
-      return NextResponse.json(
-        { message: "اطلاعات ورودی نامعتبر است." },
-        { status: 400 }
-      );
-    }
+//     if (!id || !name || !email || !Array.isArray(roleIds)) {
+//       return NextResponse.json(
+//         { message: "اطلاعات ورودی نامعتبر است." },
+//         { status: 400 }
+//       );
+//     }
 
-    await prisma.userRole.deleteMany({ where: { userId: id } });
+//     await prisma.userRole.deleteMany({ where: { userId: id } });
 
-    const userRolesData = roleIds.map((roleId) => ({
-      userId: id,
-      roleId,
-    }));
+//     const userRolesData = roleIds.map((roleId) => ({
+//       userId: id,
+//       roleId,
+//     }));
 
-    await prisma.userRole.createMany({ data: userRolesData });
+//     await prisma.userRole.createMany({ data: userRolesData });
 
-    await prisma.user.update({
-      where: { id },
-      data: { email, name },
-    });
+//     await prisma.user.update({
+//       where: { id },
+//       data: { email, name },
+//     });
 
-    return NextResponse.json({ message: "کاربر با موفقیت ویرایش شد" });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { message: "خطا در بروزرسانی کاربر." },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json({ message: "کاربر با موفقیت ویرایش شد" });
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json(
+//       { message: "خطا در بروزرسانی کاربر." },
+//       { status: 500 }
+//     );
+//   }
+// }
 
-// حذف کاربر
-export async function DELETE(request: Request) {
-  try {
-    const id = Number(request.body);
+// // حذف کاربر
+// export async function DELETE(request: Request) {
+//   try {
+//     const id = Number(request.body);
 
-    if (!id) {
-      return NextResponse.json(
-        { message: "شناسه معتبر نیست." },
-        { status: 400 }
-      );
-    }
+//     if (!id) {
+//       return NextResponse.json(
+//         { message: "شناسه معتبر نیست." },
+//         { status: 400 }
+//       );
+//     }
 
-    await prisma.user.delete({ where: { id } });
+//     await prisma.user.delete({ where: { id } });
 
-    return NextResponse.json({ message: "کاربر با موفقیت حذف شد." });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "خطا در حذف کاربر." }, { status: 500 });
-  }
-}
+//     return NextResponse.json({ message: "کاربر با موفقیت حذف شد." });
+//   } catch (error) {
+//     console.error(error);
+//     return NextResponse.json({ message: "خطا در حذف کاربر." }, { status: 500 });
+//   }
+// }

@@ -11,8 +11,8 @@ import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
 interface PaginationProps {
   currentPage: number;
-  totalPages: number;
-  totalCount: number;
+  totalPages?: number;
+  totalCount?: number;
   onPageChange: (page: number) => void;
   totalCountName?: string;
 }
@@ -25,7 +25,7 @@ const PaginationWrapper = ({
   totalCountName = "مورد",
 }: PaginationProps) => {
   const renderPageNumbers = () => {
-    if (totalPages <= 7) {
+    if (totalPages && totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
         <button
           key={page}
@@ -44,7 +44,7 @@ const PaginationWrapper = ({
 
     const pages = [];
     const leftBound = Math.max(2, currentPage - 1);
-    const rightBound = Math.min(totalPages - 1, currentPage + 1);
+    const rightBound = Math.min((totalPages ?? 1) - 1, currentPage + 1);
 
     // First Page
     pages.push(
@@ -90,7 +90,7 @@ const PaginationWrapper = ({
     }
 
     // Right Ellipsis
-    if (rightBound < totalPages - 1) {
+    if (rightBound < (totalPages ?? 1) - 1) {
       pages.push(
         <span key="right-ellipsis" className="px-2 text-gray-400">
           ...
@@ -99,20 +99,22 @@ const PaginationWrapper = ({
     }
 
     // Last Page
-    pages.push(
-      <button
-        key={totalPages}
-        onClick={() => onPageChange(totalPages)}
-        className={cn(
-          "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
-          currentPage === totalPages
-            ? "bg-orange-500 text-white border-orange-500"
-            : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
-        )}
-      >
-        {totalPages}
-      </button>
-    );
+    if (totalPages ? totalPages >= 0 : false) {
+      pages.push(
+        <button
+          key={totalPages}
+          onClick={() => totalPages && onPageChange(totalPages)}
+          className={cn(
+            "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
+            currentPage === totalPages
+              ? "bg-orange-500 text-white border-orange-500"
+              : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
+          )}
+        >
+          {totalPages}
+        </button>
+      );
+    }
 
     return pages;
   };
@@ -133,7 +135,7 @@ const PaginationWrapper = ({
         <Tooltip>
           <TooltipTrigger>
             <button
-              onClick={() => currentPage > 1 && onPageChange(totalPages)}
+              onClick={() => currentPage > 1 && onPageChange(1)}
               disabled={currentPage === 1}
               className={cn(
                 "rounded-lg p-2 border border-gray-200 transition-colors",
@@ -145,7 +147,7 @@ const PaginationWrapper = ({
               <ChevronsRight className="h-4 w-4" />
             </button>
           </TooltipTrigger>
-          <TooltipContent>صفحه‌ی آخر</TooltipContent>
+          <TooltipContent>صفحه‌ی اول</TooltipContent>
         </Tooltip>
 
         {/* Previous Page */}
@@ -175,12 +177,14 @@ const PaginationWrapper = ({
           <TooltipTrigger>
             <button
               onClick={() =>
-                currentPage < totalPages && onPageChange(currentPage + 1)
+                totalPages !== undefined &&
+                currentPage < totalPages &&
+                onPageChange(currentPage + 1)
               }
-              disabled={currentPage === totalPages}
+              disabled={totalPages === undefined || currentPage === totalPages}
               className={cn(
                 "rounded-lg p-2 border border-gray-200 transition-colors",
-                currentPage === totalPages
+                totalPages === undefined || currentPage === totalPages
                   ? "text-gray-400 cursor-not-allowed"
                   : "hover:bg-orange-100 hover:text-orange-500"
               )}
@@ -195,11 +199,15 @@ const PaginationWrapper = ({
         <Tooltip>
           <TooltipTrigger>
             <button
-              onClick={() => currentPage < totalPages && onPageChange(1)}
-              disabled={currentPage === totalPages}
+              onClick={() =>
+                totalPages !== undefined &&
+                currentPage < totalPages &&
+                onPageChange(totalPages)
+              }
+              disabled={totalPages === undefined || currentPage === totalPages}
               className={cn(
                 "rounded-lg p-2 border border-gray-200 transition-colors",
-                currentPage === totalPages
+                totalPages === undefined || currentPage === totalPages
                   ? "text-gray-400 cursor-not-allowed"
                   : "hover:bg-orange-100 hover:text-orange-500"
               )}
@@ -207,7 +215,7 @@ const PaginationWrapper = ({
               <ChevronsLeft className="h-4 w-4" />
             </button>
           </TooltipTrigger>
-          <TooltipContent>صفحه‌ی اول</TooltipContent>
+          <TooltipContent>صفحه‌ی آخر</TooltipContent>
         </Tooltip>
       </div>
     </div>

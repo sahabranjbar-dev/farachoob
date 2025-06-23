@@ -34,8 +34,9 @@ interface User {
   id: number | string;
   name: string;
   email: string;
-  roles: Roles[];
+  role: string;
   createdAt: string;
+  permissions?: string[];
 }
 
 interface RoleOption {
@@ -98,31 +99,31 @@ export default function UsersTable() {
     setEditedUser((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = async () => {
-    if (!editedUser.name || !editedUser.email || !editedUser.roles?.length) {
-      toast.error("لطفا تمامی فیلدها را تکمیل کنید.");
-      return;
-    }
+  // const handleSave = async () => {
+  //   if (!editedUser.name || !editedUser.email || !editedUser.roles?.length) {
+  //     toast.error("لطفا تمامی فیلدها را تکمیل کنید.");
+  //     return;
+  //   }
 
-    setIsSaving(true);
-    try {
-      await axios.put("/api/dashboard/users", {
-        id: editedUser.id,
-        name: editedUser.name,
-        email: editedUser.email,
-        roleIds: editedUser.roles,
-        createdAt: editedUser.createdAt,
-      });
-      toast.success("کاربر با موفقیت بروزرسانی شد.");
-      setEditingId(null);
-      setEditedUser({});
-      mutate();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "خطا در بروزرسانی کاربر.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  //   setIsSaving(true);
+  //   try {
+  //     await axios.put("/api/dashboard/users", {
+  //       id: editedUser.id,
+  //       name: editedUser.name,
+  //       email: editedUser.email,
+  //       roleIds: editedUser.roles,
+  //       createdAt: editedUser.createdAt,
+  //     });
+  //     toast.success("کاربر با موفقیت بروزرسانی شد.");
+  //     setEditingId(null);
+  //     setEditedUser({});
+  //     mutate();
+  //   } catch (error: any) {
+  //     toast.error(error?.response?.data?.message || "خطا در بروزرسانی کاربر.");
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
 
   const handleCancelEdit = () => {
     setEditingId(null);
@@ -214,6 +215,12 @@ export default function UsersTable() {
                 تاریخ ثبت
               </TableHead>
               <TableHead
+                className={`text-center ${fixedColumnWidth.createdAt}`}
+                style={{ minWidth: "144px" }}
+              >
+                دسترسی
+              </TableHead>
+              <TableHead
                 className={`text-center ${fixedColumnWidth.actions}`}
                 style={{ minWidth: "128px" }}
               >
@@ -299,41 +306,41 @@ export default function UsersTable() {
                     )}
                   </TableCell>
 
-                  {/* Roles */}
+                  {/* Role */}
                   <TableCell
                     className={cn(
                       "flex justify-center text-center",
                       fixedColumnWidth.roles,
                       !isEditing && ellipsisClass
                     )}
-                    title={user.roles.map((role) => role.farsiTitle).join(", ")}
+                    // title={user.roles.map((role) => role.farsiTitle).join(", ")}
                     style={{ minWidth: "192px" }}
                   >
                     {isEditing ? (
-                      <MultiSelect
-                        options={roles}
-                        defaultValue={
-                          editedUser.roles
-                            ? editedUser.roles.map((role) =>
-                                typeof role === "string"
-                                  ? role
-                                  : role.id?.toString() ?? ""
-                              )
-                            : []
-                        }
-                        onValueChange={(selectedRoles) =>
-                          handleInputChange("roles", selectedRoles)
-                        }
-                        placeholder="انتخاب نقش"
-                        animation={0.5}
-                        variant="inverted"
-                        disabled={rolesLoading || isSaving}
-                      />
+                      // <MultiSelect
+                      //   options={roles}
+                      //   defaultValue={
+                      //     editedUser.roles
+                      //       ? editedUser.roles.map((role) =>
+                      //           typeof role === "string"
+                      //             ? role
+                      //             : role.id?.toString() ?? ""
+                      //         )
+                      //       : []
+                      //   }
+                      //   onValueChange={(selectedRoles) =>
+                      //     handleInputChange("roles", selectedRoles)
+                      //   }
+                      //   placeholder="انتخاب نقش"
+                      //   animation={0.5}
+                      //   variant="inverted"
+                      //   disabled={rolesLoading || isSaving}
+                      // />
+                      <></>
                     ) : (
-                      user.roles.map((role) => role.farsiTitle).join(" , ")
+                      user.role
                     )}
                   </TableCell>
-
                   {/* Date */}
                   <TableCell
                     className={cn(
@@ -384,6 +391,7 @@ export default function UsersTable() {
                       new Date(user.createdAt).toLocaleDateString("fa-IR")
                     )}
                   </TableCell>
+                  <TableCell>{user.permissions?.join(" | ")}</TableCell>
 
                   {/* Actions */}
                   <TableCell
@@ -397,7 +405,7 @@ export default function UsersTable() {
                       <>
                         <Button
                           variant="ghost"
-                          onClick={handleSave}
+                          // onClick={handleSave}
                           disabled={isSaving}
                         >
                           <Check className="text-green-500" />
@@ -436,14 +444,14 @@ export default function UsersTable() {
             })}
           </TableBody>
         </Table>
-
+        {/* 
         <PaginationWrapper
           totalCount={users.totalItems}
           currentPage={currentPage}
           totalPages={users?.totalPages}
           onPageChange={(page) => setCurrentPage(page)}
           totalCountName="کاربر"
-        />
+        /> */}
       </div>
     </div>
   );

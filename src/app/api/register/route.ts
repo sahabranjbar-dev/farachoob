@@ -1,18 +1,29 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+
+const registerSchema = z
+  .object({
+    name: z.string().min(1, "نام الزامی است"),
+    email: z.string().email("ایمیل نامعتبر است"),
+    password: z.string().min(6, "رمز عبور باید حداقل 6 کاراکتر باشد"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "رمز عبور و تکرار آن باید یکسان باشند",
+    path: ["confirmPassword"], // خطا را به confirmPassword نسبت می‌دهد
+  });
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    const body = await req.json();
 
-    if (!name || !email || !password) {
-      return NextResponse.json(
-        { message: "لطفا همه فیلدها را کامل کنید." },
-        { status: 400 }
-      );
-    }
+    // اعتبارسنجی ورودی
+    const { name, email, password, confirmPassword } =
+      registerSchema.parse(body);
 
+    // چک کردن ایمیل تکراری
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
@@ -21,28 +32,30 @@ export async function POST(req: Request) {
       );
     }
 
+    // رمزنگاری پسورد
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // پیدا کردن رول پیش‌فرض "مشتری"
-    const customerRole = await prisma.role.findFirst({
-      where: { englishTitle: "customer" }, // یا می‌تونی با farsiTitle جستجو کنی
+    // پیدا کردن رول پیش‌فرض customer
+    const customerRole = await prisma.role.findUnique({
+      where: { englishTitle: "customer" },
     });
 
     if (!customerRole) {
       return NextResponse.json(
-        { message: "نقش مشتری در دیتابیس پیدا نشد." },
+        { message: "نقش پیش‌فرض یافت نشد. لطفا با مدیر سیستم تماس بگیرید." },
         { status: 500 }
       );
     }
 
-    // ساخت یوزر با رول پیش‌فرض
     await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        roles: {
-          create: [{ roleId: customerRole.id }],
+        role: {
+          connect: {
+            id: customerRole.id,
+          },
         },
       },
     });
@@ -53,6 +66,15 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error("Registration Error:", error);
+
+    // اگر خطای Zod باشه
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { message: error.errors.map((e) => e.message).join(", ") },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { message: "مشکلی در سرور پیش آمده است." },
       { status: 500 }

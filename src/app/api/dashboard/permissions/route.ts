@@ -1,12 +1,64 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+
+    // فیلترها
+    const name = searchParams.get("name") || undefined;
+    const description = searchParams.get("description") || undefined;
+
+    // پجینیشن
+    const page = Number(searchParams.get("page")) || 1;
+    const pageSize = Number(searchParams.get("pageSize")) || 10;
+
+    // سورت
+    const sortBy = searchParams.get("sortBy") || "createdAt";
+    const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
+
+    // فیلترها
+    const filters = {
+      AND: [
+        name ? { name: { contains: name } } : {},
+        description ? { description: { contains: description } } : {},
+      ],
+    };
+
+    // گرفتن تعداد کل
+    const totalItems = await prisma.permission.count({ where: filters });
+
     const permissions = await prisma.permission.findMany({
-      orderBy: { id: "asc" },
+      where: filters,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { [sortBy]: sortOrder },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updateAt: true,
+        roles: { select: { role: true, roleId: true } },
+      },
     });
-    return NextResponse.json(permissions);
+
+    const permissionData = permissions.map((permission, index) => ({
+      rowNumber: (page - 1) * pageSize + index + 1,
+      id: permission.id,
+      englishTitle: permission.name,
+      farsiTitle: permission.description,
+      createdAt: permission.createdAt,
+      updateAt: permission.updateAt,
+      roles: permission.roles,
+    }));
+    return NextResponse.json({
+      resultList: permissionData,
+      totalItems,
+      page,
+      pageSize,
+      totalPages: Math.ceil(totalItems / pageSize),
+    });
   } catch (error) {
     return NextResponse.json(
       { message: "خطا در دریافت دسترسی‌ها" },
@@ -97,24 +149,24 @@ export async function PUT(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const idParam = searchParams.get("id");
-    if (!idParam) {
-      return NextResponse.json(
-        { message: "شناسه دسترسی لازم است" },
-        { status: 400 }
-      );
-    }
-    const id = parseInt(idParam, 10);
+// export async function DELETE(request: Request) {
+//   try {
+//     const { searchParams } = new URL(request.url);
+//     const idParam = searchParams.get("id");
+//     if (!idParam) {
+//       return NextResponse.json(
+//         { message: "شناسه دسترسی لازم است" },
+//         { status: 400 }
+//       );
+//     }
+//     const id = parseInt(idParam, 10);
 
-    await prisma.permission.delete({
-      where: { id },
-    });
+//     await prisma.permission.delete({
+//       where: { id },
+//     });
 
-    return NextResponse.json({ message: "دسترسی با موفقیت حذف شد" });
-  } catch (error) {
-    return NextResponse.json({ message: "خطا در حذف دسترسی" }, { status: 500 });
-  }
-}
+//     return NextResponse.json({ message: "دسترسی با موفقیت حذف شد" });
+//   } catch (error) {
+//     return NextResponse.json({ message: "خطا در حذف دسترسی" }, { status: 500 });
+//   }
+// }

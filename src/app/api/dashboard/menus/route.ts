@@ -8,20 +8,21 @@ export async function GET() {
     orderBy: { createdAt: "asc" },
   });
 
-  return NextResponse.json(menus);
+  return NextResponse.json({
+    resultList: menus,
+  });
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { title, href, icon, permissionId, status } = body;
+    const { title, href, icon, permissionId, status } = await request.json();
 
-    if (!title || !href || !permissionId) {
-      return NextResponse.json(
-        { message: "عنوان، آدرس و شناسه دسترسی الزامی است." },
-        { status: 400 }
-      );
-    }
+    // if (!title || !href || !permissionId) {
+    //   return NextResponse.json(
+    //     { message: "عنوان، آدرس و شناسه دسترسی الزامی است." },
+    //     { status: 400 }
+    //   );
+    // }
 
     const menu = await prisma.menu.create({
       data: {
@@ -71,24 +72,24 @@ export async function PUT(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const idParam = searchParams.get("id");
-    if (!idParam) {
-      return NextResponse.json(
-        { message: "شناسه منو لازم است." },
-        { status: 400 }
-      );
-    }
-    const id = parseInt(idParam, 10);
+// export async function DELETE(request: Request) {
+//   try {
+//     const { searchParams } = new URL(request.url);
+//     const idParam = searchParams.get("id");
+//     if (!idParam) {
+//       return NextResponse.json(
+//         { message: "شناسه منو لازم است." },
+//         { status: 400 }
+//       );
+//     }
+//     const id = parseInt(idParam, 10);
 
-    await prisma.menu.delete({
-      where: { id },
-    });
+//     await prisma.menu.delete({
+//       where: { id },
+//     });
 
-    return NextResponse.json({ message: "منو با موفقیت حذف شد." });
-  } catch (error) {
-    return NextResponse.json({ message: "خطا در حذف منو" }, { status: 500 });
-  }
-}
+//     return NextResponse.json({ message: "منو با موفقیت حذف شد." });
+//   } catch (error) {
+//     return NextResponse.json({ message: "خطا در حذف منو" }, { status: 500 });
+//   }
+// }
