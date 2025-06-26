@@ -13,6 +13,12 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const url = new URLSearchParams();
 
+  if (!session) {
+    redirect({
+      href: "/auth/login",
+      locale: "fa",
+    });
+  }
   redirect({
     href: `/dashboard/${session?.user.role}`,
     locale: "fa",

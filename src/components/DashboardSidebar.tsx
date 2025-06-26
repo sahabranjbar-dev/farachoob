@@ -32,11 +32,14 @@ interface Props {
 }
 
 export function DashboardSidebar({ user }: Props) {
-  const { data: menuItems = [], isLoading } = useSWR(
-    "/api/dashboard/sidebarMenu",
-    fetcher,
-    { revalidateOnFocus: false, revalidateOnReconnect: false }
-  );
+  const {
+    data: menuItems = [],
+    isLoading,
+    isValidating,
+  } = useSWR("/api/dashboard/sidebarMenu", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   const session = useSession();
   const pathname = usePathname();
@@ -82,7 +85,7 @@ export function DashboardSidebar({ user }: Props) {
           </Link>
 
           {/* منوهای داینامیک */}
-          {false ? (
+          {isValidating || isLoading ? (
             <div>
               <Skeleton className="w-[90%] h-8 m-2 p-2" />
               <Skeleton className="w-[90%] h-8 m-2 p-2" />

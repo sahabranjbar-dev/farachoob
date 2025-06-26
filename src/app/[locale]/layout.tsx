@@ -22,6 +22,7 @@ const myFont = LocalFont({
       style: "normal",
     },
   ],
+  display: "swap",
 });
 
 export const metadata = {
@@ -115,7 +116,7 @@ export default async function LocaleLayout({
   const session = await getServerSession(authOptions);
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
-      <body className={`${myFont.className}`} style={myFont.style}>
+      <body className={`${myFont.className}`}>
         <SessionProviderWrapper session={session}>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <ThemeProvider attribute="class" defaultTheme="system">

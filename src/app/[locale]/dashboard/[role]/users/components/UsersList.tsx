@@ -1,10 +1,9 @@
-"use client";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
 import React, { useMemo } from "react";
 
-const MenusList = () => {
+const UsersList = () => {
   const columns = useMemo<ITableColumns[]>(
     () => [
       {
@@ -12,30 +11,24 @@ const MenusList = () => {
         title: "ردیف",
       },
       {
-        field: "title",
-        title: "عنوان",
+        field: "name",
+        title: "نام کاربر",
       },
       {
-        field: "href",
-        title: "آدرس",
+        field: "email",
+        title: "ایمیل",
       },
       {
-        field: "icon",
-        title: "آیکن",
+        field: "role",
+        title: "نقش",
       },
       {
-        field: "permission",
+        field: "createdAt",
+        title: "تاریخ ثبت",
+      },
+      {
+        field: "",
         title: "دسترسی",
-        render(v, row, meta) {
-          return v?.description;
-        },
-      },
-      {
-        field: "status",
-        title: "وضعیت",
-        render(v, row, meta) {
-          return v ? "فعال" : "غیرفعال";
-        },
       },
       {
         field: "id",
@@ -51,4 +44,4 @@ const MenusList = () => {
   );
 };
 
-export default MenusList;
+export default UsersList;

@@ -5,68 +5,141 @@ import { cn } from "../../lib/utils";
 import { ITable, ITableColumns } from "../../types/table";
 import { useList } from "../../container/ListContainer/ListContainer";
 import { Skeleton } from "./skeleton";
-
+import { AlertTriangle } from "lucide-react";
+import PaginationWrapper from "../Pagination";
 function Table({
   className,
   columns,
 }: ITable & Omit<React.ComponentProps<"table">, "loading">) {
-  const { data: listData, loading, error } = useList();
-  console.log(listData, "listData");
+  const { data, loading, error, fetch } = useList();
+
+  const listData = data?.resultList;
+  const renderCellContent = (
+    column: ITableColumns,
+    item: any,
+    rowIndex: number
+  ) => {
+    const value = item?.[column.field];
+
+    if (typeof column.render === "function") {
+      try {
+        return column.render(value, item, { index: rowIndex });
+      } catch (e) {
+        console.error("render error in column:", column.field, e);
+        return "خطا در رندر";
+      }
+    }
+
+    if (column.hasDateFormatter && value) {
+      try {
+        return new Date(value).toLocaleDateString("fa");
+      } catch {
+        return "تاریخ نامعتبر";
+      }
+    }
+
+    return value ?? "---";
+  };
+
+  const renderLoadingState = () => (
+    <TableRow>
+      {columns.map((column, i) => (
+        <TableCell
+          key={i}
+          style={{
+            width: column.width || "50px",
+            maxWidth: column.width || "50px",
+          }}
+        >
+          <Skeleton className="h-5 w-full bg-gray-300/50 rounded" />
+        </TableCell>
+      ))}
+    </TableRow>
+  );
+
+  const renderDataRows = () =>
+    listData?.map((item: any, index: number) => (
+      <TableRow key={index}>
+        {columns.map((column) => (
+          <TableCell
+            key={column.field}
+            className="text-center truncate px-2 py-3"
+            style={{
+              width: column.width || "50px",
+              maxWidth: column.width || "50px",
+            }}
+          >
+            {renderCellContent(column, item, index)}
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
 
   return (
-    <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto"
-    >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
-      >
+    <div className="relative w-full overflow-x-auto border rounded-md shadow-sm">
+      <table className={cn("w-full text-sm caption-bottom ", className)}>
         <TableHeader>
-          <TableRow>
-            {columns.map((column) => {
-              return (
-                <TableHead
-                  key={column.field}
-                  className="text-center bg-gray-500 text-neutral-100"
-                >
-                  {column?.title}
-                </TableHead>
-              );
-            })}
+          <TableRow className="bg-muted/30">
+            {columns.map((column) => (
+              <TableHead
+                key={column.field}
+                className="text-center px-2 py-3 whitespace-nowrap font-semibold text-gray-800"
+                style={{
+                  width: column.width || "50px",
+                  maxWidth: column.width || "50px",
+                }}
+              >
+                {column.title}
+              </TableHead>
+            ))}
           </TableRow>
         </TableHeader>
-        <TableBody>
+
+        <TableBody
+          className="[&>tr>td]:whitespace-nowrap [&>tr>td]:truncate [&>tr>td]:text-ellipsis"
+          style={{ minHeight: "220px", display: "table-row-group" }}
+        >
           {loading ? (
-            <>
-              <Skeleton className="w-full p-2 m-2 h-12" />
-              <Skeleton className="w-full p-2 m-2 h-12" />
-              <Skeleton className="w-full p-2 m-2 h-12" />
-              <Skeleton className="w-full p-2 m-2 h-12" />
-            </>
+            Array.from({ length: 4 }).map((_, i) => (
+              <React.Fragment key={i}>{renderLoadingState()}</React.Fragment>
+            ))
+          ) : error ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="text-center py-6">
+                <div className="flex flex-col items-center gap-2 text-red-600">
+                  <AlertTriangle className="w-8 h-8" />
+                  <p className="text-sm font-medium">
+                    متاسفانه مشکلی در دریافت اطلاعات رخ داده است.
+                  </p>
+                </div>
+              </TableCell>
+            </TableRow>
           ) : (
-            listData?.map((item: any) => {
-              // console.log(item, "item");
-
-              return (
-                <TableRow key={item.field}>
-                  {columns.map((column: ITableColumns) => {
-                    // console.log(item[column.field], column.title, "columns");
-
-                    return (
-                      <TableCell key={column.field} className="text-center">
-                        {item?.id && column?.render
-                          ? column?.render?.(item?.[column?.field])
-                          : item?.[column?.field] ?? "---"}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })
+            <>{renderDataRows()}</>
           )}
         </TableBody>
-        <TableFooter></TableFooter>
+
+        {!error && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={columns.length}>
+                <PaginationWrapper
+                  loading={loading ?? true}
+                  currentPage={data?.page}
+                  totalCount={data?.totalItems}
+                  totalPages={data?.totalPages}
+                  onPageChange={(page) => {
+                    fetch?.({
+                      inputParams: {
+                        page,
+                      },
+                    });
+                  }}
+                />
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </table>
     </div>
   );

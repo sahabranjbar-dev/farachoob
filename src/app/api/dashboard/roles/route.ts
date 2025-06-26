@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     };
 
     // گرفتن تعداد کل
-    const totalItems = await prisma.permission.count({ where: filters });
+    const totalItems = await prisma.role.count({ where: filters });
 
     const roles = await prisma.role.findMany({
       where: filters,

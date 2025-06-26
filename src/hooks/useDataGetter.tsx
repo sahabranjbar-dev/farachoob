@@ -7,6 +7,13 @@ import {
   useDataGetterInputs,
   useDataGetterOuput,
 } from "../types/useDataGetter";
+import { toast } from "sonner";
+
+interface State<T> {
+  data: T[] | null;
+  loading: boolean;
+  error: any;
+}
 
 export default function useDataGetter<T>({
   url,
@@ -15,44 +22,49 @@ export default function useDataGetter<T>({
   immediatelyFetch = true,
   body,
 }: useDataGetterInputs): useDataGetterOuput<T> {
-  const [data, setData] = useState<T[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>(null);
+  const [state, setState] = useState<State<T>>({
+    data: null,
+    loading: false,
+    error: null,
+  });
 
   const fetchData = useCallback(
-    async ({ inputUrl, inputBody, inputParams }: IFetchData) => {
+    async ({ inputUrl, inputBody, inputParams }: IFetchData = {}) => {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+
       try {
-        setLoading(true);
         const response = await API({
           url: inputUrl || url,
           method,
-          params: { ...inputParams, ...params },
-          data: JSON.stringify({ ...inputBody, ...body }),
+          params: { ...params, ...inputParams },
+          data: JSON.stringify({ ...body, ...inputBody }),
         });
 
-        const result = response.data.resultList;
-        setData(result);
+        const result = response.data;
+        setState({ data: result, loading: false, error: null });
         return result;
-      } catch (err) {
-        setError(err);
-        throw err;
-      } finally {
-        setLoading(false);
+      } catch (err: any) {
+        setState({ data: null, loading: false, error: err });
+
+        toast.error(err?.response?.data?.message || "خطایی رخ داده است", {
+          position: "bottom-center",
+          closeButton: true,
+        });
       }
     },
-    [url, method, params, body, API]
+    [url, method, params, body]
   );
 
   useEffect(() => {
     if (immediatelyFetch) {
-      fetchData({});
+      fetchData();
     }
   }, [fetchData, immediatelyFetch]);
 
   return {
-    data,
-    loading,
-    error,
+    data: state.data ?? [],
+    loading: state.loading,
+    error: state.error,
     fetch: fetchData,
   };
 }

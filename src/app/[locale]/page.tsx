@@ -5,8 +5,9 @@ import MakeTrust from "@/components/MakeTrust";
 import NewestProducts from "@/components/NewestProducts";
 import Services from "@/components/Services";
 import Slider from "@/components/Slider";
+import { API } from "@/configs/API";
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useLayoutEffect, useMemo } from "react";
 
 export default function HomePage() {
   const t = useTranslations("HomePage");

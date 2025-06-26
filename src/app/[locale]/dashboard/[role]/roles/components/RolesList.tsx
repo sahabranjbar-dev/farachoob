@@ -4,7 +4,7 @@ import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
 import React, { useMemo } from "react";
 
-const MenusList = () => {
+const RolesList = () => {
   const columns = useMemo<ITableColumns[]>(
     () => [
       {
@@ -12,29 +12,36 @@ const MenusList = () => {
         title: "ردیف",
       },
       {
-        field: "title",
-        title: "عنوان",
+        field: "farsiTitle",
+        title: "عنوان فارسی",
       },
       {
-        field: "href",
-        title: "آدرس",
+        field: "englishTitle",
+        title: "عنوان انگلیسی",
       },
       {
-        field: "icon",
-        title: "آیکن",
-      },
-      {
-        field: "permission",
-        title: "دسترسی",
+        field: "permissions",
+        title: "دسترسی‌های این نقش",
         render(v, row, meta) {
-          return v?.description;
+          return v?.length
+            ? v?.map((item: any) => item?.permission?.description).join(",")
+            : "---";
         },
+      },
+      {
+        field: "description",
+        title: "توضیحات",
+        render: (v) => (v ? v : "---"),
       },
       {
         field: "status",
         title: "وضعیت",
         render(v, row, meta) {
-          return v ? "فعال" : "غیرفعال";
+          return v ? (
+            <div className="text-green-600">فعال</div>
+          ) : (
+            <div className="text-red-600">غیرفعال</div>
+          );
         },
       },
       {
@@ -51,4 +58,4 @@ const MenusList = () => {
   );
 };
 
-export default MenusList;
+export default RolesList;

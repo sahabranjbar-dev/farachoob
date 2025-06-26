@@ -6,8 +6,9 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
-import { Tooltip, TooltipContent } from "./ui/tooltip";
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Skeleton } from "./ui/skeleton";
 
 interface PaginationProps {
   currentPage: number;
@@ -15,17 +16,19 @@ interface PaginationProps {
   totalCount?: number;
   onPageChange: (page: number) => void;
   totalCountName?: string;
+  loading: boolean;
 }
 
 const PaginationWrapper = ({
   currentPage,
-  totalPages,
+  totalPages = 1,
   totalCount,
   onPageChange,
+  loading,
   totalCountName = "مورد",
 }: PaginationProps) => {
   const renderPageNumbers = () => {
-    if (totalPages && totalPages <= 7) {
+    if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
         <button
           key={page}
@@ -44,9 +47,8 @@ const PaginationWrapper = ({
 
     const pages = [];
     const leftBound = Math.max(2, currentPage - 1);
-    const rightBound = Math.min((totalPages ?? 1) - 1, currentPage + 1);
+    const rightBound = Math.min(totalPages - 1, currentPage + 1);
 
-    // First Page
     pages.push(
       <button
         key={1}
@@ -62,7 +64,6 @@ const PaginationWrapper = ({
       </button>
     );
 
-    // Left Ellipsis
     if (leftBound > 2) {
       pages.push(
         <span key="left-ellipsis" className="px-2 text-gray-400">
@@ -71,7 +72,6 @@ const PaginationWrapper = ({
       );
     }
 
-    // Middle Pages
     for (let page = leftBound; page <= rightBound; page++) {
       pages.push(
         <button
@@ -89,8 +89,7 @@ const PaginationWrapper = ({
       );
     }
 
-    // Right Ellipsis
-    if (rightBound < (totalPages ?? 1) - 1) {
+    if (rightBound < totalPages - 1) {
       pages.push(
         <span key="right-ellipsis" className="px-2 text-gray-400">
           ...
@@ -98,125 +97,133 @@ const PaginationWrapper = ({
       );
     }
 
-    // Last Page
-    if (totalPages ? totalPages >= 0 : false) {
-      pages.push(
-        <button
-          key={totalPages}
-          onClick={() => totalPages && onPageChange(totalPages)}
-          className={cn(
-            "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
-            currentPage === totalPages
-              ? "bg-orange-500 text-white border-orange-500"
-              : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
-          )}
-        >
-          {totalPages}
-        </button>
-      );
-    }
+    pages.push(
+      <button
+        key={totalPages}
+        onClick={() => onPageChange(totalPages)}
+        className={cn(
+          "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
+          currentPage === totalPages
+            ? "bg-orange-500 text-white border-orange-500"
+            : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
+        )}
+      >
+        {totalPages}
+      </button>
+    );
 
     return pages;
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 border-t border-gray-100 mt-4">
-      {/* اطلاعات صفحه */}
-      <div className="text-sm text-gray-600">
-        صفحه <span className="font-bold text-orange-500">{currentPage}</span> از{" "}
-        <span className="font-bold text-orange-500">{totalPages}</span> - مجموع{" "}
-        <span className="font-bold text-orange-500">{totalCount}</span>{" "}
-        {totalCountName}
-      </div>
+    <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 border-t border-gray-100 mt-4 w-full">
+      {loading ? (
+        <div className="flex items-center">
+          <Skeleton className="w-16 h-6 bg-gray-300/50 rounded ml-2" />
+          <Skeleton className="w-20 h-6 bg-gray-300/50 rounded" />
+        </div>
+      ) : (
+        <div className="text-sm text-gray-600">
+          صفحه <span className="font-bold text-orange-500">{currentPage}</span>{" "}
+          از <span className="font-bold text-orange-500">{totalPages}</span> –
+          مجموع{" "}
+          <span className="font-bold text-orange-500">{totalCount ?? 0}</span>{" "}
+          {totalCountName}
+        </div>
+      )}
 
-      {/* دکمه‌های صفحه‌بندی */}
       <div className="flex items-center gap-1">
-        {/* First Page */}
-        <Tooltip>
-          <TooltipTrigger>
-            <button
-              onClick={() => currentPage > 1 && onPageChange(1)}
-              disabled={currentPage === 1}
-              className={cn(
-                "rounded-lg p-2 border border-gray-200 transition-colors",
-                currentPage === 1
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:bg-orange-100 hover:text-orange-500"
-              )}
-            >
-              <ChevronsRight className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>صفحه‌ی اول</TooltipContent>
-        </Tooltip>
+        {loading ? (
+          <div className="flex items-center">
+            <Skeleton className="w-9 h-8 bg-gray-300/50 rounded ml-1" />
+            <Skeleton className="w-9 h-8 bg-gray-300/50 rounded ml-1" />
+            <Skeleton className="w-9 h-8 bg-gray-300/50 rounded ml-1" />
+            <Skeleton className="w-9 h-8 bg-gray-300/50 rounded ml-1" />
+            <Skeleton className="w-9 h-8 bg-gray-300/50 rounded " />
+          </div>
+        ) : (
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => currentPage > 1 && onPageChange(1)}
+                  disabled={currentPage === 1}
+                  className={cn(
+                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    currentPage === 1
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "hover:bg-orange-100 hover:text-orange-500"
+                  )}
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>رفتن به اولین صفحه</TooltipContent>
+            </Tooltip>
 
-        {/* Previous Page */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() =>
+                    currentPage > 1 && onPageChange(currentPage - 1)
+                  }
+                  disabled={currentPage === 1}
+                  className={cn(
+                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    currentPage === 1
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "hover:bg-orange-100 hover:text-orange-500"
+                  )}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>صفحه قبل</TooltipContent>
+            </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger>
-            <button
-              onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={cn(
-                "rounded-lg p-2 border border-gray-200 transition-colors",
-                currentPage === 1
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:bg-orange-100 hover:text-orange-500"
-              )}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>صفحه‌ی بعد</TooltipContent>
-        </Tooltip>
+            {renderPageNumbers()}
 
-        {renderPageNumbers()}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() =>
+                    currentPage < totalPages && onPageChange(currentPage + 1)
+                  }
+                  disabled={currentPage === totalPages}
+                  className={cn(
+                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    currentPage === totalPages
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "hover:bg-orange-100 hover:text-orange-500"
+                  )}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>صفحه بعد</TooltipContent>
+            </Tooltip>
 
-        {/* Next Page */}
-        <Tooltip>
-          <TooltipTrigger>
-            <button
-              onClick={() =>
-                totalPages !== undefined &&
-                currentPage < totalPages &&
-                onPageChange(currentPage + 1)
-              }
-              disabled={totalPages === undefined || currentPage === totalPages}
-              className={cn(
-                "rounded-lg p-2 border border-gray-200 transition-colors",
-                totalPages === undefined || currentPage === totalPages
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:bg-orange-100 hover:text-orange-500"
-              )}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>صفحه‌ی قبل</TooltipContent>
-        </Tooltip>
-
-        {/* Last Page */}
-        <Tooltip>
-          <TooltipTrigger>
-            <button
-              onClick={() =>
-                totalPages !== undefined &&
-                currentPage < totalPages &&
-                onPageChange(totalPages)
-              }
-              disabled={totalPages === undefined || currentPage === totalPages}
-              className={cn(
-                "rounded-lg p-2 border border-gray-200 transition-colors",
-                totalPages === undefined || currentPage === totalPages
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:bg-orange-100 hover:text-orange-500"
-              )}
-            >
-              <ChevronsLeft className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>صفحه‌ی آخر</TooltipContent>
-        </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() =>
+                    currentPage < totalPages && onPageChange(totalPages)
+                  }
+                  disabled={currentPage === totalPages}
+                  className={cn(
+                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    currentPage === totalPages
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "hover:bg-orange-100 hover:text-orange-500"
+                  )}
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>رفتن به آخرین صفحه</TooltipContent>
+            </Tooltip>
+          </>
+        )}
       </div>
     </div>
   );
