@@ -9,7 +9,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-orange-500 text-white hover:bg-orange-400",
+        primary:
+          "bg-orange-500 text-white hover:bg-orange-400 disabled:bg-gray-500 disabled:cursor-progress",
         default:
           "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         destructive:
@@ -41,6 +42,7 @@ interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   tooltip?: React.ReactNode;
+  left?: React.ReactNode;
 }
 
 function Button({
@@ -49,6 +51,8 @@ function Button({
   size,
   asChild = false,
   tooltip,
+  left,
+  children,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
@@ -57,7 +61,10 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {left}
+      {children}
+    </Comp>
   );
 
   if (tooltip) {

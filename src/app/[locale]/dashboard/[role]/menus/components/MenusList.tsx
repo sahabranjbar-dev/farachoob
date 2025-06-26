@@ -1,4 +1,5 @@
 "use client";
+import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
@@ -40,6 +41,9 @@ const MenusList = () => {
       {
         field: "id",
         title: "عملیات",
+        render: (v) => {
+          return <RowFormButtons id={v} key={v} />;
+        },
       },
     ],
     []

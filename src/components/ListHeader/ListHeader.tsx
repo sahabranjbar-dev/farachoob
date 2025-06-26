@@ -19,7 +19,6 @@ const ListHeader = ({
   const router = useRouter();
   const pathname = usePathname();
   const pathType = pathname.split("/")[pathname.split("/").length - 1];
-  const params = new URLSearchParams();
 
   return (
     <div>

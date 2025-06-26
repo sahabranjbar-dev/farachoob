@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import BreadcrumbTabs from "@/components/BreadcrumbTabs/BreadcrumbTabs";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -30,6 +31,10 @@ export default async function DashboardLayout({
           <header className="border-b p-4 flex items-center justify-between bg-white dark:bg-gray-800 transition-colors">
             <div className="flex items-center gap-4">
               <SidebarTrigger />
+
+              <div>
+                <BreadcrumbTabs />
+              </div>
             </div>
 
             <div className="flex items-center gap-2">

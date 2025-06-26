@@ -6,6 +6,8 @@ export interface useDataGetterInputs {
   params?: any;
   body?: any;
   immediatelyFetch?: boolean;
+  onSuccess?: (data?: any) => void;
+  onFailure?: (error?: any) => void;
 }
 
 export interface IFetchData {
@@ -15,8 +17,8 @@ export interface IFetchData {
 }
 
 export interface useDataGetterOuput<T = any> {
-  data?: T[];
+  data?: T | null;
   loading?: boolean;
-  fetch?: ({ inputUrl, inputBody, inputParams }: IFetchData) => void;
+  fetch?: ({ inputUrl, inputBody, inputParams }: IFetchData) => Promise<T>;
   error?: any;
 }
