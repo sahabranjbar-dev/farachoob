@@ -20,7 +20,6 @@ interface Props {
   onFilterChange: (filters: Record<string, string>) => void;
   roleOptions: { value: string; label: string }[];
   isOpen: boolean;
-  fetchRoles: () => void;
 }
 
 interface FilterValues {
@@ -35,7 +34,6 @@ export default function UserFilter({
   onFilterChange,
   roleOptions,
   isOpen,
-  fetchRoles,
 }: Props) {
   const { register, handleSubmit, control, reset, watch } =
     useForm<FilterValues>({
@@ -64,9 +62,9 @@ export default function UserFilter({
     onFilterChange({});
   };
 
-  useEffect(() => {
-    fetchRoles();
-  }, []);
+  // useEffect(() => {
+  //   fetchRoles();
+  // }, []);
   return (
     <div className="bg-muted/50">
       <AnimatePresence>

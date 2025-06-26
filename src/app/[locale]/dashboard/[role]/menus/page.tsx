@@ -22,6 +22,10 @@ import {
 import { Trash2 } from "lucide-react";
 import MenuForm from "./MenuForm";
 import PaginationWrapper from "@/components/Pagination";
+import useDataGetter from "@/hooks/useDataGetter";
+import ListContainer from "@/container/ListContainer/ListContainer";
+import MenusHeader from "./components/MenusHeader";
+import MenusList from "./components/MenusList";
 
 type Permission = {
   id: number;
@@ -59,25 +63,25 @@ export default function MenusPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // دریافت منوها
-  async function fetchMenus() {
-    setLoading(true);
-    const res = await fetch("/api/dashboard/menus");
-    const data = await res.json();
-    setData(data);
-    setLoading(false);
-  }
+  // async function fetchMenus() {
+  //   setLoading(true);
+  //   const res = await fetch("/api/dashboard/menus");
+  //   const data = await res.json();
+  //   setData(data);
+  //   setLoading(false);
+  // }
 
-  useEffect(() => {
-    fetchMenus();
-  }, []);
+  // useEffect(() => {
+  //   fetchMenus();
+  // }, []);
   // حذف منو
-  async function handleDelete(id: number) {
-    if (!confirm("آیا از حذف این منو مطمئن هستید؟")) return;
-    await fetch(`/api/dashboard/menus?id=${id}`, {
-      method: "DELETE",
-    });
-    fetchMenus();
-  }
+  // async function handleDelete(id: number) {
+  //   if (!confirm("آیا از حذف این منو مطمئن هستید؟")) return;
+  //   await fetch(`/api/dashboard/menus?id=${id}`, {
+  //     method: "DELETE",
+  //   });
+  //   fetchMenus();
+  // }
 
   // باز کردن فرم و تنظیم حالت ویرایش یا افزودن
   function openEditForm(menu?: Menu) {
@@ -98,15 +102,20 @@ export default function MenusPage() {
   );
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">مدیریت منوها</h1>
         <Button onClick={() => openEditForm()} variant="primary">
           افزودن منو جدید
         </Button>
-      </div>
+      </div> */}
 
-      <Table>
-        <TableHeader>
+      <>
+        <ListContainer url="dashboard/menus">
+          <MenusHeader />
+          <MenusList />
+        </ListContainer>
+
+        {/* <TableHeader>
           <TableRow>
             {tableHeader.map((item) => {
               return (
@@ -116,8 +125,8 @@ export default function MenusPage() {
               );
             })}
           </TableRow>
-        </TableHeader>
-        <TableBody>
+        </TableHeader> */}
+        {/* <TableBody>
           {data?.resultList?.map((menu) => (
             <TableRow key={menu.id}>
               <TableCell>{menu.title}</TableCell>
@@ -150,15 +159,15 @@ export default function MenusPage() {
               </TableCell>
             </TableRow>
           )}
-        </TableBody>
-      </Table>
-      <PaginationWrapper
+        </TableBody> */}
+      </>
+      {/* <PaginationWrapper
         totalCount={data.totalItems}
         currentPage={currentPage}
         totalPages={data?.totalPages}
         onPageChange={(page) => setCurrentPage(page)}
         totalCountName="منو"
-      />
+      /> */}
 
       {/* Dialog for Add/Edit Form */}
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
@@ -183,7 +192,7 @@ export default function MenusPage() {
             }
             onSuccess={() => {
               setOpenDialog(false);
-              fetchMenus();
+              // fetchMenus();
             }}
           />
         </DialogContent>

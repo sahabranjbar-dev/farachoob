@@ -1,10 +1,18 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
+import { cn } from "../../lib/utils";
+import { ITable, ITableColumns } from "../../types/table";
+import { useList } from "../../container/ListContainer/ListContainer";
+import { Skeleton } from "./skeleton";
 
-import { cn } from "@/lib/utils"
+function Table({
+  className,
+  columns,
+}: ITable & Omit<React.ComponentProps<"table">, "loading">) {
+  const { data: listData, loading, error } = useList();
+  console.log(listData, "listData");
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div
       data-slot="table-container"
@@ -13,10 +21,55 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
       <table
         data-slot="table"
         className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
+      >
+        <TableHeader>
+          <TableRow>
+            {columns.map((column) => {
+              return (
+                <TableHead
+                  key={column.field}
+                  className="text-center bg-gray-500 text-neutral-100"
+                >
+                  {column?.title}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {loading ? (
+            <>
+              <Skeleton className="w-full p-2 m-2 h-12" />
+              <Skeleton className="w-full p-2 m-2 h-12" />
+              <Skeleton className="w-full p-2 m-2 h-12" />
+              <Skeleton className="w-full p-2 m-2 h-12" />
+            </>
+          ) : (
+            listData?.map((item: any) => {
+              // console.log(item, "item");
+
+              return (
+                <TableRow key={item.field}>
+                  {columns.map((column: ITableColumns) => {
+                    // console.log(item[column.field], column.title, "columns");
+
+                    return (
+                      <TableCell key={column.field} className="text-center">
+                        {item?.id && column?.render
+                          ? column?.render?.(item?.[column?.field])
+                          : item?.[column?.field] ?? "---"}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })
+          )}
+        </TableBody>
+        <TableFooter></TableFooter>
+      </table>
     </div>
-  )
+  );
 }
 
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
@@ -26,7 +79,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
       className={cn("[&_tr]:border-b", className)}
       {...props}
     />
-  )
+  );
 }
 
 function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
@@ -36,7 +89,7 @@ function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
       className={cn("[&_tr:last-child]:border-0", className)}
       {...props}
     />
-  )
+  );
 }
 
 function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
@@ -49,7 +102,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
@@ -62,7 +115,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableHead({ className, ...props }: React.ComponentProps<"th">) {
@@ -75,7 +128,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCell({ className, ...props }: React.ComponentProps<"td">) {
@@ -88,7 +141,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCaption({
@@ -101,7 +154,7 @@ function TableCaption({
       className={cn("text-muted-foreground mt-4 text-sm", className)}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -113,4 +166,4 @@ export {
   TableRow,
   TableCell,
   TableCaption,
-}
+};
