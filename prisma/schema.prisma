@@ -70,4 +70,35 @@ model Menu {
 
 }
 
+// schema.prisma
+model Product {
+  id             String    @id @default(cuid())
+  farsiTitle     String
+  englishTitle   String
+  price          Float
+  image          String?
+  stock          Int?
+  createdAt      DateTime  @default(now())
+  description    String?
+  colors         String[]
+  comments       String[]
+  brandId        String?
+  categoryId     String?
 
+  brand          Brand?    @relation(fields: [brandId], references: [id])
+  category       Category?  @relation(fields: [categoryId], references: [id])
+}
+
+model Brand {
+  id            String    @id @default(cuid())
+  farsiTitle    String
+  englishTitle  String
+  products      Product[]
+}
+
+model Category {
+  id            String    @id @default(cuid())
+  farsiTitle    String
+  englishTitle  String
+  products      Product[]
+}
