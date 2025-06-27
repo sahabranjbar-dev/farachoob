@@ -27,7 +27,7 @@ const MenusList = () => {
       {
         field: "permission",
         title: "دسترسی",
-        render(v, row, meta) {
+        render(v) {
           return v?.description;
         },
       },
@@ -41,8 +41,15 @@ const MenusList = () => {
       {
         field: "id",
         title: "عملیات",
-        render: (v) => {
-          return <RowFormButtons id={v} key={v} />;
+        render: (v, row) => {
+          return (
+            <RowFormButtons
+              id={v}
+              key={v}
+              deleterUrl={`/dashboard/menus/${v}`}
+              title={row.title}
+            />
+          );
         },
       },
     ],

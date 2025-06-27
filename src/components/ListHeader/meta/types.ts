@@ -1,7 +1,8 @@
-import { ElementType } from "react";
+import { ElementType, ReactElement, ReactNode } from "react";
 
 export interface IListHeader {
   hasRefresh?: boolean;
-  filter?: ElementType;
+  filter?: ReactElement;
   formPath?: string;
+  title?: string;
 }

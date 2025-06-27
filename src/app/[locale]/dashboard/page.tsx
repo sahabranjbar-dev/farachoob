@@ -1,26 +1,20 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+"use client";
 import { redirect } from "@/i18n/navigation";
+import { useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
 
-const roleRedirectMap: Record<string, string> = {
-  ADMIN: "/dashboard/admin",
-  MANAGER: "/dashboard/manager",
-  AGENT: "/dashboard/agent",
-  CUSTOMER: "/dashboard/customer",
-};
-
-export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  const url = new URLSearchParams();
-
+export default function DashboardPage() {
+  const session = useSession();
+  const locale = useLocale();
   if (!session) {
     redirect({
       href: "/auth/login",
-      locale: "fa",
+      locale,
     });
+    return;
   }
-  redirect({
-    href: `/dashboard/${session?.user.role}`,
-    locale: "fa",
+  return redirect({
+    href: `/dashboard/${session?.data?.user.role}`,
+    locale,
   });
 }

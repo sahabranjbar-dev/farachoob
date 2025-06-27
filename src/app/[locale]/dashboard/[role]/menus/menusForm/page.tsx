@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import useDataGetter from "@/hooks/useDataGetter";
 import useParams from "@/hooks/useParams";
-import { usetabular } from "@/hooks/useTabular";
+import useTabular from "@/hooks/useTabular";
 import { useRouter } from "@/i18n/navigation";
 import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -101,7 +101,7 @@ const MenusFormPage = () => {
       });
     });
   };
-  const { closeCurrentTab } = usetabular();
+  const { closeCurrentTab } = useTabular();
   return (
     <Card className="relative">
       {formDataLoading && (

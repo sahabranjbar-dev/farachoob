@@ -6,11 +6,9 @@ import MenusList from "./components/MenusList";
 
 export default function MenusPage() {
   return (
-    <div className="p-6 space-y-6">
-      <ListContainer url="dashboard/menus">
-        <MenusHeader />
-        <MenusList />
-      </ListContainer>
-    </div>
+    <ListContainer url="dashboard/menus">
+      <MenusHeader />
+      <MenusList />
+    </ListContainer>
   );
 }

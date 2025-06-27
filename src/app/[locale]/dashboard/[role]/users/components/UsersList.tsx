@@ -1,3 +1,6 @@
+"use client";
+
+import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
@@ -25,6 +28,7 @@ const UsersList = () => {
       {
         field: "createdAt",
         title: "تاریخ ثبت",
+        hasDateFormatter: true,
       },
       {
         field: "",
@@ -33,6 +37,16 @@ const UsersList = () => {
       {
         field: "id",
         title: "عملیات",
+        render: (v, row) => {
+          return (
+            <RowFormButtons
+              id={v}
+              deleterUrl={`/dashboard/users/${v}`}
+              title={row.name}
+              key={v}
+            />
+          );
+        },
       },
     ],
     []

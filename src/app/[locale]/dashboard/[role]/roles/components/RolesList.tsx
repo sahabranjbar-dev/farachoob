@@ -1,4 +1,5 @@
 "use client";
+import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
@@ -47,6 +48,16 @@ const RolesList = () => {
       {
         field: "id",
         title: "عملیات",
+        render: (v, row) => {
+          return (
+            <RowFormButtons
+              id={v}
+              deleterUrl={`/dashboard/roles/${v}`}
+              title={row.farsiTitle}
+              key={v}
+            />
+          );
+        },
       },
     ],
     []

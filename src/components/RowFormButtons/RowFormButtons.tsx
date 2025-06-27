@@ -1,10 +1,3 @@
-import React from "react";
-import { Button } from "../ui/button";
-import { PencilLine, Trash2 } from "lucide-react";
-import { IRowFormButtons } from "./meta/types";
-import useParams from "@/hooks/useParams";
-import { useRouter } from "next/navigation";
-import { usePathname } from "@/i18n/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,28 +10,48 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import useDataGetter from "@/hooks/useDataGetter";
-import { toast } from "sonner";
-import { usetabular } from "@/hooks/useTabular";
+import { usePathname } from "@/i18n/navigation";
+import { PencilLine, Trash2 } from "lucide-react";
+import { IRowFormButtons } from "./meta/types";
+import useTabular from "@/hooks/useTabular";
+import { useList } from "@/container/ListContainer/ListContainer";
 
-const RowFormButtons = ({ id, formPath }: IRowFormButtons) => {
-  const { closeCurrentTab } = usetabular();
-  const { setActiveParam } = useParams();
-  const router = useRouter();
+const RowFormButtons = ({
+  id,
+  formPath,
+  deleterUrl,
+  title,
+}: IRowFormButtons) => {
+  const { open } = useTabular();
+
   const pathname = usePathname();
+
+  const { fetch: refresh } = useList();
+
   const pathType = pathname.split("/")[pathname.split("/").length - 1];
-  const { data, fetch: deleteMenu } = useDataGetter({
-    url: `/dashboard/menus/${id}`,
+
+  const { fetch: deleteMenu } = useDataGetter({
+    url: deleterUrl,
+    method: "DELETE",
     immediatelyFetch: false,
   });
   const deleteMenuHandler = () => {
-    deleteMenu?.({});
+    deleteMenu?.({}).then(() => {
+      refresh?.({});
+    });
   };
   return (
     <div className="flex justify-center items-center gap-4">
       <PencilLine
         className="text-blue-500 cursor-pointer hover:bg-blue-100 transition-colors duration-300 rounded-full h-6 w-6 p-2 box-content"
         onClick={() => {
-          router.push(`${pathname}/${pathType}Form?id=${id}&pageType=EDIT`);
+          const path = formPath
+            ? `/${pathType}/${formPath}`
+            : `/${pathType}/${pathType}Form`;
+          open(path, `فرم ویرایش ${title ?? ""}`, {
+            pageType: "EDIT",
+            id,
+          });
         }}
       />
 
@@ -50,14 +63,12 @@ const RowFormButtons = ({ id, formPath }: IRowFormButtons) => {
           <AlertDialogHeader>
             <AlertDialogTitle>آیا از حذف مطمئن هستید؟</AlertDialogTitle>
             <AlertDialogDescription>
-              این عملیات قابل بازگشت نیست. با انجام آن، منو به صورت دائمی حذف
+              این عملیات قابل بازگشت نیست. با انجام آن، آیتم به صورت دائمی حذف
               خواهد شد و داده‌های مربوط به آن از سیستم پاک می‌شوند.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={closeCurrentTab}>
-              انصراف
-            </AlertDialogCancel>
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
             <AlertDialogAction
               className="variant-primary"
               onClick={deleteMenuHandler}

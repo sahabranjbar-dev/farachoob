@@ -1,3 +1,4 @@
+import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
@@ -30,15 +31,26 @@ const PermissionsList = () => {
       {
         field: "createdAt",
         title: "تاریخ ایجاد",
-        render: (v) => {
-          const date = new Date(v);
-          return date.toLocaleDateString("fa");
-        },
+        hasDateFormatter: true,
       },
       {
         field: "updateAt",
         title: "تاریخ ویرایش",
         hasDateFormatter: true,
+      },
+      {
+        field: "id",
+        title: "عملیات",
+        render: (v, row) => {
+          return (
+            <RowFormButtons
+              id={v}
+              deleterUrl={`/dashboard/permissions/${v}`}
+              title={row.farsiTitle}
+              key={v}
+            />
+          );
+        },
       },
     ],
     []

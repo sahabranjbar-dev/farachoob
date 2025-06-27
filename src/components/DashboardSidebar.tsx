@@ -8,7 +8,6 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { usetabular } from "@/hooks/useTabular";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Role } from "@/types/dashboard";
@@ -19,6 +18,7 @@ import { signOut, useSession } from "next-auth/react";
 import useSWR from "swr";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import useTabular from "@/hooks/useTabular";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -41,42 +41,74 @@ export function DashboardSidebar({ user }: Props) {
     revalidateOnReconnect: false,
   });
 
-  const session = useSession();
   const pathname = usePathname();
-  const role = session.data?.user.role;
-  const router = useRouter();
+  const { open } = useTabular();
+  const role = useSession().data?.user.role;
 
-  const { open } = usetabular();
+  const isRouteActive = (href: string) => pathname.includes(href);
+
+  const renderMenuItem = (item: any, index: number) => {
+    const isActive = isRouteActive(item.href);
+    const IconComponent = (Icons as any)[item.icon] || Icons.Package;
+
+    return (
+      <Button
+        key={index}
+        variant="ghost"
+        onClick={() => open(item.href, item.title)}
+        className={cn(
+          "relative flex items-center justify-start gap-3 p-4 m-2 rounded-lg text-sm transition-colors",
+          isActive
+            ? "bg-orange-500 text-white hover:bg-orange-600"
+            : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+        )}
+      >
+        {/* {isActive && (
+          <motion.div
+            layoutId="activeSidebarItem"
+            className="absolute right-0 top-0 h-full w-1 bg-orange-800 rounded-r"
+          />
+        )} */}
+        <IconComponent size={20} />
+        <span className="truncate">{item.title}</span>
+      </Button>
+    );
+  };
+
   return (
-    <Sidebar className="bg-gray-100 dark:bg-gray-900 border-l shadow-lg">
+    <Sidebar className="bg-white dark:bg-gray-900 border-l shadow-md">
       {/* Header */}
       <SidebarHeader>
         <div className="flex items-center gap-4 p-4">
           <Avatar className="w-12 h-12">
-            <AvatarImage src={user?.image || ""} alt={user?.name || "User"} />
+            <AvatarImage src={user.image || ""} alt={user.name || "User"} />
             <AvatarFallback className="text-lg">
-              {user?.name?.charAt(0)}
+              {user.name?.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <div className="font-semibold text-base">{user?.name}</div>
+          <div className="flex flex-col">
+            <span className="font-semibold text-base">{user.name}</span>
+            {user.roles && (
+              <span className="text-xs text-muted-foreground capitalize mt-0.5">
+                {user.roles}
+              </span>
+            )}
           </div>
         </div>
       </SidebarHeader>
 
-      {/* Menu */}
+      {/* Content */}
       <SidebarContent>
         <SidebarGroup title="منو">
-          {/* منو ثابت */}
+          {/* Static dashboard link */}
           <Button
-            onClick={() => {
-              open("/", "داشبورد");
-            }}
-            variant={"ghost"}
+            variant="ghost"
+            onClick={() => open("/", "داشبورد")}
             className={cn(
-              "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
-              pathname === `/dashboard/${role}` &&
-                "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+              "relative flex items-center gap-3 p-3 rounded-lg text-sm transition-colors",
+              pathname === `/dashboard/${role}`
+                ? "bg-orange-500 text-white hover:bg-orange-600"
+                : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
             )}
           >
             {pathname === `/dashboard/${role}` && (
@@ -89,54 +121,26 @@ export function DashboardSidebar({ user }: Props) {
             <span>صفحه اصلی</span>
           </Button>
 
-          {/* منوهای داینامیک */}
-          {isValidating || isLoading ? (
-            <div>
-              <Skeleton className="w-[90%] h-8 m-2 p-2" />
-              <Skeleton className="w-[90%] h-8 m-2 p-2" />
-              <Skeleton className="w-[90%] h-8 m-2 p-2" />
-              <Skeleton className="w-[90%] h-8 m-2 p-2" />
+          {/* Dynamic menu */}
+          {isLoading || isValidating ? (
+            <div className="space-y-2 mt-2 px-3">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-8 w-full rounded-lg" />
+              ))}
             </div>
           ) : (
-            menuItems.resultList?.map((item: any, index: number) => {
-              const isActive = pathname.includes(item.href);
-              const IconComponent = (Icons as any)[item.icon] || Icons.Package;
-
-              return (
-                <Button
-                  key={index}
-                  // href={`/dashboard/${role}/${item.href}`}
-                  onClick={() => {
-                    open(item.href, item.title);
-                  }}
-                  className={cn(
-                    "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium my-2",
-                    isActive &&
-                      "bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
-                  )}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeSidebarItem"
-                      className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
-                    />
-                  )}
-                  <IconComponent size={20} />
-                  <span>{item.title}</span>
-                </Button>
-              );
-            })
+            menuItems.resultList?.map(renderMenuItem)
           )}
         </SidebarGroup>
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter>
+      <SidebarFooter className="border-t">
         <button
           onClick={() => signOut({ callbackUrl: "/auth/login" })}
-          className="flex w-full items-center gap-2 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium"
+          className="flex w-full items-center gap-2 p-3 rounded-md text-sm text-red-600 hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
         >
-          <LogOut size={20} />
+          <LogOut size={18} />
           <span>خروج</span>
         </button>
       </SidebarFooter>

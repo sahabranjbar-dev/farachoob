@@ -1,9 +1,12 @@
 import Spinner from "@/components/Spinner";
+import React from "react";
 
-export default function DashboardLoading() {
+const loading = () => {
   return (
-    <div className="flex min-h-screen">
+    <div>
       <Spinner />
     </div>
   );
-}
+};
+
+export default loading;
