@@ -85,12 +85,12 @@ export async function POST(request: Request) {
   try {
     const { title, href, icon, permissionId, status } = await request.json();
 
-    // if (!title || !href || !permissionId) {
-    //   return NextResponse.json(
-    //     { message: "عنوان، آدرس و شناسه دسترسی الزامی است." },
-    //     { status: 400 }
-    //   );
-    // }
+    if (!title || !href || !permissionId) {
+      return NextResponse.json(
+        { message: "عنوان، آدرس و دسترسی الزامی است." },
+        { status: 400 }
+      );
+    }
 
     const menu = await prisma.menu.create({
       data: {

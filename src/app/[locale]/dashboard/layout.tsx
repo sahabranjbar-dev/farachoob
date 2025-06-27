@@ -1,28 +1,29 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import BreadcrumbTabs from "@/components/BreadcrumbTabs/BreadcrumbTabs";
+"use client";
+
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/ModeToggle";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getServerSession } from "next-auth";
+import { useSession } from "next-auth/react";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  const { data } = useSession();
 
   return (
     <SidebarProvider>
       <div className="flex min-h-screen min-w-screen max-w-screen bg-gray-100 dark:bg-gray-900 transition-colors">
         <DashboardSidebar
           user={{
-            name: session?.user.name ?? "user",
+            name: data?.user.name ?? "user",
             // TODO: check is necessery
-            permissions: session?.user.permissions,
-            roles: session?.user.role,
-            image: session?.user?.image,
+            permissions: data?.user.permissions,
+            roles: data?.user.role,
+            image: data?.user?.image,
           }}
         />
 
@@ -33,7 +34,7 @@ export default async function DashboardLayout({
               <SidebarTrigger />
 
               <div>
-                <BreadcrumbTabs />
+                <Breadcrumb />
               </div>
             </div>
 

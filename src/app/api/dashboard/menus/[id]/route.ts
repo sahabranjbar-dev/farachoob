@@ -21,3 +21,25 @@ export async function GET(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+
+    await prisma?.menu.delete({
+      where: {
+        id,
+      },
+    });
+
+    return NextResponse.json("منو با موفقیت حذف شد", { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "مشکلی در حذف منو پیش آمد." },
+      { status: 500 }
+    );
+  }
+}

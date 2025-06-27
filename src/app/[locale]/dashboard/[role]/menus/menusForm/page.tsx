@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/select";
 import useDataGetter from "@/hooks/useDataGetter";
 import useParams from "@/hooks/useParams";
+import { usetabular } from "@/hooks/useTabular";
+import { useRouter } from "@/i18n/navigation";
 import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 
@@ -41,6 +43,7 @@ type FormValues = {
 };
 
 const MenusFormPage = () => {
+  const router = useRouter();
   const { params, setActiveParam } = useParams<{
     pageType?: string;
     id?: string;
@@ -98,6 +101,7 @@ const MenusFormPage = () => {
       });
     });
   };
+  const { closeCurrentTab } = usetabular();
   return (
     <Card className="relative">
       {formDataLoading && (
@@ -231,12 +235,7 @@ const MenusFormPage = () => {
               >
                 ذخیره
               </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  form.reset();
-                }}
-              >
+              <Button variant="outline" onClick={closeCurrentTab}>
                 انصراف
               </Button>
             </div>

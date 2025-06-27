@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -7,18 +8,17 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
-import { LogOut } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { usetabular } from "@/hooks/useTabular";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { Role } from "@/types/dashboard";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
+import { LogOut } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import useSWR from "swr";
-import { Role } from "@/types/dashboard";
+import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { usePathname } from "@/i18n/navigation";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -44,7 +44,9 @@ export function DashboardSidebar({ user }: Props) {
   const session = useSession();
   const pathname = usePathname();
   const role = session.data?.user.role;
+  const router = useRouter();
 
+  const { open } = usetabular();
   return (
     <Sidebar className="bg-gray-100 dark:bg-gray-900 border-l shadow-lg">
       {/* Header */}
@@ -66,8 +68,11 @@ export function DashboardSidebar({ user }: Props) {
       <SidebarContent>
         <SidebarGroup title="منو">
           {/* منو ثابت */}
-          <Link
-            href="/dashboard"
+          <Button
+            onClick={() => {
+              open("/", "داشبورد");
+            }}
+            variant={"ghost"}
             className={cn(
               "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium",
               pathname === `/dashboard/${role}` &&
@@ -82,7 +87,7 @@ export function DashboardSidebar({ user }: Props) {
             )}
             <Icons.Home size={20} />
             <span>صفحه اصلی</span>
-          </Link>
+          </Button>
 
           {/* منوهای داینامیک */}
           {isValidating || isLoading ? (
@@ -93,14 +98,17 @@ export function DashboardSidebar({ user }: Props) {
               <Skeleton className="w-[90%] h-8 m-2 p-2" />
             </div>
           ) : (
-            menuItems.resultList?.map((item: any) => {
+            menuItems.resultList?.map((item: any, index: number) => {
               const isActive = pathname.includes(item.href);
               const IconComponent = (Icons as any)[item.icon] || Icons.Package;
 
               return (
-                <Link
-                  key={item.href}
-                  href={`/dashboard/${role}/${item.href}`}
+                <Button
+                  key={index}
+                  // href={`/dashboard/${role}/${item.href}`}
+                  onClick={() => {
+                    open(item.href, item.title);
+                  }}
                   className={cn(
                     "relative flex items-center gap-3 p-3 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-medium my-2",
                     isActive &&
@@ -115,7 +123,7 @@ export function DashboardSidebar({ user }: Props) {
                   )}
                   <IconComponent size={20} />
                   <span>{item.title}</span>
-                </Link>
+                </Button>
               );
             })
           )}
