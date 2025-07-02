@@ -1,47 +1,64 @@
-import React, { useCallback, useEffect } from "react";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+"use client";
+import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
-import { SwitchRtl } from "./SwitchRtl";
-import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { MultiSelect } from "./MultiSelect";
-import { Value } from "@radix-ui/react-select";
+import { SwitchRtl } from "./SwitchRtl";
+import { Button } from "./ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import useDataGetter from "@/hooks/useDataGetter";
 
-type FormValues = {
-  id: number;
-  farsiTitle?: string | null;
-  englishTitle?: string | null;
-  description?: string | null;
-  status?: boolean | null;
-  createdAt?: Date;
-  UpdateAt?: Date;
-  rowNumber?: number;
-  permissions?: {
-    permission?: { id?: string; description?: string; name?: string };
-    permissionId?: string;
-  }[];
-  permissionIds?: string[]; // Added to fix the error
-};
+export interface FormValues {
+  id: string;
+  farsiTitle: string;
+  englishTitle: string;
+  description?: string;
+  createdAt?: string;
+  status?: boolean;
+  updateAt?: string;
+  users?: User[];
+  permissions?: Permission[];
+  permissionIds?: any;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: Role;
+}
+
+export interface Role {
+  id: string;
+  farsiTitle: string;
+  englishTitle: string;
+  description: string;
+  status: boolean;
+  createdAt: string;
+  updateAt: string;
+}
+
+export interface Permission {
+  id: string;
+  permission: Permission2;
+  permissionId: string;
+}
+
+export interface Permission2 {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updateAt: string;
+}
 
 interface Props {
   initialData?: Partial<FormValues>;
-  onSuccess: () => void;
-  onFilterChange: (filters: Record<string, string>) => void;
-  permissionOptions: { id: string; farsiTitle: string }[];
-  isOpen: boolean;
-  fetchRoles: () => void;
 }
 
-const RoleForm = ({
-  initialData,
-  onSuccess,
-  fetchRoles,
-  isOpen,
-  onFilterChange,
-  permissionOptions = [],
-}: Props) => {
+const RoleForm = ({ initialData }: Props) => {
   const form = useForm<FormValues>({
     defaultValues: {
       farsiTitle: "",
@@ -53,9 +70,6 @@ const RoleForm = ({
     },
   });
 
-  useEffect(() => {
-    fetchRoles();
-  }, []);
   const onSubmit = useCallback(
     async ({
       farsiTitle,
@@ -87,13 +101,22 @@ const RoleForm = ({
 
       if (result.status === 201) {
         toast.success(result.message, { position: "top-center" });
-        onSuccess();
       }
     },
     []
   );
 
-  const options = permissionOptions.map((item) => {
+  const {
+    data: permissionOptions,
+    error,
+    fetch: fetchPermission,
+    loading,
+  } = useDataGetter({
+    url: "/dashboard/permissions",
+    immediatelyFetch: false,
+  });
+
+  const options = permissionOptions?.resultList.map((item: any) => {
     return {
       label: item.farsiTitle,
       value: item?.id,
@@ -159,7 +182,10 @@ const RoleForm = ({
             name="permissionIds"
             render={({ field }) => (
               <MultiSelect
-                options={options}
+                onClickCapture={() => {
+                  fetchPermission?.({});
+                }}
+                options={options ?? []}
                 defaultValue={field.value}
                 onValueChange={field.onChange}
                 placeholder="انتخاب مجوز"
@@ -194,7 +220,6 @@ const RoleForm = ({
               variant="outline"
               onClick={() => {
                 form.reset();
-                onSuccess();
               }}
             >
               انصراف

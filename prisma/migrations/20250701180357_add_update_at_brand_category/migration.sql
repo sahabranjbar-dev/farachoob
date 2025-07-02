@@ -1,0 +1,10 @@
+-- AlterTable
+ALTER TABLE "Brand" ADD COLUMN     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updateAt" TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "Category" ADD COLUMN     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "updateAt" TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "updateAt" TIMESTAMP(3);

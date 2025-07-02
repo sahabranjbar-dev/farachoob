@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
+import cloudinary from "@/lib/cloudinary";
 
 export async function GET(req: NextRequest) {
   try {
@@ -84,57 +85,87 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// const productSchema = z.object({
-//   farsiTitle: z.string().min(1, "نام فارسی محصول الزامی است."),
-//   englishTitle: z.string().min(1, "نام انگلیسی محصول الزامی است."),
-//   price: z.preprocess((val) => {
-//     if (typeof val === "string") return Number(val);
-//     return val;
-//   }, z.number().nonnegative("قیمت نمی‌تواند منفی باشد.")),
-//   brandId: z.string().optional(),
-//   categoryId: z.string().optional(),
-//   stock: z.number().optional().default(0),
-//   image: z.string().optional(),
-//   description: z.string().optional(),
-//   colors: z.array(z.string()).optional().default([]),
-//   comments: z.array(z.string()).optional().default([]),
-// });
-
-// route.ts (App Router)
-import cloudinary from "@/lib/cloudinary";
-
+// اجازه دریافت FormData
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
+// ✅ تعریف اسکیمای اعتبارسنجی با Zod
+const productSchema = z.object({
+  farsiTitle: z.string().min(1, "نام فارسی محصول الزامی است."),
+  englishTitle: z.string().min(1, "نام انگلیسی محصول الزامی است."),
+  price: z.preprocess((val) => {
+    if (typeof val === "string") return Number(val.replace(/,/g, ""));
+    return val;
+  }, z.number().nonnegative("قیمت نمی‌تواند منفی باشد.")),
+  stock: z
+    .preprocess((val) => {
+      if (typeof val === "string") return Number(val);
+      return val;
+    }, z.number().int().nonnegative())
+    .optional()
+    .default(0),
+  brandId: z.string().optional(),
+  categoryId: z.string().optional(),
+  description: z.string().optional(),
+  colors: z.array(z.string()).optional().default([]),
+  comments: z.array(z.string()).optional().default([]),
+});
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
 
-    const farsiTitle = formData.get("farsiTitle")?.toString();
-    const englishTitle = formData.get("englishTitle")?.toString();
-    const price = parseFloat(formData.get("price") as string);
-    const brandId = formData.get("brandId")?.toString();
-    const categoryId = formData.get("categoryId")?.toString();
-    const stock = parseInt(formData.get("stock") as string) || 0;
-    const description = formData.get("description")?.toString();
-    const colors = formData.getAll("colors").map((c) => c.toString());
-    const comments = formData.getAll("comments").map((c) => c.toString());
+    // 🟢 داده‌ها رو از فرم می‌گیریم
+    const rawData = {
+      farsiTitle: formData.get("farsiTitle"),
+      englishTitle: formData.get("englishTitle"),
+      price: formData.get("price"),
+      stock: formData.get("stock"),
+      brandId: formData.get("brandId"),
+      categoryId: formData.get("categoryId"),
+      description: formData.get("description"),
+      colors: formData.getAll("colors"),
+      comments: formData.getAll("comments"),
+    };
+
     const imageFile = formData.get("image") as File | null;
 
-    if (!farsiTitle || !englishTitle || isNaN(price)) {
+    // 🛡️ اعتبارسنجی
+    const parsed = productSchema.safeParse(rawData);
+
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "نام فارسی، نام انگلیسی و قیمت اجباری هستند." },
+        { error: parsed.error.flatten() },
         { status: 400 }
       );
     }
 
-    let imageUrl: string | undefined = undefined;
+    const {
+      farsiTitle,
+      englishTitle,
+      price,
+      stock,
+      brandId,
+      categoryId,
+      description,
+      colors,
+      comments,
+    } = parsed.data;
+
+    // 🖼️ آپلود تصویر اگر وجود داشت
+    let imageUrl: string | undefined;
     if (imageFile && imageFile.size > 0) {
-      const arrayBuffer = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
+      if (!imageFile.type.startsWith("image/")) {
+        return NextResponse.json(
+          { error: "فقط فایل‌های تصویری مجاز هستند." },
+          { status: 400 }
+        );
+      }
+
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
 
       const uploadRes = await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -148,6 +179,7 @@ export async function POST(req: Request) {
       imageUrl = (uploadRes as any).secure_url;
     }
 
+    // 🟦 ذخیره در پایگاه داده
     const product = await prisma.product.create({
       data: {
         farsiTitle,
@@ -159,19 +191,15 @@ export async function POST(req: Request) {
         colors,
         comments,
         ...(brandId && {
-          brand: {
-            connect: { id: brandId },
-          },
+          brand: { connect: { id: brandId } },
         }),
         ...(categoryId && {
-          category: {
-            connect: { id: categoryId },
-          },
+          category: { connect: { id: categoryId } },
         }),
       },
     });
 
-    return NextResponse.json({ result: product });
+    return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error("خطای ساخت محصول:", error);
     return NextResponse.json({ error: "خطا در ساخت محصول." }, { status: 500 });

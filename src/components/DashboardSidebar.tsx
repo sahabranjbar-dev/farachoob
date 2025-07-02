@@ -63,12 +63,6 @@ export function DashboardSidebar({ user }: Props) {
             : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
         )}
       >
-        {/* {isActive && (
-          <motion.div
-            layoutId="activeSidebarItem"
-            className="absolute right-0 top-0 h-full w-1 bg-orange-800 rounded-r"
-          />
-        )} */}
         <IconComponent size={20} />
         <span className="truncate">{item.title}</span>
       </Button>

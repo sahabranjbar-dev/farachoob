@@ -66,7 +66,7 @@ const Breadcrumb = forwardRef(({}, ref: React.ForwardedRef<HTMLDivElement>) => {
                     ref={setTabRef(tab.id)}
                     onClick={() => open(tab.path, tab.title)}
                     className={cn(
-                      "group relative min-w-[180px] max-w-[180px] flex justify-between items-center p-2 rounded-md text-sm transition-all truncate select-none cursor-pointer",
+                      "border border-orange-400 group relative min-w-[180px] max-w-[180px] flex justify-between items-center p-2 rounded-md text-sm transition-all truncate select-none cursor-pointer",
                       tab.id === activeTabId
                         ? "bg-orange-500 text-white shadow-lg font-semibold"
                         : "hover:bg-orange-100 dark:hover:bg-orange-900 text-gray-700 dark:text-gray-300"

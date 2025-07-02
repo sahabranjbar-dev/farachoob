@@ -4,10 +4,8 @@ import HeroSection from "@/components/HeroSection";
 import MakeTrust from "@/components/MakeTrust";
 import NewestProducts from "@/components/NewestProducts";
 import Services from "@/components/Services";
-import Slider from "@/components/Slider";
-import { API } from "@/configs/API";
 import { useTranslations } from "next-intl";
-import { useLayoutEffect, useMemo } from "react";
+import { useEffect, useMemo, useSyncExternalStore } from "react";
 
 export default function HomePage() {
   const t = useTranslations("HomePage");

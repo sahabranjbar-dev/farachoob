@@ -51,6 +51,9 @@ export default function useDataGetter<T = any>({
           setState({ data: result, loading: false, error: null });
           resolve(result);
           onSuccess?.(result);
+          if (method === "POST" || method === "PUT") {
+            toast.success("عملیات با موفقیت انجام شد");
+          }
           return result;
         } catch (err: any) {
           setState({ data: null, loading: false, error: err });

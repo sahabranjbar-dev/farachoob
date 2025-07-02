@@ -26,6 +26,9 @@ const ProductsList = () => {
       {
         field: "price",
         title: "قیمت",
+        render(v, row, meta) {
+          return Number(v).toLocaleString("fa");
+        },
       },
       {
         field: "stock",
@@ -38,10 +41,12 @@ const ProductsList = () => {
       {
         field: "createdAt",
         title: "تاریخ ایجاد",
+        hasDateFormatter: true,
       },
       {
-        field: "updatedAt",
+        field: "updateAt",
         title: "تاریخ ویرایش",
+        hasDateFormatter: true,
       },
       {
         field: "id",

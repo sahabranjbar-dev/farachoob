@@ -8,46 +8,49 @@ generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String     @id @default(uuid())
+  email     String     @unique
   password  String
   name      String?
   mobile    String?
   image     String?
   roleId    String
-  role      Role     @relation(fields: [roleId], references: [id])
-  createdAt DateTime @default(now())
+  role      Role       @relation(fields: [roleId], references: [id])
+  createdAt DateTime   @default(now())
+  comments  Comments[]
 }
 
 model Role {
-  id           String        @id @default(uuid())
-  farsiTitle   String?       @unique
-  englishTitle String?       @unique
+  id           String           @id @default(uuid())
+  farsiTitle   String?          @unique
+  englishTitle String?          @unique
   description  String?
-  status       Boolean?      @default(true)
+  status       Boolean?         @default(true)
   permissions  RolePermission[]
   users        User[]
-  createdAt    DateTime    @default(now())
-  updateAt     DateTime    @updatedAt
+  createdAt    DateTime         @default(now())
+  updateAt     DateTime         @updatedAt
 }
 
 model Permission {
-  id          String          @id @default(uuid())
-  name        String          @unique
+  id          String           @id @default(uuid())
+  name        String           @unique
   description String?
   menus       Menu[]
   roles       RolePermission[]
-  createdAt    DateTime    @default(now())
-  updateAt     DateTime    @updatedAt
+  createdAt   DateTime         @default(now())
+  updateAt    DateTime         @updatedAt
 }
 
 model RolePermission {
-  id           String      @id @default(uuid())
+  id           String @id @default(uuid())
   roleId       String
   permissionId String
 
@@ -58,47 +61,61 @@ model RolePermission {
 }
 
 model Menu {
-  id           String      @id @default(uuid())
+  id           String     @id @default(uuid())
   title        String
   href         String
   icon         String?
   permissionId String
-  permission   Permission  @relation(fields: [permissionId], references: [id])
-  status       Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updateAt     DateTime    @updatedAt
-
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  status       Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updateAt     DateTime   @updatedAt
 }
 
 // schema.prisma
 model Product {
-  id             String    @id @default(cuid())
-  farsiTitle     String
-  englishTitle   String
-  price          Float
-  image          String?
-  stock          Int?
-  createdAt      DateTime  @default(now())
-  description    String?
-  colors         String[]
-  comments       String[]
-  brandId        String?
-  categoryId     String?
+  id           String    @id @default(cuid())
+  farsiTitle   String
+  englishTitle String
+  price        Float
+  image        String?
+  stock        Int?
+  createdAt    DateTime  @default(now())
+  updateAt     DateTime? @updatedAt
+  description  String?
+  colors       String[]
+  comments     String[]
+  brandId      String?
+  categoryId   String?
 
-  brand          Brand?    @relation(fields: [brandId], references: [id])
-  category       Category?  @relation(fields: [categoryId], references: [id])
+  brand    Brand?    @relation(fields: [brandId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
 }
 
 model Brand {
-  id            String    @id @default(cuid())
-  farsiTitle    String
-  englishTitle  String
-  products      Product[]
+  id           String    @id @default(cuid())
+  farsiTitle   String
+  englishTitle String
+  createdAt    DateTime? @default(now())
+  updateAt     DateTime? @updatedAt
+
+  products Product[]
 }
 
 model Category {
-  id            String    @id @default(cuid())
-  farsiTitle    String
-  englishTitle  String
-  products      Product[]
+  id           String    @id @default(cuid())
+  farsiTitle   String
+  englishTitle String
+  createdAt    DateTime? @default(now())
+  updateAt     DateTime? @updatedAt
+
+  products Product[]
+}
+
+model Comments {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    User     @relation(fields: [id], references: [id])
 }

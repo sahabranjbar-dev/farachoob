@@ -1,16 +1,56 @@
-"use client";
+import { notFound } from "next/navigation";
+import PermissionForm from "../components/PermissionForm";
+import { prisma } from "@/lib/prisma"; // assuming this is how you import Prisma
 
-import { usePathname } from "@/i18n/navigation";
-import { useSearchParams } from "next/navigation";
-import React from "react";
+interface IPermissionFormPage {
+  params?: Promise<{}>;
+  searchParams?: Promise<{ pageType: string; id: string }>;
+}
 
-const page = () => {
-  const searchParams = useSearchParams(); // get query params
-  const pathname = usePathname(); // optional, get current path
+const PermissionFormPage = async ({
+  params,
+  searchParams,
+}: IPermissionFormPage) => {
+  try {
+    const resolvedSearchParams = await searchParams;
+    const id = resolvedSearchParams?.id;
 
-  const pageType = searchParams.get("pageType"); // example: /page?id=123
+    if (id) {
+      const permission = await prisma.permission.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          updateAt: true,
+          roles: { select: { role: true, roleId: true } },
+        },
+      });
 
-  return <div>Page - ID: {pageType}</div>;
+      return (
+        <PermissionForm
+          initialData={{
+            description: permission?.description,
+            id: permission?.id,
+            name: permission?.name,
+          }}
+        />
+      );
+    }
+    return <PermissionForm />;
+  } catch (error) {
+    console.error("Error in PermissionFormPage:", error);
+
+    // Optional: Show a custom error UI or fallback
+    return (
+      <div className="text-red-500 p-4">
+        خطایی رخ داده است. لطفاً دوباره تلاش کنید.
+      </div>
+    );
+  }
 };
 
-export default page;
+export default PermissionFormPage;
