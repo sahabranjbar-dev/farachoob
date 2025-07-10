@@ -28,7 +28,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
       <div className="relative inline-block text-left">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="flex items-center gap-2 rounded-lg bg-black text-white px-4 py-2 text-sm font-medium"
           aria-haspopup="true"
           aria-expanded={open}
         >
@@ -61,9 +61,9 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
   return (
     <Link
       href="/auth/login"
-      className="flex justify-center items-center flex-row-reverse border cursor-pointer p-2 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+      className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer bg-black text-white p-2 rounded-lg  transition-colors duration-300"
     >
-      <LogIn className="rotate-180" />
+      <LogIn className="rotate-180" size={20} />
       <span>{t("Login") + " / " + t("Register")}</span>
     </Link>
   );

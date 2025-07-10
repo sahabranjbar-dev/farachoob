@@ -1,8 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export function ProductCard({ product }: { product: any }) {
+  console.log(product);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -12,14 +15,19 @@ export function ProductCard({ product }: { product: any }) {
     >
       <img
         src={product.image}
-        alt={product.title}
-        className="w-full h-48 object-cover"
+        alt={product.farsiTitle}
+        width={200}
+        height={200}
       />
       <div className="p-4">
         <h3 className="text-lg font-semibold text-orange-700">
-          {product.title}
+          {product.farsiTitle}
         </h3>
-        <p className="text-gray-600 mt-1">{product.brand}</p>
+        <p className="text-gray-600 mt-1">برند : {product.brand?.farsiTitle}</p>
+        <p className="text-gray-600 mt-1">
+          دسته‌بندی : {product.category?.farsiTitle}
+        </p>
+        <p className="text-gray-600 mt-1">{product.description}</p>
         <p className="text-orange-600 mt-2 font-bold">
           {product.price.toLocaleString()} تومان
         </p>

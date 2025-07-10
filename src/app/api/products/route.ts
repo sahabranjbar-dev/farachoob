@@ -47,6 +47,17 @@ export async function GET(req: NextRequest) {
         orderBy,
         skip,
         take: pageSize,
+        select: {
+          englishTitle: true,
+          farsiTitle: true,
+          id: true,
+          image: true,
+          price: true,
+          description: true,
+          stock: true,
+          brand: true,
+          category: true,
+        },
       }),
       prisma.product.count({ where }),
     ]);

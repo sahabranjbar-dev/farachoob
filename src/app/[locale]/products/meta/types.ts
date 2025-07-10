@@ -3,6 +3,7 @@ import { IFetchData } from "@/types/useDataGetter";
 export interface IFilterItems {
   title?: string;
   filtersContent?: IFiltersContent[];
+  category?: string | string[] | undefined;
 }
 
 export interface IFiltersContent {

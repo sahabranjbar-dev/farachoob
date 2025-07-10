@@ -1,4 +1,15 @@
+// Refactored Product Form with Enhanced UI
 "use client";
+
+import { useState, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
+import axios from "axios";
+import { toast } from "sonner";
+import { X, Upload, Image as ImageIcon } from "lucide-react";
+
+import useTabular from "@/hooks/useTabular";
+import useDataGetter from "@/hooks/useDataGetter";
 
 import Spinner from "@/components/Spinner";
 import { Button } from "@/components/ui/button";
@@ -18,191 +29,184 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@/components/ui/select";
-import useDataGetter from "@/hooks/useDataGetter";
-import useTabular from "@/hooks/useTabular";
-import { Check, X } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
-type FormValues = {
-  id: string;
+// Types
+interface FormValues {
+  id?: string;
   farsiTitle: string;
   englishTitle: string;
-  price: number | string | null;
+  price: string | number;
   brandId?: string;
   categoryId?: string;
   stock?: number;
-  image?: File | null;
+  image?: File | string | null;
   description?: string;
-  colors?: string[];
-  comments?: string[];
-};
+}
 
 interface Props {
-  initialData?: Partial<FormValues> & { id?: string };
+  initialData?: Partial<FormValues>;
 }
 
 const ProductsForm = ({ initialData }: Props) => {
   const id = initialData?.id;
-
   const { closeCurrentTab, open } = useTabular();
-
-  //   const {
-  //     data,
-  //     error,
-  //     fetch,
-  //     loading: submitLoading,
-  //   } = useDataGetter({
-  //     url: id ? `/dashboard/products/${id}` : "/dashboard/products",
-  //     method: id ? "PUT" : "POST",
-  //     immediatelyFetch: false,
-  //   });
-
-  // فرض می‌کنیم برند و دسته‌بندی‌ها رو جداگانه از API می‌گیریم
-  const {
-    data: brandsData,
-    fetch: fetchBrands,
-    loading: brandsLoading,
-    error: brandsError,
-  } = useDataGetter({
-    url: "dashboard/brands",
-    immediatelyFetch: !!id,
-  });
-  const {
-    data: categoriesData,
-    fetch: fetchCategories,
-    loading: categoriesLoading,
-    error: categoriesError,
-  } = useDataGetter({
-    url: "dashboard/categories",
-    immediatelyFetch: !!id,
-  });
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const form = useForm<FormValues>({
     defaultValues: {
       farsiTitle: "",
       englishTitle: "",
-      price: null,
+      price: "",
       brandId: "",
       categoryId: "",
       stock: 0,
       image: null,
       description: "",
-      colors: [],
-      comments: [],
       ...initialData,
     },
   });
 
+  const {
+    data: brandsData,
+    fetch: fetchBrands,
+    loading: brandsLoading,
+  } = useDataGetter({
+    url: "/dashboard/brands",
+    immediatelyFetch: !!id,
+  });
+
+  const {
+    data: categoriesData,
+    fetch: fetchCategories,
+    loading: categoriesLoading,
+  } = useDataGetter({
+    url: "/dashboard/categories",
+    immediatelyFetch: !!id,
+  });
+
+  const handleImageChange = useCallback(
+    (file: File | null, onChange: (val: any) => void) => {
+      onChange(file);
+      if (file) {
+        const preview = URL.createObjectURL(file);
+        setImagePreview(preview);
+      } else {
+        setImagePreview(null);
+      }
+    },
+    []
+  );
+
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
-    if (data.image) {
-      formData.append("image", data.image); // فایل انتخاب‌شده
+    if (data.image && typeof data.image !== "string") {
+      formData.append("image", data.image);
     }
     formData.append("farsiTitle", data.farsiTitle);
-    formData.append("englishTitle", data?.englishTitle);
+    formData.append("englishTitle", data.englishTitle);
     formData.append("price", String(data.price).replace(/,/g, ""));
-    formData.append("brandId", data?.brandId ?? "");
-    formData.append("categoryId", data?.categoryId ?? "");
-    formData.append("description", data?.description ?? "");
-    // formData.append("colors",data?.colors ?? "");
-    formData.append("stock", String(data?.stock));
+    formData.append("brandId", data.brandId ?? "");
+    formData.append("categoryId", data.categoryId ?? "");
+    formData.append("description", data.description ?? "");
+    formData.append("stock", String(data.stock ?? 0));
 
-    await fetch?.(
-      id ? `/api/dashboard/products/${id}` : "/api/dashboard/products",
-      {
+    try {
+      const response = await axios({
+        url: id ? `/api/dashboard/products/${id}` : "/api/dashboard/products",
         method: id ? "PUT" : "POST",
-        body: formData,
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.id) {
-          closeCurrentTab();
-          open("/products/productsForm", `فرم ویرایش ${data?.farsiTitle}`, {
-            pageType: "EDIT",
-            id: data?.id,
-          });
-        }
-      })
-      .catch((err) => {
-        toast.error(err.message);
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (e) => {
+          const percent = Math.round((e.loaded * 100) / (e.total ?? 1));
+          setUploadProgress(percent);
+        },
       });
+
+      const product = response.data;
+      if (product?.id) {
+        closeCurrentTab();
+        open("/products/productsForm", `فرم ویرایش ${product.farsiTitle}`, {
+          pageType: "EDIT",
+          id: product.id,
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message || "خطا در ارسال فرم");
+    }
   };
 
+  const imageUrl = form.getValues("image");
+  const isImageUrl = typeof imageUrl === "string" && imageUrl.length > 0;
+
   return (
-    <Card className="relative">
-      {/* {submitLoading && (
-        <div className="backdrop-brightness-75 z-50 w-full h-full flex justify-center items-center absolute top-0 right-0 rounded">
-          <Spinner />
-        </div>
-      )} */}
+    <Card>
       <CardHeader>
-        <CardTitle className="text-center">
+        <CardTitle className="text-center text-2xl font-bold">
           فرم {id ? "ویرایش" : "ایجاد"} محصول
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="farsiTitle"
-                rules={{ required: "نام فارسی محصول الزامی است." }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>نام فارسی</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="مثال: کیک شکلاتی" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="englishTitle"
-                rules={{ required: "نام انگلیسی محصول الزامی است." }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>نام انگلیسی</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Example: Chocolate Cake" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {["farsiTitle", "englishTitle"].map((name, i) => (
+                <FormField
+                  key={i}
+                  control={form.control}
+                  name={name as keyof FormValues}
+                  rules={{ required: `فیلد ${name} الزامی است.` }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">
+                        {name === "farsiTitle" ? "نام فارسی" : "نام انگلیسی"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className="bg-gray-50"
+                          value={
+                            field.value === null ||
+                            typeof field.value === "object"
+                              ? ""
+                              : field.value
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+
               <FormField
                 control={form.control}
                 name="price"
-                rules={{
-                  required: "قیمت محصول الزامی است.",
-                  min: { value: 0, message: "قیمت نمی‌تواند منفی باشد." },
-                }}
+                rules={{ required: "قیمت الزامی است." }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>قیمت (تومان)</FormLabel>
+                    <FormLabel className="font-medium">قیمت (تومان)</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
+                        className="bg-gray-50"
                         {...field}
                         value={
                           field.value !== null && field.value !== undefined
                             ? field.value.toLocaleString("fa")
                             : ""
                         }
-                        placeholder="قیمت محصول را وارد کنید"
                         onChange={(e) => {
-                          // field.onChange();
                           field.onChange(
                             e.target.value
                               .replace(/[٬,]/g, "")
@@ -215,129 +219,207 @@ const ProductsForm = ({ initialData }: Props) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="brandId"
-                rules={{ required: "انتخاب برند الزامی است." }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>برند</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        onOpenChange={() => {
-                          if (!brandsData?.resultList?.length) {
-                            fetchBrands?.({});
+
+              {[
+                {
+                  name: "brandId",
+                  label: "برند",
+                  data: brandsData,
+                  loading: brandsLoading,
+                  fetch: fetchBrands,
+                },
+                {
+                  name: "categoryId",
+                  label: "دسته‌بندی",
+                  data: categoriesData,
+                  loading: categoriesLoading,
+                  fetch: fetchCategories,
+                },
+              ].map(({ name, label, data, loading, fetch }, i) => (
+                <FormField
+                  key={i}
+                  control={form.control}
+                  name={name as keyof FormValues}
+                  rules={{ required: `${label} الزامی است.` }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-medium">{label}</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={
+                            typeof field.value === "string"
+                              ? field.value
+                              : field.value !== undefined &&
+                                field.value !== null
+                              ? String(field.value)
+                              : undefined
                           }
-                        }}
-                      >
-                        <SelectTrigger className="w-full cursor-pointer">
-                          <SelectValue placeholder="انتخاب برند" />
-                        </SelectTrigger>
-                        <SelectContent className="min-h-36 overflow-y-auto">
-                          {brandsLoading ? (
-                            <Spinner />
-                          ) : brandsError ? (
-                            <div>مشکلی پیش آمده</div>
-                          ) : (
-                            brandsData?.resultList?.map((brand: any) => (
-                              <SelectItem key={brand.id} value={brand.id}>
-                                {brand.farsiTitle}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="categoryId"
-                rules={{ required: "انتخاب دسته‌بندی الزامی است." }}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>دسته‌بندی</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        onOpenChange={() => {
-                          if (!categoriesData?.resultList?.length) {
-                            fetchCategories?.({});
+                          onValueChange={field.onChange}
+                          onOpenChange={() =>
+                            !data?.resultList?.length && fetch?.({})
                           }
-                        }}
-                      >
-                        <SelectTrigger className="w-full cursor-pointer">
-                          <SelectValue placeholder="انتخاب دسته‌بندی" />
-                        </SelectTrigger>
-                        <SelectContent className="min-h-36 overflow-y-auto">
-                          {categoriesLoading ? (
-                            <Spinner />
-                          ) : categoriesError ? (
-                            <div>مشکلی پیش آمده است</div>
-                          ) : (
-                            categoriesData?.resultList?.map((cat: any) => (
-                              <SelectItem key={cat.id} value={cat.id}>
-                                {cat.farsiTitle}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        >
+                          <SelectTrigger className="bg-gray-50 w-full">
+                            <SelectValue placeholder={`انتخاب ${label}`} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {loading ? (
+                              <Spinner />
+                            ) : (
+                              data?.resultList?.map((item: any) => (
+                                <SelectItem key={item.id} value={item.id}>
+                                  {item.farsiTitle}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+
               <FormField
                 control={form.control}
                 name="stock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>موجودی</FormLabel>
+                    <FormLabel className="font-medium">موجودی</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input type="number" className="bg-gray-50" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem className="col-span-1 md:col-span-3">
-                    <FormLabel>توضیحات</FormLabel>
+                    <FormLabel className="font-medium">توضیحات</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Textarea
+                        {...field}
+                        className="bg-gray-50 min-h-[120px]"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {/* میتونی کامنت‌ها و رنگ‌بندی رو اینجا به دلخواه اضافه کنی */}
+
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 md:col-span-3">
+                    <FormLabel className="font-medium">تصویر محصول</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-4">
+                        <label
+                          htmlFor="image-upload"
+                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                            <p className="text-sm text-gray-500">
+                              تصویر را اینجا رها کنید یا کلیک کنید
+                            </p>
+                          </div>
+                          <Input
+                            id="image-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) =>
+                              handleImageChange(
+                                e.target.files?.[0] ?? null,
+                                field.onChange
+                              )
+                            }
+                          />
+                        </label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {(imagePreview || isImageUrl) && (
+                <div className="col-span-1 md:col-span-3">
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-32 h-32 rounded-md overflow-hidden border border-gray-200">
+                      {imagePreview ? (
+                        <Image
+                          src={imagePreview}
+                          alt="پیش‌نمایش تصویر"
+                          fill
+                          className="object-cover"
+                        />
+                      ) : isImageUrl ? (
+                        <Image
+                          src={imageUrl as string}
+                          alt="تصویر محصول"
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                          <ImageIcon className="w-8 h-8 text-gray-400" />
+                        </div>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        form.setValue("image", null);
+                        setImagePreview(null);
+                      }}
+                    >
+                      حذف تصویر
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {uploadProgress > 0 && uploadProgress < 100 && (
+                <div className="col-span-1 md:col-span-3">
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-blue-600 h-2.5 rounded-full"
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1 text-center">
+                    در حال آپلود: {uploadProgress}%
+                  </p>
+                </div>
+              )}
             </div>
-            <div className="flex justify-end gap-4">
-              <Button
-                // left={submitLoading ? <Spinner /> : <Check />}
-                // disabled={submitLoading}
-                type="submit"
-                variant="primary"
-              >
+
+            <div className="flex justify-end gap-4 pt-4">
+              <Button type="submit" variant="primary" className="px-8">
                 ذخیره
               </Button>
-              <Button variant="outline" left={<X />} onClick={closeCurrentTab}>
+              <Button
+                type="button"
+                variant="outline"
+                left={<X className="w-5 h-5" />}
+                onClick={closeCurrentTab}
+              >
                 انصراف
               </Button>
             </div>
           </form>
         </Form>
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
   );
 };

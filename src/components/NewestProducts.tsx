@@ -1,3 +1,4 @@
+"use client";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -22,33 +23,31 @@ const NewestProducts = () => {
           0: {
             slidesPerView: 1,
             spaceBetween: 0,
-          
           },
           320: {
             slidesPerView: 1,
-            spaceBetween: 5
-
+            spaceBetween: 5,
           },
           640: {
             slidesPerView: 1,
-            spaceBetween: 10
+            spaceBetween: 10,
           },
           768: {
             slidesPerView: 2,
-            spaceBetween: 15
+            spaceBetween: 15,
           },
           1024: {
             slidesPerView: 3,
-            spaceBetween: 20
+            spaceBetween: 20,
           },
           1280: {
             slidesPerView: 4,
-            spaceBetween: 25
+            spaceBetween: 25,
           },
         }}
         style={{ width: "100%", height: "auto" }}
       >
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 1"
@@ -60,7 +59,7 @@ const NewestProducts = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </SwiperSlide>
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 2"
@@ -72,7 +71,7 @@ const NewestProducts = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </SwiperSlide>
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 1"
@@ -84,7 +83,7 @@ const NewestProducts = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </SwiperSlide>
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 1"
@@ -96,7 +95,7 @@ const NewestProducts = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </SwiperSlide>
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 1"
@@ -108,7 +107,7 @@ const NewestProducts = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </SwiperSlide>
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 1"
@@ -120,7 +119,7 @@ const NewestProducts = () => {
             style={{ width: "100%", height: "auto" }}
           />
         </SwiperSlide>
-        <SwiperSlide style={{display: "flex", justifyContent: "center"}}>
+        <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
           <ProductCard
             imageSrc="/desk.jpg"
             imageAlt="Product 1"

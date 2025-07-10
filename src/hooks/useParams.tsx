@@ -4,43 +4,42 @@ import { usePathname } from "@/i18n/navigation";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-function useParams<T extends Record<string, string | undefined>>() {
+function useParams<T extends Record<string, string | string[] | undefined>>() {
   const searchParams = useSearchParams();
   const [params, setParams] = useState<T>({} as T);
   const router = useRouter();
   const pathname = usePathname();
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
-  );
   useEffect(() => {
-    const obj = {} as T;
+    const obj: Record<string, string | string[]> = {};
 
-    // Convert URLSearchParams to typed object
-    searchParams.forEach((value, key) => {
-      obj[key as keyof T] = value as any;
-    });
+    for (const [key, value] of searchParams.entries()) {
+      if (obj[key]) {
+        // اگر قبلاً مقدار داشت، آرایه کن
+        obj[key] = Array.isArray(obj[key])
+          ? [...(obj[key] as string[]), value]
+          : [obj[key] as string, value];
+      } else {
+        obj[key] = value;
+      }
+    }
 
-    setParams(obj);
+    setParams(obj as T);
   }, [searchParams]);
 
   const setActiveParam = useCallback(
-    (params: Record<string, any>) => {
+    (newValues: Record<string, string | string[] | undefined>) => {
       const newParams = new URLSearchParams(searchParams.toString());
 
-      // اضافه کردن یا آپدیت پارامترها
-      Object.entries(params).forEach(([key, value]) => {
-        if (value === undefined || value === null) {
-          newParams.delete(key); // حذف اگر مقدار نال یا آندفایند بود
-        } else {
-          newParams.set(key, String(value)); // تبدیل به string و تنظیم
+      Object.entries(newValues).forEach(([key, value]) => {
+        newParams.delete(key); // اول حذف کنیم همه‌ی مقادیر قبلی رو
+
+        if (Array.isArray(value)) {
+          value.forEach((val) => newParams.append(key, val));
+        } else if (typeof value === "string") {
+          newParams.set(key, value);
         }
+        // اگر undefined باشه، حذف می‌مونه
       });
 
       router.push(`${pathname}?${newParams.toString()}`);
