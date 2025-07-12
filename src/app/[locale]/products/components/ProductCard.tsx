@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 export function ProductCard({ product }: { product: any }) {
-  console.log(product);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

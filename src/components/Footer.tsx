@@ -13,7 +13,7 @@ const Footer = () => {
   if (isAuthPage) return;
   return (
     <footer
-      className="bg-black text-white pt-16 pb-24 relative overflow-hidden"
+      className="bg-[#000000] text-white pt-16 pb-24 relative overflow-hidden"
       dir="rtl"
     >
       {/* بک‌گراند SVG با z-index مناسب */}

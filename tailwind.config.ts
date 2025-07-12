@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        samim: ["Samim", "sans-serif"], // 👈 اینجا فونت را اضافه کن
+        samim: ["Samim", "sans-serif"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

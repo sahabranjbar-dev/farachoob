@@ -129,8 +129,6 @@ const Navbar = () => {
     },
   });
 
-  console.log(data, "dataa");
-
   const selectedCategory = productCategories.find(
     (cat) => cat.id === activeCategoryId
   );

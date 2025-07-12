@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { LogIn, User, ChevronDown, XCircle } from "lucide-react";
+import {
+  LogIn,
+  User,
+  ChevronDown,
+  XCircle,
+  LayoutDashboardIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSession, signOut } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
@@ -28,7 +34,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
       <div className="relative inline-block text-left">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 rounded-lg bg-black text-white px-4 py-2 text-sm font-medium"
+          className="flex items-center gap-2 rounded-lg border cursor-pointer px-4 py-2 text-sm font-medium"
           aria-haspopup="true"
           aria-expanded={open}
         >
@@ -45,8 +51,9 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
             <div className="py-1">
               <Link
                 href="/dashboard"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="border-b flex justify-around items-center gap-2 text-center px-4 py-2 text-sm text-blue-700 hover:bg-orange-100 w-full"
               >
+                <LayoutDashboardIcon />
                 داشبورد
               </Link>
               <LogoutButton />
@@ -61,7 +68,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
   return (
     <Link
       href="/auth/login"
-      className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer bg-black text-white p-2 rounded-lg  transition-colors duration-300"
+      className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer p-2 rounded-lg  transition-colors duration-300"
     >
       <LogIn className="rotate-180" size={20} />
       <span>{t("Login") + " / " + t("Register")}</span>

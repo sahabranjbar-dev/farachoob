@@ -49,7 +49,7 @@ const ProductCard = ({
         </p>
         <button
           onClick={onAddToCart}
-          className="text-neutral-200 px-6 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors text-nowrap"
+          className="text-neutral-200 px-6 py-2 bg-slate-900 rounded-lg hover:bg-orange-400 transition-colors text-nowrap"
         >
           افزودن به سبد خرید
         </button>
