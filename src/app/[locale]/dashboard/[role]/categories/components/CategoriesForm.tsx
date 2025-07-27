@@ -61,7 +61,7 @@ const CategoriesForm = ({ initialData }: Props) => {
   }
   return (
     <Card className="relative">
-      {loading ? <FullScreenLoading /> : null}
+      {loading && <FullScreenLoading />}
       <CardHeader>
         <CardTitle className="text-center">
           فرم {initialData?.id ? "ویرایش" : "ایجاد"} منو

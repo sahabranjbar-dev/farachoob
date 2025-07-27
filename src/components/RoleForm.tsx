@@ -1,5 +1,5 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { MultiSelect } from "./MultiSelect";
@@ -9,6 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import useDataGetter from "@/hooks/useDataGetter";
+import FullScreenLoading from "./FullScreenLoading";
+import Spinner from "./Spinner";
 
 export interface FormValues {
   id: string;
@@ -59,6 +61,7 @@ interface Props {
 }
 
 const RoleForm = ({ initialData }: Props) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<FormValues>({
     defaultValues: {
       farsiTitle: "",
@@ -80,27 +83,36 @@ const RoleForm = ({ initialData }: Props) => {
       id,
     }: FormValues) => {
       const isEdit = id;
-      const response = await fetch(
-        isEdit ? `/api/dashboard/roles/${id}` : "/api/dashboard/roles",
-        {
-          method: isEdit ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            farsiTitle,
-            englishTitle,
-            description,
-            status,
-            permissionIds,
-          }),
+      setLoading(true);
+      try {
+        const response = await fetch(
+          isEdit ? `/api/dashboard/roles/${id}` : "/api/dashboard/roles",
+          {
+            method: isEdit ? "PUT" : "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              farsiTitle,
+              englishTitle,
+              description,
+              status,
+              permissionIds,
+            }),
+          }
+        );
+        if (!response.ok) {
+          toast.error("مشکلی به وجود آمده است");
         }
-      );
-      if (!response.ok) {
-        toast.error("مشکلی به وجود آمده است");
-      }
-      const result = await response.json();
+        const result = await response.json();
 
-      if (result.status === 201) {
-        toast.success(result.message, { position: "top-center" });
+        if (result.status === 201) {
+          toast.success("عملیات با موفقیت انجام شد", {
+            position: "top-center",
+          });
+        }
+      } catch (error) {
+        toast.error("مشکلی به وجود آمده است");
+      } finally {
+        setLoading(false);
       }
     },
     []
@@ -110,7 +122,7 @@ const RoleForm = ({ initialData }: Props) => {
     data: permissionOptions,
     error,
     fetch: fetchPermission,
-    loading,
+    loading: loadingPermissions,
   } = useDataGetter({
     url: "/dashboard/permissions",
     immediatelyFetch: false,
@@ -124,6 +136,7 @@ const RoleForm = ({ initialData }: Props) => {
   });
   return (
     <div>
+      {loading && <FullScreenLoading />}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex justify-center items-center gap-2">
@@ -191,6 +204,7 @@ const RoleForm = ({ initialData }: Props) => {
                 placeholder="انتخاب مجوز"
                 animation={0.5}
                 variant="inverted"
+                loading={loadingPermissions}
                 className="bg-white"
               />
             )}

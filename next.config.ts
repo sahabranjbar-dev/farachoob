@@ -3,7 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["res.cloudinary.com"], // 👈 این خط مهمه
+    domains: ["res.cloudinary.com"],
   },
 };
 

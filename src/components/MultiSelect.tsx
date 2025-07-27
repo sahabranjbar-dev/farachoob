@@ -28,6 +28,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import Spinner from "./Spinner";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -117,6 +118,7 @@ interface MultiSelectProps
    * Optional, can be used to add custom styles.
    */
   className?: string;
+  loading?: boolean; // Optional prop to indicate loading state
 }
 
 export const MultiSelect = React.forwardRef<
@@ -135,6 +137,7 @@ export const MultiSelect = React.forwardRef<
       modalPopover = false,
       asChild = false,
       className,
+      loading = false,
       ...props
     },
     ref
@@ -206,6 +209,7 @@ export const MultiSelect = React.forwardRef<
               className
             )}
           >
+            {loading && <Spinner />}
             {selectedValues.length > 0 ? (
               <div className="flex justify-between items-center w-full">
                 <div className="flex flex-wrap items-center">

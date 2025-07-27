@@ -1,6 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "@/i18n/navigation";
 import { getServerSession } from "next-auth";
+import Manager from "./(pages)/Manager";
 
 const MainDashboardPage = async ({
   params,
@@ -26,7 +27,18 @@ const MainDashboardPage = async ({
       locale: "fa",
     });
   }
-  return <div>{role}</div>;
+  switch (role) {
+    case "manager":
+      return <Manager />;
+    case "admin":
+      return <div>Admin Dashboard</div>;
+
+    case "user":
+      return <div>User Dashboard</div>;
+
+    default:
+      return <div>Unauthorized</div>;
+  }
 };
 
 export default MainDashboardPage;

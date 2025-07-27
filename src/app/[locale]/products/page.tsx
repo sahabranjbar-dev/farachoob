@@ -70,6 +70,8 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
     },
   });
 
+  console.log(products, "products");
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-6">
