@@ -20,7 +20,7 @@ export async function FilterSidebar({ resolvedSearchParams }: Props) {
 
         <FilterItems filtersContent={brands} title="برندها" paramName="brand" />
 
-        <PriceFilter />
+        {/* <PriceFilter /> */}
       </ScrollArea>
     </div>
   );

@@ -43,7 +43,7 @@ interface FormValues {
   id?: string;
   farsiTitle: string;
   englishTitle: string;
-  price: string | number;
+  price?: string | number;
   brandId?: string;
   categoryId?: string;
   stock?: number;
@@ -192,7 +192,6 @@ const ProductsForm = ({ initialData }: Props) => {
               <FormField
                 control={form.control}
                 name="price"
-                rules={{ required: "قیمت الزامی است." }}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-medium">قیمت (تومان)</FormLabel>
@@ -262,7 +261,7 @@ const ProductsForm = ({ initialData }: Props) => {
                           <SelectTrigger className="bg-gray-50 w-full">
                             <SelectValue placeholder={`انتخاب ${label}`} />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="min-h-40">
                             {loading ? (
                               <Spinner />
                             ) : (

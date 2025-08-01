@@ -1,6 +1,9 @@
+import PaginationWrapper from "@/components/Pagination";
 import { FilterSidebar } from "./components/FilterSidebar";
 import { ProductCard } from "./components/ProductCard";
 import { SortSelect } from "./components/SortSelect";
+import ProductsPagination from "./components/ProductsPagination";
+import ScrollToTopOnPageChange from "./components/ScrollToTopOnPageChange";
 
 interface IProductsPage {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -9,7 +12,13 @@ interface IProductsPage {
 export default async function ProductsPage({ searchParams }: IProductsPage) {
   const resolvedSearchParams = await searchParams;
 
-  // خواندن پارامترهای دسته‌بندی و برند
+  const page = resolvedSearchParams?.page
+    ? Number(resolvedSearchParams.page)
+    : 1;
+  const pageSize = resolvedSearchParams?.pageSize
+    ? Number(resolvedSearchParams.pageSize)
+    : 9;
+
   const categoryParam = resolvedSearchParams?.category;
   const brandParam = resolvedSearchParams?.brand;
   const minPrice = resolvedSearchParams?.minPrice
@@ -19,7 +28,6 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
     ? Number(resolvedSearchParams.maxPrice)
     : undefined;
 
-  // تبدیل به آرایه
   const categories = Array.isArray(categoryParam)
     ? categoryParam
     : categoryParam
@@ -32,7 +40,6 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
     ? [brandParam]
     : [];
 
-  // شرط داینامیک برای فیلتر دسته‌بندی و برند
   const whereClause: any = {};
 
   if (categories.length > 0) {
@@ -53,35 +60,38 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
 
   if (minPrice || maxPrice) {
     whereClause.price = {
-      gte: resolvedSearchParams?.minPrice
-        ? Number(resolvedSearchParams.minPrice)
-        : undefined,
-      lte: resolvedSearchParams?.maxPrice
-        ? Number(resolvedSearchParams.maxPrice)
-        : undefined,
+      gte: minPrice,
+      lte: maxPrice,
     };
   }
 
+  const totalItems = await prisma?.product.count({ where: whereClause });
+  if (!totalItems) {
+    return (
+      <div className="text-center text-gray-500">هیچ محصولی یافت نشد.</div>
+    );
+  }
   const products = await prisma?.product.findMany({
     where: whereClause,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
     include: {
       brand: true,
       category: true,
     },
   });
 
-  console.log(products, "products");
+  console.log({ products });
 
   return (
     <div className="min-h-screen">
+      <ScrollToTopOnPageChange />
       <div className="container mx-auto px-4 py-6">
         <div className="flex gap-6">
-          {/* Desktop Filter */}
           <aside className="hidden md:block w-64 sticky top-40 h-max">
             <FilterSidebar resolvedSearchParams={resolvedSearchParams} />
           </aside>
 
-          {/* Products Section */}
           <main className="flex-1">
             <div className="mb-4">
               <SortSelect />
@@ -91,7 +101,14 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-            <div className="mt-8">{/* PaginationWrapper */}</div>
+
+            <div className="mt-8">
+              <ProductsPagination
+                currentPage={page}
+                totalCount={totalItems}
+                totalPages={Math.ceil(totalItems / pageSize)}
+              />
+            </div>
           </main>
         </div>
       </div>

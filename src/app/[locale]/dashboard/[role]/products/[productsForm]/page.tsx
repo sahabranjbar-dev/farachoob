@@ -20,10 +20,10 @@ const ProductsFormPage = async ({ searchParams }: IProductsFormPage) => {
           brandId: product.brandId ?? undefined,
           categoryId: product.categoryId ?? undefined,
           stock: product.stock ?? undefined,
-          // Convert image string to null, as FormValues expects File | null | undefined (not string)
           image: product.image, // always null, since we can't convert string to File here
           description: product.description ?? undefined,
           updateAt: product.updateAt ?? undefined,
+          price: product.price ?? undefined, // Ensure price is undefined, not null
         }
       : undefined;
 

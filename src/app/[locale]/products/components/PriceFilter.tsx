@@ -110,25 +110,25 @@ const PriceFilter: React.FC = () => {
   const updateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch max product price on mount
-  useEffect(() => {
-    const loadMaxPrice = async () => {
-      dispatch({ type: "SET_LOADING", payload: true });
-      dispatch({ type: "SET_ERROR", payload: null });
-      try {
-        const maxPrice = await fetchMaxProductPrice();
-        dispatch({ type: "SET_MAX_PRODUCT_PRICE", payload: maxPrice });
-      } catch (error) {
-        dispatch({
-          type: "SET_ERROR",
-          payload: "Failed to load price range. Using default values.",
-        });
-      } finally {
-        dispatch({ type: "SET_LOADING", payload: false });
-      }
-    };
+  // useEffect(() => {
+  //   const loadMaxPrice = async () => {
+  //     dispatch({ type: "SET_LOADING", payload: true });
+  //     dispatch({ type: "SET_ERROR", payload: null });
+  //     try {
+  //       const maxPrice = await fetchMaxProductPrice();
+  //       dispatch({ type: "SET_MAX_PRODUCT_PRICE", payload: maxPrice });
+  //     } catch (error) {
+  //       dispatch({
+  //         type: "SET_ERROR",
+  //         payload: "Failed to load price range. Using default values.",
+  //       });
+  //     } finally {
+  //       dispatch({ type: "SET_LOADING", payload: false });
+  //     }
+  //   };
 
-    loadMaxPrice();
-  }, []);
+  //   loadMaxPrice();
+  // }, []);
 
   // Update URL params after 2 seconds of inactivity
   useEffect(() => {

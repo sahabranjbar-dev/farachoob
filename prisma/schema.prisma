@@ -77,7 +77,7 @@ model Product {
   id           String    @id @default(cuid())
   farsiTitle   String
   englishTitle String
-  price        Float
+  price        Float?
   image        String?
   stock        Int?
   createdAt    DateTime  @default(now())

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -34,7 +35,7 @@ const PaginationWrapper = ({
           key={page}
           onClick={() => onPageChange(page)}
           className={cn(
-            "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
+            "cursor-pointer rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
             currentPage === page
               ? "bg-orange-500 text-white border-orange-500"
               : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
@@ -54,7 +55,7 @@ const PaginationWrapper = ({
         key={1}
         onClick={() => onPageChange(1)}
         className={cn(
-          "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
+          "cursor-pointer rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
           currentPage === 1
             ? "bg-orange-500 text-white border-orange-500"
             : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
@@ -102,7 +103,7 @@ const PaginationWrapper = ({
         key={totalPages}
         onClick={() => onPageChange(totalPages)}
         className={cn(
-          "rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
+          "cursor-pointer rounded-lg px-3 py-1 min-w-[36px] text-center transition-all text-sm border",
           currentPage === totalPages
             ? "bg-orange-500 text-white border-orange-500"
             : "hover:bg-orange-100 hover:text-orange-500 border-gray-200"
@@ -149,7 +150,7 @@ const PaginationWrapper = ({
                   onClick={() => currentPage > 1 && onPageChange(1)}
                   disabled={currentPage === 1}
                   className={cn(
-                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    "cursor-pointer rounded-lg p-2 border border-gray-200 transition-colors",
                     currentPage === 1
                       ? "text-gray-400 cursor-not-allowed"
                       : "hover:bg-orange-100 hover:text-orange-500"
@@ -169,7 +170,7 @@ const PaginationWrapper = ({
                   }
                   disabled={currentPage === 1}
                   className={cn(
-                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    "cursor-pointer rounded-lg p-2 border border-gray-200 transition-colors",
                     currentPage === 1
                       ? "text-gray-400 cursor-not-allowed"
                       : "hover:bg-orange-100 hover:text-orange-500"
@@ -191,7 +192,7 @@ const PaginationWrapper = ({
                   }
                   disabled={currentPage === totalPages}
                   className={cn(
-                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    "cursor-pointer rounded-lg p-2 border border-gray-200 transition-colors",
                     currentPage === totalPages
                       ? "text-gray-400 cursor-not-allowed"
                       : "hover:bg-orange-100 hover:text-orange-500"
@@ -211,7 +212,7 @@ const PaginationWrapper = ({
                   }
                   disabled={currentPage === totalPages}
                   className={cn(
-                    "rounded-lg p-2 border border-gray-200 transition-colors",
+                    "cursor-pointer rounded-lg p-2 border border-gray-200 transition-colors",
                     currentPage === totalPages
                       ? "text-gray-400 cursor-not-allowed"
                       : "hover:bg-orange-100 hover:text-orange-500"

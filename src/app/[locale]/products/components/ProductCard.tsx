@@ -1,10 +1,17 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import { Product } from "@/types/Product";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-export function ProductCard({ product }: { product: any }) {
+interface IProductsPage {
+  product: Product;
+}
+
+export function ProductCard({ product }: IProductsPage) {
+  const { id, farsiTitle, price, brand, category, description, image } =
+    product;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -15,8 +22,8 @@ export function ProductCard({ product }: { product: any }) {
       {/* تصویر محصول با نوار طلایی زیرش */}
       <div className="relative w-full aspect-[4/3] overflow-hidden">
         <Image
-          src={product.image || "/images/placeholder.png"}
-          alt={product.farsiTitle}
+          src={image || "/images/placeholder.png"}
+          alt={farsiTitle}
           fill
           className="object-contain transition-transform duration-300 group-hover:scale-105"
         />
@@ -27,25 +34,25 @@ export function ProductCard({ product }: { product: any }) {
       {/* اطلاعات محصول */}
       <div className="p-4 space-y-2">
         <h3 className="text-xl font-bold text-gray-800 group-hover:text-orange-700 transition-colors duration-300">
-          {product.farsiTitle}
+          {farsiTitle}
         </h3>
-        <p className="text-sm text-gray-500">
-          برند: {product.brand?.farsiTitle}
-        </p>
-        <p className="text-sm text-gray-500">
-          دسته‌بندی: {product.category?.farsiTitle}
-        </p>
-        <p className="text-sm text-gray-600 line-clamp-2 h-10">
-          {product.description}
-        </p>
-        <p className="text-lg font-semibold text-orange-600 mt-2">
-          {product.price.toLocaleString()} تومان
-        </p>
+        {brand?.id && (
+          <p className="text-sm text-gray-500">برند: {brand?.farsiTitle}</p>
+        )}
+        {category?.id && (
+          <p className="text-sm text-gray-500">
+            دسته‌بندی: {category?.farsiTitle}
+          </p>
+        )}
+        <p className="text-sm text-gray-600 line-clamp-2 h-10">{description}</p>
+        {/* <p className="text-lg font-semibold text-orange-600 mt-2">
+          {price.toLocaleString()} تومان
+        </p> */}
       </div>
 
       {/* دکمه‌ی مشاهده با ظاهر فقط هنگام هاور */}
       <div className="px-4 pb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <Link href={`/products/${product.id}`}>
+        <Link href={`/products/${id}`}>
           <button className="cursor-pointer w-full text-center bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium py-2 rounded-xl hover:from-orange-600 hover:to-orange-700 transition-colors">
             مشاهده محصول
           </button>
