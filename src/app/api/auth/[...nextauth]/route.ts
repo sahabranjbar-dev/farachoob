@@ -22,15 +22,14 @@ export const authOptions: AuthOptions = {
           include: {
             role: {
               include: {
-                permissions: {
-                  select: { permissionId: true },
-                },
+                permissions: true,
               },
             },
           },
         });
 
         if (!user) return null;
+        if (!user.password) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
@@ -44,7 +43,6 @@ export const authOptions: AuthOptions = {
 
         return {
           id: user.id,
-          name: user.name,
           email: user.email,
           image: user.image,
           role,

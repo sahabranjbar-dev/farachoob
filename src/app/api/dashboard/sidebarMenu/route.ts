@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
+    console.log({ session });
+
     // گرفتن لیست permissionId های کاربر
     const roleId = session?.user?.roleId;
 

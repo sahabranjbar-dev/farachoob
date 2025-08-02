@@ -5,10 +5,11 @@ import { z } from "zod";
 
 const registerSchema = z
   .object({
-    name: z.string().min(1, "نام الزامی است"),
+    name: z.string().optional(), // نام اختیاری است
     email: z.string().email("ایمیل نامعتبر است"),
     password: z.string().min(6, "رمز عبور باید حداقل 6 کاراکتر باشد"),
     confirmPassword: z.string(),
+    mobile: z.string().optional(), // موبایل اختیاری است
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "رمز عبور و تکرار آن باید یکسان باشند",
@@ -20,7 +21,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     // اعتبارسنجی ورودی
-    const { name, email, password, confirmPassword } =
+    const { name, email, password, confirmPassword, mobile } =
       registerSchema.parse(body);
 
     // چک کردن ایمیل تکراری
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
 
     await prisma.user.create({
       data: {
-        name,
+        mobile,
         email,
         password: hashedPassword,
         role: {
@@ -57,6 +58,7 @@ export async function POST(req: Request) {
             id: customerRole.id,
           },
         },
+        firstName: name,
       },
     });
 

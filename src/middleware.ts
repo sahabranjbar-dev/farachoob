@@ -12,8 +12,6 @@ const protectedRoutes = ["/dashboard", "/admin", "/profile", "/panel"];
 
 export async function middleware(request: any) {
   const { nextUrl } = request;
-  console.log(nextUrl, "nextUrl");
-
   const isProtected = protectedRoutes.some((path) =>
     nextUrl.pathname.includes(path)
   );

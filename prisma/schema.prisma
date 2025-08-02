@@ -15,16 +15,31 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  email     String     @unique
-  password  String
-  name      String?
-  mobile    String?
-  image     String?
-  roleId    String
-  role      Role       @relation(fields: [roleId], references: [id])
-  createdAt DateTime   @default(now())
-  comments  Comments[]
+  id         String     @id @default(uuid())
+  email      String?    @unique
+  password   String?
+  firstName  String?
+  lastName   String?
+  nationalId String?    @unique
+  birthDate  DateTime?
+  mobile     String?    @unique
+  isActive   Boolean    @default(true)
+  isVerified Boolean    @default(false)
+  image      String?
+  roleId     String
+  role       Role       @relation(fields: [roleId], references: [id])
+  createdAt  DateTime   @default(now())
+  comments   Comments[]
+  CartItem   CartItem[]
+}
+
+model OTP {
+  id        String   @id @default(cuid())
+  mobile    String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 model Role {
@@ -63,7 +78,7 @@ model RolePermission {
 model Menu {
   id           String     @id @default(uuid())
   title        String
-  href         String
+  href         String     @unique
   icon         String?
   permissionId String
   permission   Permission @relation(fields: [permissionId], references: [id])
@@ -88,8 +103,9 @@ model Product {
   brandId      String?
   categoryId   String?
 
-  brand    Brand?    @relation(fields: [brandId], references: [id])
-  category Category? @relation(fields: [categoryId], references: [id])
+  brand     Brand?     @relation(fields: [brandId], references: [id])
+  category  Category?  @relation(fields: [categoryId], references: [id])
+  cartItems CartItem[]
 }
 
 model Brand {
@@ -118,4 +134,18 @@ model Comments {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    User     @relation(fields: [id], references: [id])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  color     String?
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId, color])
 }

@@ -269,13 +269,12 @@ const LoginPage = () => {
               <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gray-300"></div>
             </div>
 
-            <button
-              type="button"
+            <Link
+              href="/auth/OTP"
               className="flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-              onClick={() => alert(t("SIGN_IN_OTHER_BUTTON"))}
             >
               {t("SIGN_IN_OTHER_BUTTON")}
-            </button>
+            </Link>
 
             <p className="text-center text-sm text-gray-700">
               {t("NO_ACCOUNT_QUESTION")}{" "}

@@ -19,13 +19,12 @@ const MainDashboardPage = async ({
     });
     return;
   }
-
-  if (role !== "unauthorized" && session?.user.role !== role) {
+  if (!session) {
     redirect({
-      href: "/dashboard/unauthorized",
-      // TODO: change locale
+      href: "/auth/login",
       locale: "fa",
     });
+    return;
   }
   switch (role) {
     case "manager":

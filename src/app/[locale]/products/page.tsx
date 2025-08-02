@@ -81,8 +81,6 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
     },
   });
 
-  console.log({ products });
-
   return (
     <div className="min-h-screen">
       <ScrollToTopOnPageChange />

@@ -55,7 +55,6 @@ export default function ProductPage() {
   const [activeFeature, setActiveFeature] = useState(0);
 
   const params = useParams();
-  console.log("params", params);
   const id = params.id;
   useEffect(() => {
     const interval = setInterval(() => {
