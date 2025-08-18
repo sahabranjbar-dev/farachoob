@@ -5,4 +5,6 @@ export interface IListHeader {
   filter?: ReactElement;
   formPath?: string;
   title?: string;
+  hasExport?: boolean;
+  exportUrl?: string;
 }

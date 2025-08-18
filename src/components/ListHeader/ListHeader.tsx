@@ -11,12 +11,15 @@ import { useParams } from "next/navigation";
 import useTabular from "@/hooks/useTabular";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
+import ExportButton from "../ExportButton";
 
 const ListHeader = ({
   hasRefresh = true,
   filter: Filter,
   formPath,
   title,
+  hasExport = false,
+  exportUrl,
 }: IListHeader) => {
   const { fetch, loading } = useList();
   const [filterOpen, setFilterOpen] = useState<boolean>();
@@ -64,6 +67,8 @@ const ListHeader = ({
         >
           <Funnel />
         </Button>
+
+        {hasExport && exportUrl && <ExportButton exportUrl={exportUrl} />}
       </div>
       <motion.div
         initial={false}

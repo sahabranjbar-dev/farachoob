@@ -80,7 +80,7 @@ const ProductsForm = ({ initialData }: Props) => {
     loading: brandsLoading,
   } = useDataGetter({
     url: "/dashboard/brands",
-    immediatelyFetch: !!id,
+    immediatelyFetch: Boolean(initialData?.brandId),
   });
 
   const {
@@ -89,7 +89,7 @@ const ProductsForm = ({ initialData }: Props) => {
     loading: categoriesLoading,
   } = useDataGetter({
     url: "/dashboard/categories",
-    immediatelyFetch: !!id,
+    immediatelyFetch: Boolean(initialData?.categoryId),
   });
 
   const handleImageChange = useCallback(
@@ -130,13 +130,17 @@ const ProductsForm = ({ initialData }: Props) => {
       });
 
       const product = response.data;
-      if (product?.id) {
-        closeCurrentTab();
-        open("/products/productsForm", `فرم ویرایش ${product.farsiTitle}`, {
-          pageType: "EDIT",
-          id: product.id,
-        });
-      }
+      console.log({ product });
+
+      if (product?.id) closeCurrentTab();
+      open("/products/productsForm", `فرم ویرایش ${product.farsiTitle}`, {
+        pageType: "EDIT",
+        id: product.id,
+      });
+
+      toast.success(
+        `محصول ${product.farsiTitle} با موفقیت ${id ? "ویرایش" : "ایجاد"} شد`
+      );
     } catch (error: any) {
       toast.error(error.message || "خطا در ارسال فرم");
     } finally {
@@ -163,7 +167,11 @@ const ProductsForm = ({ initialData }: Props) => {
                   key={i}
                   control={form.control}
                   name={name as keyof FormValues}
-                  rules={{ required: `فیلد ${name} الزامی است.` }}
+                  rules={{
+                    required: `فیلد ${
+                      name === "farsiTitle" ? "نام فارسی" : "نام انگلیسی"
+                    } الزامی است.`,
+                  }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-medium">
@@ -237,7 +245,6 @@ const ProductsForm = ({ initialData }: Props) => {
                   key={i}
                   control={form.control}
                   name={name as keyof FormValues}
-                  rules={{ required: `${label} الزامی است.` }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-medium">{label}</FormLabel>

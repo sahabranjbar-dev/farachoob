@@ -11,4 +11,5 @@ export interface IListContainerContext {
   loading?: boolean;
   fetch?: ({ inputUrl, inputBody, inputParams }: IFetchData) => void;
   error?: any;
+  url?: string;
 }

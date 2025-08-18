@@ -23,6 +23,7 @@ const ListContainer = ({
         error,
         loading,
         fetch: (args = {}) => fetch?.(args),
+        url,
       }}
     >
       {children}

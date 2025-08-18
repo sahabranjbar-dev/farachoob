@@ -4,9 +4,18 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
+interface CustomUser {
+  id: string;
+  email: string;
+  image: string | null;
+  role: string;
+  roleId: string;
+  permissions: string[];
+}
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt", maxAge: 15 * 60 * 60 }, // 15 minutes
+  session: { strategy: "jwt", maxAge: 15 * 60 }, // 15 minutes
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -28,8 +37,7 @@ export const authOptions: AuthOptions = {
           },
         });
 
-        if (!user) return null;
-        if (!user.password) return null;
+        if (!user || !user.password || !user.role) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
@@ -39,12 +47,13 @@ export const authOptions: AuthOptions = {
 
         const roleId = user.role.id || "";
         const role = user.role.englishTitle || "";
-        const permissions = user.role.permissions.map((rp) => rp.permissionId);
+        const permissions =
+          user.role.permissions?.map((rp) => rp.permissionId) || [];
 
         return {
           id: user.id,
           email: user.email,
-          image: user.image,
+          image: user.image || null,
           role,
           roleId,
           permissions,
@@ -53,20 +62,20 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
-        token.image = user.image;
-        token.roleId = user.roleId;
-        token.permissions = user.permissions;
+        token.image = user.image ?? null;
+        token.roleId = user.roleId ?? "";
+        token.permissions = user.permissions ?? [];
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (session.user && token) {
         session.user.id = token.id as string;
-        session.user.image = token.image as string;
+        session.user.image = token.image as string | null;
         session.user.role = token.role as string;
         session.user.roleId = token.roleId as string;
         session.user.permissions = token.permissions as string[];
