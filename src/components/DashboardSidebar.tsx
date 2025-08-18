@@ -8,7 +8,7 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Role } from "@/types/dashboard";
 import { motion } from "framer-motion";
@@ -63,20 +63,20 @@ export function DashboardSidebar({ user }: Props) {
   };
 
   return (
-    <Sidebar className="bg-white dark:bg-gray-900 border-l shadow-md">
+    <Sidebar className="bg-white dark:bg-gray-900 shadow-lg w-64 flex flex-col border-l">
       {/* Header */}
       <SidebarHeader>
         <div className="flex items-center gap-4 p-4">
-          <Avatar className="w-12 h-12">
+          <Avatar className="w-12 h-12 ring-2 ring-orange-400">
             <AvatarImage src={user.image || ""} alt={user.name || "User"} />
             <AvatarFallback className="text-lg">
               {user.name?.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col">
-            <span className="font-semibold text-base">{user.name}</span>
+          <div className="flex flex-col truncate">
+            <span className="font-bold text-lg truncate">{user.name}</span>
             {user.roles && (
-              <span className="text-xs text-muted-foreground capitalize mt-0.5">
+              <span className="text-xs text-muted-foreground capitalize mt-0.5 truncate">
                 {user.roles}
               </span>
             )}
@@ -85,34 +85,34 @@ export function DashboardSidebar({ user }: Props) {
       </SidebarHeader>
 
       {/* Content */}
-      <SidebarContent>
-        <SidebarGroup title="منو">
+      <SidebarContent className="overflow-y-auto overflow-x-hidden flex-1 px-2 py-3">
+        <SidebarGroup title="منو" className="text-gray-400 dark:text-gray-500">
           {/* Static dashboard link */}
           <Button
             variant="ghost"
             onClick={() => open("/", "داشبورد")}
             className={cn(
-              "relative flex items-center gap-3 p-3 rounded-lg text-sm transition-colors",
+              "relative flex items-center gap-3 p-3 rounded-xl text-sm transition-all duration-200 w-full justify-start",
               pathname === `/dashboard/${role}`
-                ? "bg-orange-500 text-white hover:bg-orange-600"
-                : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                ? "bg-gradient-to-r from-orange-400 to-orange-500 text-white shadow-md hover:shadow-lg"
+                : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
             )}
           >
             {pathname === `/dashboard/${role}` && (
               <motion.div
                 layoutId="activeSidebarItem"
-                className="absolute right-0 top-0 h-full w-1 bg-blue-500 rounded-r"
+                className="absolute right-0 top-0 h-full w-1 rounded-r bg-orange-500 shadow-lg"
               />
             )}
             <Icons.Home size={20} />
-            <span>صفحه اصلی</span>
+            <span className="truncate font-medium">صفحه اصلی</span>
           </Button>
 
           {/* Dynamic menu */}
           {isLoading || isValidating ? (
-            <div className="space-y-2 mt-2 px-3">
+            <div className="space-y-2 mt-4 px-2">
               {[...Array(4)].map((_, i) => (
-                <Skeleton key={i} className="h-8 w-full rounded-lg" />
+                <Skeleton key={i} className="h-10 w-full rounded-lg" />
               ))}
             </div>
           ) : (
@@ -122,14 +122,15 @@ export function DashboardSidebar({ user }: Props) {
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter className="border-t">
-        <button
+      <SidebarFooter className="border-t p-3">
+        <Button
           onClick={() => signOut({ callbackUrl: "/auth/login" })}
-          className="flex w-full items-center gap-2 p-3 rounded-md text-sm text-red-600 hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
+          variant="outline"
+          className="flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-xl transition-all duration-200 w-full justify-start"
         >
-          <LogOut size={18} />
-          <span>خروج</span>
-        </button>
+          <LogOut size={20} />
+          <span className="truncate">خروج</span>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );

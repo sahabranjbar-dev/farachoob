@@ -39,7 +39,7 @@ const MenuItem = ({ item, isActive, open, index, IconComponent }: Props) => {
         key={index}
         variant="ghost"
         className={cn(
-          "relative flex items-center justify-between gap-3 p-4 m-2 rounded-lg text-sm transition-colors",
+          "w-[96%] overflow-hidden relative flex items-center justify-between gap-3 p-4 m-2 rounded-lg text-sm transition-colors",
           isActive
             ? "bg-orange-500 text-white hover:bg-orange-600"
             : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -59,11 +59,13 @@ const MenuItem = ({ item, isActive, open, index, IconComponent }: Props) => {
         )}
         {/* Clickable Title */}
         <div
-          className="flex items-center gap-3 flex-1 cursor-pointer"
+          className="flex items-center gap-3 flex-1 cursor-pointer truncate overflow-hidden whitespace-nowrap"
           onClick={() => item.href && open(item.href, item.title)}
         >
           {IconComponent && <IconComponent size={20} />}
-          <span className="truncate">{item.title}</span>
+          <span className="truncate overflow-hidden whitespace-nowrap">
+            {item.title}
+          </span>
         </div>
       </Button>
 
@@ -95,7 +97,9 @@ const MenuItem = ({ item, isActive, open, index, IconComponent }: Props) => {
                   >
                     <div className="flex items-center gap-3">
                       {child.icon && <Icon size={20} />}
-                      <span className="truncate">{child.title}</span>
+                      <span className="truncate overflow-hidden whitespace-nowrap">
+                        {child.title}
+                      </span>
                     </div>
                   </Button>
                 );

@@ -1,6 +1,5 @@
-import { getServerSession } from "next-auth";
 import NotFound from "./not-found";
 
 export default async function CatchAllPage() {
-  return <NotFound route={`/dashboard`} />;
+  return <NotFound route="/" />;
 }

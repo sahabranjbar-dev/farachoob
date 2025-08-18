@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter } from "@/i18n/navigation";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
-import { useEffect, useMemo, useTransition } from "react";
+import { useEffect, useMemo, useTransition, useCallback } from "react";
 import { useTabStore } from "../../stores/tabStore";
 import { useLoadingStore } from "../../stores/loadingStore";
+import { useRouter } from "@/i18n/navigation"; // router سفارشی
 
 export default function useTabular() {
   const {
@@ -31,36 +31,51 @@ export default function useTabular() {
     [tabs, activeTabId]
   );
 
+  // Navigate on activeTab change
   useEffect(() => {
+    if (!activeTab?.path || !role) return;
+
     const base = `/dashboard/${role}`;
-    const target = activeTab?.path ? `${base}/${activeTab.path}` : base;
+    const target = `${base}/${activeTab.path}`;
+    const currentPath =
+      typeof window !== "undefined" ? window.location.pathname : "";
 
-    startTransition(() => {
-      startLoading();
-      router.replace(target);
-      stopLoading();
-    });
-  }, [activeTabId, role, locale]);
+    if (currentPath !== target) {
+      startTransition(() => {
+        startLoading();
+        router.replace(target);
+        stopLoading(); // stopLoading بعد از replace
+      });
+    }
+  }, [activeTab?.path, role, router]);
 
-  const open = (
-    path: string,
-    title: string,
-    queryParams?: Record<string, string>
-  ) => {
-    const queryString = queryParams
-      ? "?" + new URLSearchParams(queryParams).toString()
-      : "";
+  // Open tab function
+  const open = useCallback(
+    (path: string, title: string, queryParams?: Record<string, string>) => {
+      if (!role) return;
 
-    const fullPath = `${path}${queryString}`;
-    const fullDashboardPath = `/dashboard/${role}/${fullPath}`;
+      const queryString = queryParams
+        ? "?" + new URLSearchParams(queryParams).toString()
+        : "";
 
-    startTransition(() => {
-      startLoading();
-      openTabInStore(fullPath, title);
-      router.push(fullDashboardPath);
-      stopLoading();
-    });
-  };
+      const fullPath = `${path}${queryString}`;
+      const fullDashboardPath = `/dashboard/${role}/${fullPath}`;
+      const currentPath =
+        typeof window !== "undefined" ? window.location.pathname : "";
+
+      startTransition(() => {
+        startLoading();
+        openTabInStore(fullPath, title);
+
+        if (currentPath !== fullDashboardPath) {
+          router.push(fullDashboardPath);
+        }
+
+        stopLoading(); // stopLoading بعد از push
+      });
+    },
+    [role, router, openTabInStore, startLoading, stopLoading]
+  );
 
   return {
     tabs,
@@ -69,6 +84,7 @@ export default function useTabular() {
     closeTab,
     closeCurrentTab,
     closeAllTabs,
+    activeTab,
     isPending,
   };
 }

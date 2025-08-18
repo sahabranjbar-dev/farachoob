@@ -49,6 +49,7 @@
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.511.0",
     "motion": "^12.17.3",
     "next": "15.3.3",
