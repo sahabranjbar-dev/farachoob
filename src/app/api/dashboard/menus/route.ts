@@ -83,7 +83,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { title, href, icon, permissionId, status } = await request.json();
+    const { title, href, icon, permissionId, status, parentId } =
+      await request.json();
 
     if (!title || !href || !permissionId) {
       return NextResponse.json(
@@ -99,6 +100,7 @@ export async function POST(request: Request) {
         icon,
         permissionId,
         status: status ?? true,
+        parentId: parentId || null,
       },
     });
 
@@ -111,7 +113,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, title, href, icon, permissionId, status } = body;
+    const { id, title, href, icon, permissionId, status, parentId } = body;
 
     if (!id || !title || !href || !permissionId) {
       return NextResponse.json(
@@ -128,6 +130,7 @@ export async function PUT(request: Request) {
         icon,
         permissionId,
         status,
+        parentId,
       },
     });
 
@@ -139,25 +142,3 @@ export async function PUT(request: Request) {
     );
   }
 }
-
-// export async function DELETE(request: Request) {
-//   try {
-//     const { searchParams } = new URL(request.url);
-//     const idParam = searchParams.get("id");
-//     if (!idParam) {
-//       return NextResponse.json(
-//         { message: "شناسه منو لازم است." },
-//         { status: 400 }
-//       );
-//     }
-//     const id = parseInt(idParam, 10);
-
-//     await prisma.menu.delete({
-//       where: { id },
-//     });
-
-//     return NextResponse.json({ message: "منو با موفقیت حذف شد." });
-//   } catch (error) {
-//     return NextResponse.json({ message: "خطا در حذف منو" }, { status: 500 });
-//   }
-// }

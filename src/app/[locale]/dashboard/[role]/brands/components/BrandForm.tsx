@@ -64,7 +64,7 @@ const BrandForm = ({ initialData }: Props) => {
       {loading ? <FullScreenLoading /> : null}
       <CardHeader>
         <CardTitle className="text-center">
-          فرم {initialData?.id ? "ویرایش" : "ایجاد"} منو
+          فرم {initialData?.id ? "ویرایش" : "ایجاد"} برند
         </CardTitle>
       </CardHeader>
       <CardContent>

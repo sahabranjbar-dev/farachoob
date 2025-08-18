@@ -51,6 +51,8 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
             <div className="py-1">
               <Link
                 href="/dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border-b flex justify-around items-center gap-2 text-center px-4 py-2 text-sm text-blue-700 hover:bg-orange-100 w-full"
               >
                 <LayoutDashboardIcon />
@@ -68,7 +70,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
   return (
     <Link
       href="/auth/login"
-      className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer p-2 rounded-lg  transition-colors duration-300"
+      className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer p-2 rounded-lg border hover:outline-1 transition-colors duration-300"
     >
       <LogIn className="rotate-180" size={20} />
       <span>{t("Login") + " / " + t("Register")}</span>

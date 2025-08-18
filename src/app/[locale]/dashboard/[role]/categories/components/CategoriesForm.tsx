@@ -64,7 +64,7 @@ const CategoriesForm = ({ initialData }: Props) => {
       {loading && <FullScreenLoading />}
       <CardHeader>
         <CardTitle className="text-center">
-          فرم {initialData?.id ? "ویرایش" : "ایجاد"} منو
+          فرم {initialData?.id ? "ویرایش" : "ایجاد"} دسته‌بندی
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -31,8 +31,11 @@ const UsersList = () => {
         hasDateFormatter: true,
       },
       {
-        field: "",
+        field: "permissions",
         title: "دسترسی",
+        render: (v) => {
+          return v.length > 0 ? v.join(", ") : "بدون دسترسی";
+        },
       },
       {
         field: "id",

@@ -19,6 +19,7 @@ import useSWR from "swr";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import useTabular from "@/hooks/useTabular";
+import MenuItem from "./MenuItem";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -48,24 +49,16 @@ export function DashboardSidebar({ user }: Props) {
   const isRouteActive = (href: string) => pathname.includes(href);
 
   const renderMenuItem = (item: any, index: number) => {
-    const isActive = isRouteActive(item.href);
     const IconComponent = (Icons as any)[item.icon] || Icons.Package;
-
+    const isActive = isRouteActive(item.href);
     return (
-      <Button
+      <MenuItem
         key={index}
-        variant="ghost"
-        onClick={() => open(item.href, item.title)}
-        className={cn(
-          "relative flex items-center justify-start gap-3 p-4 m-2 rounded-lg text-sm transition-colors",
-          isActive
-            ? "bg-orange-500 text-white hover:bg-orange-600"
-            : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-        )}
-      >
-        <IconComponent size={20} />
-        <span className="truncate">{item.title}</span>
-      </Button>
+        item={item}
+        isActive={isActive}
+        open={open}
+        IconComponent={IconComponent}
+      />
     );
   };
 

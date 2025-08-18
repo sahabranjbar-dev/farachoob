@@ -25,7 +25,6 @@ const RolesFormPage = async ({ params, searchParams }: IRolesFormPage) => {
           select: {
             id: true,
             email: true,
-            name: true,
             role: true,
           },
         },

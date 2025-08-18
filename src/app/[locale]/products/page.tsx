@@ -4,6 +4,7 @@ import { ProductCard } from "./components/ProductCard";
 import { SortSelect } from "./components/SortSelect";
 import ProductsPagination from "./components/ProductsPagination";
 import ScrollToTopOnPageChange from "./components/ScrollToTopOnPageChange";
+import EmptyProducts from "@/components/EmptyProducts";
 
 interface IProductsPage {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -67,9 +68,7 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
 
   const totalItems = await prisma?.product.count({ where: whereClause });
   if (!totalItems) {
-    return (
-      <div className="text-center text-gray-500">هیچ محصولی یافت نشد.</div>
-    );
+    return <EmptyProducts />;
   }
   const products = await prisma?.product.findMany({
     where: whereClause,

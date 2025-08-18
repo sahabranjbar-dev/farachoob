@@ -14,23 +14,6 @@ type FormData = {
   mobile: string;
 };
 
-export let recaptchaVerifier: RecaptchaVerifier | null = null;
-
-export const generateRecaptcha = () => {
-  if (!recaptchaVerifier) {
-    recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-      size: "invisible",
-      callback: (response: any) => {
-        console.log("reCAPTCHA solved", response);
-      },
-      "expired-callback": () => {
-        console.log("reCAPTCHA expired");
-      },
-    });
-    recaptchaVerifier.render(); // یادت نره!
-  }
-};
-
 const LoginWithPhone = () => {
   const router = useRouter();
   const {
@@ -47,17 +30,29 @@ const LoginWithPhone = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      generateRecaptcha(); // تعریف قبلی
-
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        `+98${data.mobile}`,
-        recaptchaVerifier!
-      );
-      console.log({ confirmation });
-
+      console.log({ data });
+      const response = await fetch("https://api.sms.ir/v1/send/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "text/plain",
+          "x-api-key": "fz3cwtYml9c7vz8FfxqmVVqLzGWmEwiaBr0CvVv09YXntNWr",
+        },
+        body: JSON.stringify({
+          mobile: data?.mobile,
+          templateId: 722649,
+          parameters: [
+            {
+              name: "CODE",
+              value: "12345",
+            },
+          ],
+        }),
+      });
       // نگهداری confirmation برای وارد کردن کد بعدی
       // setConfirm(confirmation); // یا تو context بذار
+      const result = await response.json();
+      console.log({ response, result });
     } catch (error) {
       console.error("خطا در ارسال OTP:", error);
     }

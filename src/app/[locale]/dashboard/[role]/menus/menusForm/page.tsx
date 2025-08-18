@@ -29,7 +29,6 @@ import {
 import useDataGetter from "@/hooks/useDataGetter";
 import useParams from "@/hooks/useParams";
 import useTabular from "@/hooks/useTabular";
-import { useRouter } from "@/i18n/navigation";
 import { Check } from "lucide-react";
 import { useForm } from "react-hook-form";
 
@@ -40,14 +39,15 @@ type FormValues = {
   icon?: string;
   permissionId: string;
   status: boolean;
+  parentId?: string;
 };
 
 const MenusFormPage = () => {
-  const router = useRouter();
   const { params, setActiveParam } = useParams<{
     pageType?: string;
     id?: string;
   }>();
+  const { closeCurrentTab } = useTabular();
   const id = params?.id;
   const { data: formData, loading: formDataLoading } = useDataGetter({
     url: `dashboard/menus/${id}`,
@@ -61,6 +61,7 @@ const MenusFormPage = () => {
           icon: data?.icon || "",
           permissionId: data?.permissionId || "",
           status: data?.status ?? true,
+          parentId: data?.parentId || "",
         });
       }
     },
@@ -92,16 +93,31 @@ const MenusFormPage = () => {
     immediatelyFetch: Boolean(id),
   });
   const onSubmit = (data: FormValues) => {
+    console.log({ data });
+
     fetch?.({
       inputBody: data,
-    }).then((data) => {
-      setActiveParam({
-        pageType: "EDIT",
-        id: data?.id,
+    })
+      .then((data) => {
+        setActiveParam({
+          pageType: "EDIT",
+          id: data?.id,
+        });
+      })
+      .finally(() => {
+        window.location.reload();
       });
-    });
   };
-  const { closeCurrentTab } = useTabular();
+
+  const {
+    data: menus,
+    fetch: fetchMenus,
+    loading: menusLoading,
+  } = useDataGetter({
+    url: "dashboard/menus",
+    immediatelyFetch: true,
+  });
+
   return (
     <Card className="relative">
       {formDataLoading && (
@@ -116,14 +132,15 @@ const MenusFormPage = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-3 gap-4">
+              {/* عنوان */}
               <FormField
                 control={form.control}
                 name="title"
                 rules={{ required: "عنوان الزامی است" }}
-                render={({ field, fieldState }) => (
-                  <FormItem className="">
+                render={({ field }) => (
+                  <FormItem>
                     <FormLabel>عنوان منو</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="مثال: مدیریت کاربران" />
@@ -133,6 +150,7 @@ const MenusFormPage = () => {
                 )}
               />
 
+              {/* آدرس */}
               <FormField
                 control={form.control}
                 name="href"
@@ -141,31 +159,65 @@ const MenusFormPage = () => {
                   <FormItem>
                     <FormLabel>آدرس</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="/dashboard/admin/users" />
+                      <Input {...field} placeholder="/admin/users" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* والد / زیرمنو */}
+              <FormField
+                control={form.control}
+                name="parentId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>منوی والد (اختیاری)</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value || ""}
+                        onValueChange={field.onChange}
+                        onOpenChange={() => {
+                          if (!menus?.resultList?.length) fetchMenus?.({});
+                        }}
+                      >
+                        <SelectTrigger className="w-full cursor-pointer">
+                          <SelectValue placeholder="انتخاب منوی والد" />
+                        </SelectTrigger>
+                        <SelectContent className="h-56">
+                          {menusLoading ? (
+                            <Spinner />
+                          ) : (
+                            menus?.resultList
+                              ?.filter((menu: any) => menu.id !== id) // جلوگیری از انتخاب خودش
+                              .map((menu: any) => (
+                                <SelectItem key={menu.id} value={menu.id}>
+                                  {menu.title}
+                                </SelectItem>
+                              ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              {/* دسترسی */}
               <FormField
                 control={form.control}
                 name="permissionId"
                 rules={{ required: "انتخاب دسترسی الزامی است" }}
-                render={({ field, fieldState }) => (
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>دسترسی</FormLabel>
-                    <FormControl onClick={() => {}}>
+                    <FormControl>
                       <Select
                         value={field.value}
-                        defaultValue="salam"
-                        onValueChange={(val) => field.onChange(val)}
+                        onValueChange={field.onChange}
                         onOpenChange={() => {
-                          if (
-                            permissionLoading ||
-                            permissions?.resultList?.length
-                          )
-                            return;
-                          fetchPermissions?.({});
+                          if (!permissions?.resultList?.length)
+                            fetchPermissions?.({});
                         }}
                       >
                         <SelectTrigger className="w-full cursor-pointer">
@@ -181,10 +233,10 @@ const MenusFormPage = () => {
                                 farsiTitle: string;
                               }) => (
                                 <SelectItem
-                                  key={permission?.id}
-                                  value={permission?.id ?? ""}
+                                  key={permission.id}
+                                  value={permission.id}
                                 >
-                                  {permission?.farsiTitle}
+                                  {permission.farsiTitle}
                                 </SelectItem>
                               )
                             )
@@ -196,6 +248,8 @@ const MenusFormPage = () => {
                   </FormItem>
                 )}
               />
+
+              {/* آیکن */}
               <FormField
                 control={form.control}
                 name="icon"
@@ -203,12 +257,13 @@ const MenusFormPage = () => {
                   <FormItem>
                     <FormLabel>آیکن</FormLabel>
                     <FormControl>
-                      <Input type="file" {...field} />
+                      <Input {...field} placeholder="مثال: plus" />
                     </FormControl>
                   </FormItem>
                 )}
               />
 
+              {/* وضعیت */}
               <FormField
                 control={form.control}
                 name="status"
@@ -242,7 +297,6 @@ const MenusFormPage = () => {
           </form>
         </Form>
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
   );
 };

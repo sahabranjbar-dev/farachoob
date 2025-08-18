@@ -85,6 +85,10 @@ model Menu {
   status       Boolean    @default(true)
   createdAt    DateTime   @default(now())
   updateAt     DateTime   @updatedAt
+
+  parentId String?
+  parent   Menu?   @relation("SubMenuRelation", fields: [parentId], references: [id])
+  subMenus Menu[]  @relation("SubMenuRelation")
 }
 
 // schema.prisma

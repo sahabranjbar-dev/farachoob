@@ -41,8 +41,18 @@ export async function GET(request: Request) {
         status: true,
         createdAt: true,
         updateAt: true,
-        permissions: { select: { permission: true, permissionId: true } },
-        users: { select: { name: true, id: true, email: true } },
+        permissions: {
+          select: {
+            permission: true,
+            permissionId: true,
+          },
+        },
+        users: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
       },
     });
 

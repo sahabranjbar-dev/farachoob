@@ -2,6 +2,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
+
 const HeroSection = () => {
   useGSAP(() => {
     gsap.from("#right-content", {
