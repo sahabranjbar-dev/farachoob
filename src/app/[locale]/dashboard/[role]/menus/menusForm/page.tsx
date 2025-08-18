@@ -93,8 +93,6 @@ const MenusFormPage = () => {
     immediatelyFetch: Boolean(id),
   });
   const onSubmit = (data: FormValues) => {
-    console.log({ data });
-
     fetch?.({
       inputBody: data,
     })

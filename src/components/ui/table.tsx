@@ -58,22 +58,47 @@ function Table({
   );
 
   const renderDataRows = () =>
-    listData?.map((item: any, index: number) => (
-      <TableRow key={index}>
-        {columns.map((column) => (
-          <TableCell
-            key={column.field}
-            className="text-center truncate px-2 py-3"
-            style={{
-              width: column.width || "50px",
-              maxWidth: column.width || "50px",
-            }}
-          >
-            {renderCellContent(column, item, index)}
-          </TableCell>
-        ))}
+    listData && listData.length > 0 ? (
+      listData.map((item: any, index: number) => (
+        <TableRow key={index}>
+          {columns.map((column) => (
+            <TableCell
+              key={column.field}
+              className="text-center truncate px-2 py-3"
+              style={{
+                width: column.width || "50px",
+                maxWidth: column.width || "50px",
+              }}
+            >
+              {renderCellContent(column, item, index)}
+            </TableCell>
+          ))}
+        </TableRow>
+      ))
+    ) : (
+      // If no data, show a single row with a message
+      <TableRow>
+        <TableCell colSpan={columns.length} className="text-center py-6">
+          <p className="text-gray-500">هیچ داده‌ای برای نمایش وجود ندارد.</p>
+        </TableCell>
       </TableRow>
-    ));
+    );
+  listData?.map((item: any, index: number) => (
+    <TableRow key={index}>
+      {columns.map((column) => (
+        <TableCell
+          key={column.field}
+          className="text-center truncate px-2 py-3"
+          style={{
+            width: column.width || "50px",
+            maxWidth: column.width || "50px",
+          }}
+        >
+          {renderCellContent(column, item, index)}
+        </TableCell>
+      ))}
+    </TableRow>
+  ));
 
   return (
     <div className="relative w-full overflow-x-auto border rounded-md shadow-sm">
