@@ -72,7 +72,6 @@ const UserForm = ({ initialData, roles = [] }: IUserForm) => {
     immediatelyFetch: false,
   });
   const onSubmit = async (values: FormValues) => {
-    console.log("Edit User", values);
     fetch?.({
       inputBody: values,
     })

@@ -179,7 +179,6 @@ export async function POST(req: Request) {
       imageUrl = (uploadRes as any).secure_url;
     }
 
-    // 🟦 ذخیره در پایگاه داده
     const product = await prisma.product.create({
       data: {
         farsiTitle,

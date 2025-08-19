@@ -130,8 +130,6 @@ const ProductsForm = ({ initialData }: Props) => {
       });
 
       const product = response.data;
-      console.log({ product });
-
       if (product?.id) closeCurrentTab();
       open("/products/productsForm", `فرم ویرایش ${product.farsiTitle}`, {
         pageType: "EDIT",

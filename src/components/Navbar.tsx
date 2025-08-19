@@ -49,12 +49,6 @@ const Navbar = () => {
   const navItems = useMemo(
     () => [
       { id: "home", title: "خانه", url: "/", icon: House },
-      {
-        id: "representatives",
-        title: "نمایندگان",
-        url: "/representatives",
-        icon: Building2,
-      },
       { id: "blogs", title: "بلاگ‌ها", url: "/blogs", icon: Newspaper },
       {
         id: "contact",

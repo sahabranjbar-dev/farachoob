@@ -62,25 +62,28 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user?: any }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
-        token.image = user.image ?? null;
-        token.roleId = user.roleId ?? "";
-        token.permissions = user.permissions ?? [];
+        token.roleId = user.roleId;
+        token.permissions = user.permissions;
+        token.image = user.image;
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
-      if (session.user && token) {
+    async session({ session, token }) {
+      if (session.user) {
         session.user.id = token.id as string;
+        session.user.role = token.role;
+        session.user.roleId = token.roleId;
+        session.user.permissions = token.permissions;
         session.user.image = token.image as string | null;
-        session.user.role = token.role as string;
-        session.user.roleId = token.roleId as string;
-        session.user.permissions = token.permissions as string[];
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return `${baseUrl}/fa/dashboard`;
     },
   },
   pages: {

@@ -30,7 +30,6 @@ const LoginWithPhone = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      console.log({ data });
       const response = await fetch("https://api.sms.ir/v1/send/verify", {
         method: "POST",
         headers: {
@@ -52,7 +51,6 @@ const LoginWithPhone = () => {
       // نگهداری confirmation برای وارد کردن کد بعدی
       // setConfirm(confirmation); // یا تو context بذار
       const result = await response.json();
-      console.log({ response, result });
     } catch (error) {
       console.error("خطا در ارسال OTP:", error);
     }
