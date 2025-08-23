@@ -15,6 +15,8 @@ import "swiper/css/pagination";
 import ProductCard from "./ProductCard";
 import useDataGetter from "@/hooks/useDataGetter";
 import { Skeleton } from "./ui/skeleton";
+import { IProduct } from "@/app/[locale]/products/meta/types";
+import { Link } from "@/i18n/navigation";
 
 const NewestProducts = () => {
   const {
@@ -89,35 +91,20 @@ const NewestProducts = () => {
               ))}
             </>
           ) : (
-            products?.resultList?.map(
-              (product: {
-                id: Key | null | undefined;
-                image: string | undefined;
-                title: string | undefined;
-                description: string | undefined;
-                price: string | undefined;
-              }) => (
-                <SwiperSlide key={product.id} className="!w-80 !h-auto">
-                  <ProductCard
-                    imageSrc={product.image}
-                    imageAlt={product.title}
-                    title={product.title}
-                    description={product.description}
-                    price={product.price}
-                    className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col hover:-translate-y-2"
-                  />
-                </SwiperSlide>
-              )
-            )
+            products?.resultList?.map((product: IProduct) => (
+              <SwiperSlide key={product.id} className="!w-80 !h-auto">
+                <ProductCard
+                  id={product.id}
+                  imageSrc={product.image}
+                  imageAlt={product.title}
+                  title={product.title}
+                  description={product.description}
+                  className="cursor-pointer bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col"
+                />
+              </SwiperSlide>
+            ))
           )}
         </Swiper>
-      </div>
-
-      {/* CTA */}
-      <div className="text-center mt-8">
-        <button className="px-10 py-3 bg-white/90 text-orange-600 font-bold rounded-xl hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl">
-          مشاهده همه محصولات
-        </button>
       </div>
     </div>
   );

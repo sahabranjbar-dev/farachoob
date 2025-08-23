@@ -8,6 +8,7 @@ export interface useDataGetterInputs<Body = any, Params = any> {
   immediatelyFetch?: boolean;
   onSuccess?: (data?: any) => void;
   onFailure?: (error?: any) => void;
+  showError?: boolean;
 }
 
 export interface IFetchData<InputBody = any, InputParams = any> {

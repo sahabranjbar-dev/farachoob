@@ -23,6 +23,7 @@ export default function useDataGetter<T = any>({
   body,
   onFailure,
   onSuccess,
+  showError = false,
 }: useDataGetterInputs): useDataGetterOuput<T> {
   const [state, setState] = useState<State<T>>({
     data: null,
@@ -59,6 +60,7 @@ export default function useDataGetter<T = any>({
           setState({ data: null, loading: false, error: err });
           reject(err);
           onFailure?.(err);
+          if (!showError) return;
           toast.error(err?.response?.data?.message || "خطایی رخ داده است", {
             position: "bottom-center",
             closeButton: true,
