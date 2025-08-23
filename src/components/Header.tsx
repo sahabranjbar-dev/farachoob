@@ -86,28 +86,6 @@ const Header = () => {
           <div className="hidden md:flex justify-between items-center flex-row-reverse gap-4">
             <LoginAndRegister nameSpace="Header" />
           </div>
-
-          {/* Cart Sidebar */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <motion.div whileTap={{ scale: 0.9 }}>
-                <div className="p-2 bg-white rounded-lg flex justify-center items-center relative cursor-pointer">
-                  <ShoppingCart size={20} className=" text-black font-thin" />
-                  <div className="bg-orange-500 text-white w-2 h-2 rounded-full p-2 flex justify-center items-center absolute to-0 right-0">
-                    0
-                  </div>
-                </div>
-              </motion.div>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:max-w-md">
-              <div className="py-4">
-                <SheetTitle className="text-lg font-semibold absolute left-5 top-5">
-                  {t("Your-cart", { name: "userName" })}
-                </SheetTitle>
-                {/* Your cart content here */}
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
       </div>
     </motion.header>

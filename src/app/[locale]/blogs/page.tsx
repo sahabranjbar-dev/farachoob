@@ -1,4 +1,3 @@
-// app/blogs/page.tsx
 import Link from "next/link";
 import Image from "next/image";
 import { CalendarDays, ArrowRight } from "lucide-react";
@@ -8,15 +7,12 @@ interface BlogPost {
   id: string;
   title: string;
   excerpt: string;
-  slug: string;
   date: string;
   image: string;
 }
 
-// ISR → صفحه هر 1 ساعت دوباره ساخته میشه
 export const revalidate = 3600;
 
-// گرفتن داده‌ها از دیتابیس
 async function getArticles(): Promise<BlogPost[]> {
   const articles = await prisma.article.findMany({
     where: { published: true },
@@ -27,8 +23,7 @@ async function getArticles(): Promise<BlogPost[]> {
   return articles.map((a) => ({
     id: a.id,
     title: a.title,
-    excerpt: a.content.slice(0, 150) + "...", // خلاصه محتوا
-    slug: a.id, // اگر slug جدا نداریم، از id استفاده می‌کنیم
+    excerpt: a.content.slice(0, 150) + "...",
     date: a.publishedAt
       ? new Intl.DateTimeFormat("fa-IR").format(a.publishedAt)
       : "",
@@ -38,73 +33,89 @@ async function getArticles(): Promise<BlogPost[]> {
 
 export default async function Blogs() {
   const blogPosts = await getArticles();
+  console.log({ blogPosts });
 
   return (
-    <>
-      {/* هیرو بخش */}
-      <section className="bg-gradient-to-r from-indigo-700 to-blue-500 text-white py-20 relative overflow-hidden">
-        <div className="container mx-auto px-6 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-6">
-            بلاگ تخصصی مبلمان اداری
-          </h1>
-          <p className="text-lg sm:text-xl max-w-2xl mx-auto text-blue-100">
-            جدیدترین مقالات و راهنمای‌های تخصصی در زمینه طراحی محیط کار و انتخاب
-            مبلمان اداری
-          </p>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section - Elegant Design */}
+      <section className="relative py-14 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, #4F46E5 1px, transparent 0)`,
+              backgroundSize: "24px 24px",
+            }}
+          ></div>
+        </div>
+
+        <div className="container relative mx-auto px-6 text-center">
+          <div className="mb-8">
+            <div className="w-16 h-0.5 bg-gradient-to-r from-indigo-400 to-blue-400 mx-auto mb-6"></div>
+            <h1 className="text-4xl sm:text-5xl font-medium text-gray-800 mb-6 tracking-tight leading-tight">
+              مقالات سایت فراچوب
+            </h1>
+          </div>
         </div>
       </section>
 
-      {/* بخش اصلی */}
-      <main className="container mx-auto px-6 py-16">
-        {/* لیست مقالات */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      {/* Main Content */}
+      <main className="container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
-            <div
+            <article
               key={post.id}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all border border-gray-100"
+              className="group bg-white rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 shadow-sm hover:shadow-md"
             >
-              <div className="h-52 relative overflow-hidden">
+              <div className="relative h-60 w-full overflow-hidden">
                 <Image
                   src={post.image}
                   alt={post.title}
                   fill
-                  className="object-cover hover:scale-110 transition-transform duration-500"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  style={{ objectPosition: "center" }}
                 />
-              </div>
-              <div className="p-6 flex flex-col justify-between h-56">
-                <div>
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                    <span className="flex items-center gap-1">
-                      <CalendarDays size={14} /> {post.date}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold mb-2">{post.title}</h3>
-                  <p className="text-gray-600 line-clamp-3">{post.excerpt}</p>
+                <div className="absolute top-4 left-4 bg-white/90 text-gray-600 px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 shadow-sm backdrop-blur-sm">
+                  <CalendarDays size={12} />
+                  <span>{post.date}</span>
                 </div>
+              </div>
+
+              <div className="p-6">
+                <h3 className="text-xl font-medium text-gray-800 mb-3 leading-relaxed group-hover:text-gray-600 transition-colors">
+                  {post.title}
+                </h3>
 
                 <Link
-                  href={`/blog/${post.slug}`}
-                  className="flex items-center text-blue-600 font-semibold mt-4 hover:text-blue-800 transition-colors"
+                  href={`/blogs/${post.id}`}
+                  className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 transition-colors group/btn font-medium"
                 >
-                  مطالعه مقاله
-                  <ArrowRight size={16} className="mr-2" />
+                  <span className="border-b border-transparent group-hover/btn:border-gray-300 transition-all">
+                    مطالعه مقاله
+                  </span>
+                  <ArrowRight
+                    size={14}
+                    className="mt-0.5 transition-transform group-hover/btn:translate-x-1"
+                  />
                 </Link>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
-        {/* پینوشت */}
-        <div className="mt-20 text-center">
-          <h3 className="text-2xl font-bold mb-4">
-            دانش تخصصی برای محیط‌های کاری بهتر
+        {/* Subtle Footer */}
+        <div className="mt-32 text-center px-4">
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto mb-8"></div>
+          <h3 className="text-xl font-light text-gray-600 mb-4">
+            طراحی محیط کار برای بهره‌وری و آسایش
           </h3>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            در بلاگ تخصصی ما، شما با جدیدترین استانداردهای طراحی محیط کار،
-            ارگونومی مبلمان اداری و راهکارهای بهینه‌سازی فضای کاری آشنا می‌شوید.
+          <p className="text-gray-400 text-sm max-w-2xl mx-auto leading-6">
+            هر مقاله با دقت و توجه به جزئیات تهیه شده تا بینش عمیقی در مورد
+            طراحی فضای کاری مدرن ارائه دهد.
           </p>
         </div>
       </main>
-    </>
+    </div>
   );
 }
