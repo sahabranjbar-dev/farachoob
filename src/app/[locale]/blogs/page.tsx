@@ -2,38 +2,51 @@ import Link from "next/link";
 import Image from "next/image";
 import { CalendarDays, ArrowRight } from "lucide-react";
 import prisma from "@/lib/prisma";
+import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-interface BlogPost {
+export interface BlogPost {
   id: string;
   title: string;
-  excerpt: string;
-  date: string;
-  image: string;
+  content: string;
+  coverImage?: string;
+  published?: boolean;
+  publishedAt?: any;
+  createdAt?: string;
+  updatedAt?: string;
+  authorId?: string;
+  author?: Author;
+  comments?: any[];
+}
+
+export interface Author {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  nationalId?: any;
+  birthDate?: any;
+  mobile?: string;
+  isActive?: boolean;
+  isVerified?: boolean;
+  image?: any;
+  roleId?: string;
+  createdAt?: string;
 }
 
 export const revalidate = 3600;
 
-async function getArticles(): Promise<BlogPost[]> {
+export default async function Blogs() {
   const articles = await prisma.article.findMany({
     where: { published: true },
     orderBy: { publishedAt: "desc" },
-    include: { author: true },
+    include: { author: true, comments: true },
   });
-
-  return articles.map((a) => ({
-    id: a.id,
-    title: a.title,
-    excerpt: a.content.slice(0, 150) + "...",
-    date: a.publishedAt
-      ? new Intl.DateTimeFormat("fa-IR").format(a.publishedAt)
-      : "",
-    image: a.coverImage || "/desk.jpg",
-  }));
-}
-
-export default async function Blogs() {
-  const blogPosts = await getArticles();
-  console.log({ blogPosts });
+  console.log({ articles });
 
   return (
     <div className="min-h-screen bg-white">
@@ -63,23 +76,38 @@ export default async function Blogs() {
       {/* Main Content */}
       <main className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
+          {articles.map((post) => (
             <article
               key={post.id}
               className="group bg-white rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 shadow-sm hover:shadow-md"
             >
               <div className="relative h-60 w-full overflow-hidden">
                 <Image
-                  src={post.image}
-                  alt={post.title}
+                  src={post.coverImage || "/images/placeholder.png"}
+                  alt={post?.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   style={{ objectPosition: "center" }}
                 />
-                <div className="absolute top-4 left-4 bg-white/90 text-gray-600 px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 shadow-sm backdrop-blur-sm">
-                  <CalendarDays size={12} />
-                  <span>{post.date}</span>
-                </div>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="absolute top-4 left-4 flex items-center rounded-lg bg-white/90 px-3 py-1.5 text-xs text-gray-600 shadow-sm backdrop-blur-sm group">
+                      <CalendarDays size={14} className="cursor-pointer" />
+                      <div
+                        className={cn(
+                          "flex justify-between items-center gap-2 overflow-hidden transition-all duration-300 ease-in-out",
+                          "max-w-0 group-hover:max-w-[9rem]"
+                        )}
+                      >
+                        <span className="mr-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                          {post?.updatedAt.toLocaleDateString("fa")}
+                        </span>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>تاریخ آخرین ویرایش</TooltipContent>
+                </Tooltip>
               </div>
 
               <div className="p-6">

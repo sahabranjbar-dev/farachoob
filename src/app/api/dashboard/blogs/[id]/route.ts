@@ -2,11 +2,12 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary"; // فرض بر اینه که کانفیگ cloudinary داری
+import { authOptions } from "@/lib/auth";
 
 // آپدیت مقاله
 export async function PUT(req: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -70,7 +71,7 @@ export async function PUT(req: Request) {
 // حذف مقاله
 export async function DELETE(req: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

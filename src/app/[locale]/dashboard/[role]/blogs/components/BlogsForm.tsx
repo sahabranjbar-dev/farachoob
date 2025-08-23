@@ -217,7 +217,6 @@ const BlogForm = ({ initialData }: Props) => {
                       theme="snow"
                       value={field.value}
                       onChange={field.onChange}
-                      className="bg-white rounded-lg min-h-[250px]"
                     />
                   </FormControl>
                   <FormMessage />
@@ -230,7 +229,7 @@ const BlogForm = ({ initialData }: Props) => {
               control={form.control}
               name="published"
               render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3 bg-gray-50">
+                <FormItem className="mt-20 flex justify-between items-center border shadow rounded-md mx-1">
                   <FormLabel>وضعیت انتشار</FormLabel>
                   <FormControl>
                     <SwitchRtl

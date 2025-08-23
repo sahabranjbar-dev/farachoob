@@ -3,6 +3,7 @@ import { DashboardSidebar } from "@/components/DashboardSidebar";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/ModeToggle";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
 export default async function DashboardLayout({
@@ -10,7 +11,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   return (
     <SidebarProvider>
       <div className="flex min-h-screen min-w-screen max-w-screen bg-gray-100 dark:bg-gray-900 transition-colors">

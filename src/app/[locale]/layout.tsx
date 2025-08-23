@@ -12,6 +12,7 @@ import "../../app/globals.css";
 import { readFileSync } from "fs";
 import path from "path";
 import { Toaster } from "@/components/ui/sonner";
+import { authOptions } from "@/lib/auth";
 
 const myFont = LocalFont({
   src: [
@@ -112,7 +113,7 @@ export default async function LocaleLayout({
   const messages = JSON.parse(
     readFileSync(path.resolve(`./messages/${locale}.json`), "utf-8")
   );
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
       <body className={`${myFont.className}`}>

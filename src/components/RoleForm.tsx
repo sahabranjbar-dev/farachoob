@@ -82,31 +82,29 @@ const RoleForm = ({ initialData }: Props) => {
       permissionIds,
       id,
     }: FormValues) => {
-      const isEdit = id;
+      const isEdit = !!id;
       setLoading(true);
       try {
-        const response = await fetch(
-          isEdit ? `/api/dashboard/roles/${id}` : "/api/dashboard/roles",
-          {
-            method: isEdit ? "PUT" : "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              farsiTitle,
-              englishTitle,
-              description,
-              status,
-              permissionIds,
-            }),
-          }
-        );
+        const response = await fetch("/api/dashboard/roles", {
+          method: isEdit ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            farsiTitle,
+            englishTitle,
+            description,
+            status,
+            permissionIds,
+            id,
+          }),
+        });
         if (!response.ok) {
           toast.error("مشکلی به وجود آمده است");
         }
         const result = await response.json();
 
-        if (result.status === 201) {
+        if (result.status) {
           toast.success("عملیات با موفقیت انجام شد", {
-            position: "top-center",
+            position: "bottom-center",
           });
         }
       } catch (error) {
@@ -134,6 +132,9 @@ const RoleForm = ({ initialData }: Props) => {
       value: item?.id,
     };
   });
+
+  console.log({ options });
+
   return (
     <div>
       {loading && <FullScreenLoading />}
@@ -193,21 +194,25 @@ const RoleForm = ({ initialData }: Props) => {
 
           <FormField
             name="permissionIds"
-            render={({ field }) => (
-              <MultiSelect
-                onClickCapture={() => {
-                  fetchPermission?.({});
-                }}
-                options={options ?? []}
-                defaultValue={field.value}
-                onValueChange={field.onChange}
-                placeholder="انتخاب مجوز"
-                animation={0.5}
-                variant="inverted"
-                loading={loadingPermissions}
-                className="bg-white"
-              />
-            )}
+            render={({ field }) => {
+              console.log({ field });
+
+              return (
+                <MultiSelect
+                  onClickCapture={() => {
+                    fetchPermission?.({});
+                  }}
+                  options={options ?? []}
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                  placeholder="انتخاب مجوز"
+                  animation={0.5}
+                  variant="inverted"
+                  loading={loadingPermissions}
+                  className="bg-white"
+                />
+              );
+            }}
           />
           <FormField
             control={form.control}

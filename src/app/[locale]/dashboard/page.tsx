@@ -1,18 +1,14 @@
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { getLocale } from "next-intl/server";
+import { authOptions } from "@/lib/auth";
 
 export default async function DashboardPage() {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   const locale = await getLocale();
   if (!session) {
-    return redirect({
-      href: "/auth/login",
-      locale: locale,
-    });
+    redirect(`/${locale}/auth/login`);
   }
-  return redirect({
-    href: `/dashboard/${session?.user.role}`,
-    locale: locale,
-  });
+
+  redirect(`/${locale}/dashboard/${session.user.role}`);
 }
