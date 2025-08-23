@@ -30,8 +30,8 @@ const Footer = () => {
             <h4 className="text-lg font-bold text-white">لینک‌های مفید</h4>
             <ul className="space-y-3">
               {[
-                { label: "درباره ما", href: "/about" },
-                { label: "تماس با ما", href: "/contact" },
+                { label: "درباره ما", href: "/about-use" },
+                { label: "تماس با ما", href: "/contact-use" },
                 { label: "سوالات متداول", href: "/faq" },
                 { label: "حریم خصوصی", href: "/privacy" },
                 { label: "شرایط و قوانین", href: "/terms" },

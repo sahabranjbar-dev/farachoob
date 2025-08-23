@@ -5,14 +5,13 @@ import { useRouter } from "next/navigation";
 import { Player } from "@lordicon/react";
 import error404 from "../../../../assets/icons/wired-flat-1140-error-hover-oscillate.json";
 import { motion } from "framer-motion";
+import { Link } from "@/i18n/navigation";
 
 interface NotFoundPageProps {
-  route?: string;
+  route: string;
 }
 
-export default function NotFoundPage({
-  route = "/dashboard",
-}: NotFoundPageProps) {
+export default function NotFoundPage({ route }: NotFoundPageProps) {
   const router = useRouter();
 
   return (
@@ -35,13 +34,9 @@ export default function NotFoundPage({
         باشد.
       </p>
 
-      <Button
-        className="mt-6"
-        onClick={() => router.push(route)}
-        variant="default"
-      >
+      <Link className="mt-6" href={route}>
         بازگشت به صفحه اصلی
-      </Button>
+      </Link>
     </div>
   );
 }
