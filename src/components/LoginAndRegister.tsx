@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import LogoutButton from "./LogoutButton";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface Props {
   nameSpace: string;
@@ -16,6 +17,10 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentUrl =
+    pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "");
   // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -82,7 +87,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
   // اگر کاربر لاگین نکرده
   return (
     <Link
-      href="/auth/login"
+      href={`/auth/login?callbackUrl=${encodeURIComponent(currentUrl)}`}
       className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer px-3 py-2 rounded-lg border hover:bg-gray-100 transition-colors"
     >
       <LogIn className="rotate-180" size={20} />

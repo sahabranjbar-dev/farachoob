@@ -34,6 +34,10 @@ const LoginPage = () => {
   } | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setMessage(null);
     setLoading(true);
@@ -41,19 +45,17 @@ const LoginPage = () => {
       redirect: false,
       email: data.email,
       password: data.password,
-      // rememberMe رو میتونی خودت دستی مدیریت کنی، یا از next-auth استفاده کن
+      callbackUrl,
     });
     setLoading(false);
     if (res?.error) {
       setMessage({ type: "error", text: t("LOGIN_ERROR") });
     } else {
       setMessage({ type: "success", text: t("LOGIN_SUCCESS") });
-      // بعد از لاگین موفق به صفحه دلخواه میریم
-      router.push("/");
+      router.push(callbackUrl);
     }
   };
 
-  const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
   useEffect(() => {
