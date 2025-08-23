@@ -1,0 +1,341 @@
+/* AdminDashboard.css */
+.admin-dashboard {
+  padding: 20px;
+  background-color: #f5f7f9;
+  min-height: 100vh;
+  font-family: "Vazir", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.dashboard-header h1 {
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-profile span {
+  color: #5a6b7c;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #4361ee;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card.primary {
+  background: linear-gradient(135deg, #4361ee, #3a0ca3);
+}
+
+.stat-card.success {
+  background: linear-gradient(135deg, #4cc9f0, #4895ef);
+}
+
+.stat-card.warning {
+  background: linear-gradient(135deg, #f72585, #b5179e);
+}
+
+.stat-card.info {
+  background: linear-gradient(135deg, #7209b7, #560bad);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-left: 15px;
+}
+
+.stat-info h3 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.stat-info p {
+  margin: 5px 0 0;
+  opacity: 0.9;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e1e4e8;
+  background-color: #f8f9fa;
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.chart-placeholder {
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+  height: 150px;
+  margin-top: 20px;
+}
+
+.chart-bar {
+  width: 30px;
+  background: linear-gradient(to top, #4361ee, #4895ef);
+  border-radius: 4px 4px 0 0;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item.user {
+  border-right: 3px solid #4361ee;
+}
+
+.activity-item.order {
+  border-right: 3px solid #4cc9f0;
+}
+
+.activity-item.payment {
+  border-right: 3px solid #f72585;
+}
+
+.activity-item.project {
+  border-right: 3px solid #7209b7;
+}
+
+.activity-item.support {
+  border-right: 3px solid #ff9e00;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-action {
+  margin: 0 0 5px;
+  font-weight: 500;
+}
+
+.activity-user {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.activity-time {
+  font-size: 0.8rem;
+  color: #adb5bd;
+}
+
+.tasks-section {
+  margin-bottom: 30px;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-checkbox {
+  display: block;
+  position: relative;
+  padding-right: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
+.task-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.task-checkbox input:checked ~ .checkmark {
+  background-color: #4361ee;
+  border-color: #4361ee;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.task-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.task-checkbox .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.task-content {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-content p {
+  margin: 0;
+}
+
+.task-content .completed {
+  text-decoration: line-through;
+  color: #6c757d;
+}
+
+.priority-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.priority-badge.high {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.priority-badge.medium {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.priority-badge.low {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+/* فونت برای زبان فارسی */
+@font-face {
+  font-family: "Vazir";
+  src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.eot");
+  src: url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.woff2") format("woff2"),
+    url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.woff") format("woff"),
+    url("https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.ttf")
+      format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ریسپانسیو برای موبایل */
+@media (max-width: 768px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,24 +1,24 @@
 import { Method } from "axios";
 
-export interface useDataGetterInputs {
+export interface useDataGetterInputs<Body = any, Params = any> {
   url?: string;
   method?: Method;
-  params?: any;
-  body?: any;
+  params?: Params;
+  body?: Body;
   immediatelyFetch?: boolean;
   onSuccess?: (data?: any) => void;
   onFailure?: (error?: any) => void;
 }
 
-export interface IFetchData {
+export interface IFetchData<InputBody = any, InputParams = any> {
   inputUrl?: string;
-  inputBody?: any;
-  inputParams?: any;
+  inputBody?: InputBody;
+  inputParams?: InputParams;
 }
 
 export interface useDataGetterOuput<T = any> {
   data?: T | null;
   loading?: boolean;
   fetch?: ({ inputUrl, inputBody, inputParams }: IFetchData) => Promise<T>;
-  error?: any;
+  error?: Error;
 }

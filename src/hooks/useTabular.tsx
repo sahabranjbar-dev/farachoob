@@ -47,7 +47,7 @@ export default function useTabular() {
         stopLoading(); // stopLoading بعد از replace
       });
     }
-  }, [activeTab?.path, role, router]);
+  }, [activeTab?.path, role, router, startLoading, stopLoading]);
 
   // Open tab function
   const open = useCallback(
@@ -71,7 +71,7 @@ export default function useTabular() {
           router.push(fullDashboardPath);
         }
 
-        stopLoading(); // stopLoading بعد از push
+        stopLoading();
       });
     },
     [role, router, openTabInStore, startLoading, stopLoading]

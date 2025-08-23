@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NextRequest } from "next/server";
+import { z } from "zod";
+import cloudinary from "@/lib/cloudinary";
 
 export async function GET(request: Request) {
   try {
@@ -114,6 +117,85 @@ export async function POST(request: Request) {
     console.error(error);
     return NextResponse.json(
       { message: "مشکلی در ایجاد نقش پیش آمد." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id, farsiTitle, englishTitle, description, permissionIds, status } =
+      body;
+
+    if (!id)
+      return NextResponse.json(
+        { message: "شناسه نقش الزامی است." },
+        { status: 400 }
+      );
+    if (!farsiTitle || !englishTitle) {
+      return NextResponse.json(
+        { message: "عنوان فارسی و انگلیسی الزامی است." },
+        { status: 400 }
+      );
+    }
+
+    // حذف پرمیشن‌های قبلی
+    await prisma.rolePermission.deleteMany({ where: { roleId: id } });
+
+    // بروزرسانی نقش
+    const updatedRole = await prisma.role.update({
+      where: { id },
+      data: {
+        farsiTitle,
+        englishTitle,
+        description,
+        status,
+        permissions: {
+          create:
+            permissionIds?.map((permissionId: string) => ({
+              permission: { connect: { id: permissionId } },
+            })) || [],
+        },
+      },
+    });
+
+    return NextResponse.json(updatedRole, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "مشکلی در بروزرسانی نقش پیش آمد." },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete role
+export async function DELETE(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id } = body;
+
+    if (!id)
+      return NextResponse.json(
+        { message: "شناسه نقش الزامی است." },
+        { status: 400 }
+      );
+
+    // حذف پرمیشن‌های متصل به نقش
+    await prisma.rolePermission.deleteMany({ where: { roleId: id } });
+
+    // حذف نقش
+    await prisma.role.delete({ where: { id } });
+
+    return NextResponse.json(
+      { message: "نقش با موفقیت حذف شد." },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { message: "مشکلی در حذف نقش پیش آمد." },
       { status: 500 }
     );
   }

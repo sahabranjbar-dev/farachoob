@@ -2,12 +2,12 @@ import React from "react";
 import BlogsForm from "../components/BlogsForm";
 import { prisma } from "@/lib/prisma";
 
-interface IBlogsFormPage {
-  searchParams: { pageType?: string; id?: string };
+interface IBlogsFormPageProps {
+  searchParams: Promise<{ pageType: string; id: string }>;
 }
-
-const BlogsFormPage = async ({ searchParams }: IBlogsFormPage) => {
-  const { id } = searchParams;
+const BlogsFormPage = async ({ searchParams }: IBlogsFormPageProps) => {
+  const reasolvedSearchParams = await searchParams;
+  const { id } = reasolvedSearchParams;
 
   let sanitizedArticle:
     | {

@@ -40,8 +40,6 @@ interface Props {
 }
 
 const BlogForm = ({ initialData }: Props) => {
-  console.log({ initialData });
-
   const [imagePreview, setImagePreview] = useState<File | string | null>(
     initialData?.coverImage || null
   );

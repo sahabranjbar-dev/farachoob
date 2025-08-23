@@ -1,19 +1,26 @@
 "use client";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
 
 const HeroSection = () => {
+  const rightRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+
   useGSAP(() => {
-    gsap.from("#right-content", {
-      x: 1000,
-      duration: 1.3,
-    });
-    gsap.from("#left-content", {
-      x: -1000,
-      duration: 1.3,
-    });
+    if (rightRef.current && leftRef.current) {
+      gsap.from(rightRef.current, {
+        x: 1000,
+        duration: 1.3,
+      });
+      gsap.from(leftRef.current, {
+        x: -1000,
+        duration: 1.3,
+      });
+    }
   }, []);
+
   return (
     <div
       className="w-full bg-white dark:bg-slate-900 rounded-md relative"
@@ -21,8 +28,9 @@ const HeroSection = () => {
     >
       {/* Header */}
       <header className="flex lg:flex-row flex-col-reverse items-center gap-12 lg:gap-0 justify-between px-8 mt-10">
+        {/* متن */}
         <div
-          id={"right-content"}
+          ref={rightRef}
           className="w-full lg:w-[45%] dark:text-[#abc2d3] text-right"
         >
           <p className="text-gray-500 dark:text-slate-400">
@@ -38,7 +46,8 @@ const HeroSection = () => {
           </p>
         </div>
 
-        <div id={"left-content"} className="w-full lg:w-[55%]">
+        {/* تصویر */}
+        <div ref={leftRef} className="w-full lg:w-[55%]">
           <Image
             src="/images/hero.png"
             alt="مبلمان اداری"

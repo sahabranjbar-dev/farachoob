@@ -1,9 +1,13 @@
-// /app/unauthorized/page.tsx
 "use client";
 
 import Link from "next/link";
-import { Player } from "@lottiefiles/react-lottie-player";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+
+const Player = dynamic(
+  () => import("@lottiefiles/react-lottie-player").then((mod) => mod.Player),
+  { ssr: false }
+);
 
 export default function UnauthorizedPage() {
   return (

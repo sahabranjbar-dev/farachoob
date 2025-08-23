@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
-export interface ITable {
+export interface ITable<T = any> {
   columns: ITableColumns[];
-  data: any[];
+  data: T[];
 }
 
 export interface ITableColumns {

@@ -10,9 +10,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ModeToggle } from "./ModeToggle";
+import Image from "next/image";
 
 type Props = {
   user: { name: string; avatarUrl?: string };
@@ -59,7 +59,7 @@ export default function DashboardHeader({ user }: Props) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-2">
               {user.avatarUrl ? (
-                <img
+                <Image
                   src={user.avatarUrl}
                   alt="User avatar"
                   className="w-8 h-8 rounded-full object-cover"

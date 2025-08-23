@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { House } from "lucide-react";
 import Link from "next/link";
 
-export default function NotFoundPage() {
+export default function NotFoundPage({ route }: { route: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-center px-4">
       <h1 className="text-4xl font-bold mt-6 text-gray-800 dark:text-white">
@@ -17,7 +17,7 @@ export default function NotFoundPage() {
 
       <Link
         className="flex items-center gap-2 mt-6 border bg-orange-400 p-4 rounded-2xl text-white hover:bg-orange-500 transition-colors duration-300"
-        href="/"
+        href={route}
         passHref
       >
         <House />

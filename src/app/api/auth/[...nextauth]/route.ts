@@ -1,21 +1,13 @@
-import NextAuth, { AuthOptions } from "next-auth";
+// src/app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
-interface CustomUser {
-  id: string;
-  email: string;
-  image: string | null;
-  role: string;
-  roleId: string;
-  permissions: string[];
-}
-
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt", maxAge: 15 * 60 }, // 15 minutes
+  session: { strategy: "jwt", maxAge: 15 * 60 }, // 15 دقیقه
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -28,13 +20,7 @@ export const authOptions: AuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
-          include: {
-            role: {
-              include: {
-                permissions: true,
-              },
-            },
-          },
+          include: { role: { include: { permissions: true } } },
         });
 
         if (!user || !user.password || !user.role) return null;
@@ -48,7 +34,7 @@ export const authOptions: AuthOptions = {
         const roleId = user.role.id || "";
         const role = user.role.englishTitle || "";
         const permissions =
-          user.role.permissions?.map((rp) => rp.permissionId) || [];
+          user.role.permissions?.map((p) => p.permissionId) || [];
 
         return {
           id: user.id,
@@ -92,7 +78,6 @@ export const authOptions: AuthOptions = {
     error: "/auth/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
+});
 
-const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

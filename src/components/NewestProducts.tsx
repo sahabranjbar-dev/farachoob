@@ -14,6 +14,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import ProductCard from "./ProductCard";
 import useDataGetter from "@/hooks/useDataGetter";
+import { Skeleton } from "./ui/skeleton";
 
 const NewestProducts = () => {
   const {
@@ -25,13 +26,13 @@ const NewestProducts = () => {
     url: "/products",
   });
 
-  if (loading) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-600 dark:text-gray-300">در حال بارگذاری...</p>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="text-center py-12">
+  //       <p className="text-gray-600 dark:text-gray-300">در حال بارگذاری...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="relative py-16 bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 rounded-3xl overflow-hidden m-4 shadow-2xl">
@@ -53,9 +54,9 @@ const NewestProducts = () => {
         <Swiper
           effect="coverflow"
           grabCursor
-          centeredSlides
+          centeredSlides={!loading} // 👈 اینجا تغییر دادم
           slidesPerView="auto"
-          loop={products?.resultList?.length > 2}
+          loop={!loading ? products?.resultList?.length > 2 : false} // 👈 لودینگ رو لوپ نکن
           coverflowEffect={{
             rotate: 8,
             stretch: 0,
@@ -65,35 +66,48 @@ const NewestProducts = () => {
           }}
           pagination={{ clickable: true, dynamicBullets: true }}
           navigation
-          autoplay={{
-            delay: 3500,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
+          autoplay={
+            !loading
+              ? {
+                  delay: 3500,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }
+              : false // 👈 لودینگ نیازی به autoplay نداره
+          }
           modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
           className="mySwiper pb-14"
         >
-          {products?.resultList?.map(
-            (product: {
-              id: Key | null | undefined;
-              image: string | undefined;
-              title: string | undefined;
-              description: string | undefined;
-              price: string | undefined;
-            }) => (
-              <SwiperSlide key={product.id} className="!w-80 !h-auto">
-                <ProductCard
-                  imageSrc={product.image}
-                  imageAlt={product.title}
-                  title={product.title}
-                  description={product.description}
-                  price={product.price}
-                  onAddToCart={() =>
-                    alert(`${product.title} به سبد خرید اضافه شد!`)
-                  }
-                  className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col hover:-translate-y-2"
-                />
-              </SwiperSlide>
+          {loading ? ( // 👈 شرط رو برعکس کردم
+            <>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <SwiperSlide key={i} className="!w-80 !h-auto">
+                  <div className="flex justify-center items-center">
+                    <Skeleton className="w-90 h-90" />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </>
+          ) : (
+            products?.resultList?.map(
+              (product: {
+                id: Key | null | undefined;
+                image: string | undefined;
+                title: string | undefined;
+                description: string | undefined;
+                price: string | undefined;
+              }) => (
+                <SwiperSlide key={product.id} className="!w-80 !h-auto">
+                  <ProductCard
+                    imageSrc={product.image}
+                    imageAlt={product.title}
+                    title={product.title}
+                    description={product.description}
+                    price={product.price}
+                    className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col hover:-translate-y-2"
+                  />
+                </SwiperSlide>
+              )
             )
           )}
         </Swiper>

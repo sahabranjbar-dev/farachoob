@@ -1,32 +1,26 @@
-"use client";
-
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
-import FullScreenLoading from "@/components/FullScreenLoading";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { ModeToggle } from "@/components/ModeToggle";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import useTabular from "@/hooks/useTabular";
-import { useSession } from "next-auth/react";
+import { getServerSession } from "next-auth";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data } = useSession();
-  const { isPending } = useTabular();
-
+  const session = await getServerSession();
   return (
     <SidebarProvider>
       <div className="flex min-h-screen min-w-screen max-w-screen bg-gray-100 dark:bg-gray-900 transition-colors">
         <DashboardSidebar
           user={{
-            name: data?.user.name ?? "user",
+            name: session?.user.name ?? "user",
             // TODO: check is necessery
-            permissions: data?.user.permissions,
-            roles: data?.user.role,
-            image: data?.user?.image,
+            permissions: session?.user.permissions,
+            roles: session?.user.role,
+            image: session?.user?.image,
           }}
         />
 
@@ -49,7 +43,7 @@ export default function DashboardLayout({
           </header>
 
           <main className="flex-1 p-4 bg-gray-50 dark:bg-gray-900 transition-colors">
-            {isPending ? <FullScreenLoading /> : children}
+            {children}
           </main>
         </div>
       </div>

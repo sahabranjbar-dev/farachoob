@@ -60,7 +60,7 @@ const LoginPage = () => {
     if (error === "CredentialsSignin") {
       setMessage({ type: "error", text: t("LOGIN_ERROR") });
     }
-  }, [error]);
+  }, [error, t]);
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-500 to-orange-800 p-4 relative overflow-hidden">
       <div className="hidden lg:block absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-orange-600 opacity-20 filter blur-xl"></div>

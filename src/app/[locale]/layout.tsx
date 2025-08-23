@@ -9,7 +9,6 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import LocalFont from "next/font/local";
 import { notFound } from "next/navigation";
 import "../../app/globals.css";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { readFileSync } from "fs";
 import path from "path";
 import { Toaster } from "@/components/ui/sonner";
@@ -113,7 +112,7 @@ export default async function LocaleLayout({
   const messages = JSON.parse(
     readFileSync(path.resolve(`./messages/${locale}.json`), "utf-8")
   );
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
       <body className={`${myFont.className}`}>

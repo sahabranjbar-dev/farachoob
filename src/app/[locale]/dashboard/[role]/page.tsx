@@ -1,42 +1,37 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "@/i18n/navigation";
 import { getServerSession } from "next-auth";
 import Manager from "./(pages)/Manager";
+import { getLocale } from "next-intl/server";
+import ManagerDashboardPage from "./(pages)/Manager";
+import AdminDashboardPage from "./(pages)/Admin";
+import UnauthorizedPage from "../unauthorized/page";
+import CustomerDashboardPage from "./(pages)/Customer";
 
 const MainDashboardPage = async ({
   params,
 }: {
   params: Promise<{ role: string }>;
 }) => {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
+  const locale = await getLocale();
 
-  const role = (await params).role;
-
-  if (role === "unauthorized") {
-    redirect({
-      href: "/auth/login",
-      locale: "fa",
-    });
-    return;
-  }
   if (!session) {
     redirect({
       href: "/auth/login",
-      locale: "fa",
+      locale,
     });
     return;
   }
-  switch (role) {
+
+  switch (session.user.role) {
     case "manager":
-      return <Manager />;
+      return <ManagerDashboardPage />;
+    case "customer":
+      return <CustomerDashboardPage />;
     case "admin":
-      return <div>Admin Dashboard</div>;
-
-    case "user":
-      return <div>User Dashboard</div>;
-
+      return <AdminDashboardPage />;
     default:
-      return <div>Unauthorized</div>;
+      return <UnauthorizedPage />;
   }
 };
 
