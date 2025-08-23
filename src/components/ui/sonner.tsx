@@ -9,6 +9,7 @@ const Toaster = ({ richColors = true, ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
+      position="bottom-center"
       className="toaster group font-samim"
       style={
         {

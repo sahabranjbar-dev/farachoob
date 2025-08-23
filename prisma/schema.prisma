@@ -15,21 +15,22 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(uuid())
-  email      String?   @unique
-  password   String?
-  firstName  String?
-  lastName   String?
-  nationalId String?   @unique
-  birthDate  DateTime?
-  mobile     String?   @unique
-  isActive   Boolean   @default(true)
-  isVerified Boolean   @default(false)
-  image      String?
-  roleId     String
-  role       Role      @relation(fields: [roleId], references: [id])
-  createdAt  DateTime  @default(now())
-  comments   Comment[]
+  id           String        @id @default(uuid())
+  email        String?       @unique
+  password     String?
+  firstName    String?
+  lastName     String?
+  nationalId   String?       @unique
+  birthDate    DateTime?
+  mobile       String?       @unique
+  isActive     Boolean       @default(true)
+  isVerified   Boolean       @default(false)
+  image        String?
+  roleId       String
+  role         Role          @relation(fields: [roleId], references: [id])
+  createdAt    DateTime      @default(now())
+  comments     Comment[]
+  commentLikes CommentLike[]
 
   CartItem CartItem[]
   articles Article[]  @relation("UserArticles")
@@ -174,4 +175,23 @@ model Comment {
 
   articleId String
   article   Article @relation(fields: [articleId], references: [id])
+
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
+  likes CommentLike[]
+}
+
+model CommentLike {
+  id        String  @id @default(cuid())
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId])
 }

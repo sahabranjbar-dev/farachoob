@@ -26,25 +26,6 @@ import useDataGetter from "@/hooks/useDataGetter";
 
 const Navbar = () => {
   const t = useTranslations("Navbar");
-  const [activeCategoryId, setActiveCategoryId] = useState<number | null>(1);
-  const [isHoveringProducts, setIsHoveringProducts] = useState(false);
-  const [categories, setCategories] = useState<any[]>([]);
-
-  const { data, error, fetch, loading } = useDataGetter({
-    url: "/categories",
-    onSuccess(data) {
-      const custom = data.map((item: any) => {
-        return {
-          id: item?.id,
-          name: item?.farsiTitle,
-          icon: item?.icon ?? <Fragment />,
-          url: item?.englishTitle,
-        };
-      });
-
-      setCategories(custom);
-    },
-  });
 
   const navItems = useMemo(
     () => [

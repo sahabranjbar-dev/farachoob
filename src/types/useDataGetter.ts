@@ -1,4 +1,4 @@
-import { Method } from "axios";
+import { AxiosHeaders, Method, ResponseType } from "axios";
 
 export interface useDataGetterInputs<Body = any, Params = any> {
   url?: string;
@@ -9,6 +9,9 @@ export interface useDataGetterInputs<Body = any, Params = any> {
   onSuccess?: (data?: any) => void;
   onFailure?: (error?: any) => void;
   showError?: boolean;
+  responseType?: ResponseType;
+  headers?: AxiosHeaders;
+  showSuccessMessage?: boolean;
 }
 
 export interface IFetchData<InputBody = any, InputParams = any> {

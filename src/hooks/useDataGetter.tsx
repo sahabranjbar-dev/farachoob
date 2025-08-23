@@ -24,6 +24,9 @@ export default function useDataGetter<T = any>({
   onFailure,
   onSuccess,
   showError = false,
+  showSuccessMessage = false,
+  responseType,
+  headers,
 }: useDataGetterInputs): useDataGetterOuput<T> {
   const [state, setState] = useState<State<T>>({
     data: null,
@@ -36,7 +39,7 @@ export default function useDataGetter<T = any>({
     inputParams,
     inputUrl,
   }: IFetchData) => Promise<T> = useCallback(
-    ({ inputUrl, inputBody, inputParams }: IFetchData = {}) => {
+    ({ inputUrl, inputBody, inputParams }: IFetchData) => {
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
       return new Promise(async (resolve, reject) => {
@@ -44,15 +47,17 @@ export default function useDataGetter<T = any>({
           const response = await API({
             url: inputUrl || url,
             method,
+            headers,
             params: { ...params, ...inputParams },
             data: JSON.stringify({ ...body, ...inputBody }),
+            responseType,
           });
 
           const result = response.data;
           setState({ data: result, loading: false, error: null });
           resolve(result);
           onSuccess?.(result);
-          if (method === "POST" || method === "PUT") {
+          if (showSuccessMessage) {
             toast.success("عملیات با موفقیت انجام شد");
           }
           return result;

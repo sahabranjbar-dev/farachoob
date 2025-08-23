@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import DOMPurify from "isomorphic-dompurify";
 import CommentForm from "../components/CommentForm";
 import BestSellingProducts from "../components/BestSellingProducts";
+import Comments from "@/components/Comments/Comments";
 
 interface BlogPageProps {
   params: { id: string };
@@ -13,34 +14,20 @@ interface BlogPageProps {
 
 export const revalidate = 3600;
 
-// گرفتن اطلاعات مقاله
-async function getArticle(id: string) {
-  const article = await prisma.article.findUnique({
-    where: { id },
-    include: { author: true, comments: { include: { user: true } } },
-  });
-
-  if (!article || !article.published) return null;
-
-  return {
-    id: article.id,
-    title: article.title,
-    content: article.content || "",
-    date: article.publishedAt
-      ? new Intl.DateTimeFormat("fa-IR").format(article.publishedAt)
-      : "",
-    image: article.coverImage || "/images/placeholder.png",
-    comments: article.comments.map((c) => ({
-      id: c.id,
-      text: c.content,
-      user: c.user?.firstName || "کاربر ناشناس",
-      createdAt: new Intl.DateTimeFormat("fa-IR").format(c.createdAt),
-    })),
-  };
-}
-
 export default async function BlogPage({ params }: BlogPageProps) {
-  const article = await getArticle(params.id);
+  const article = await prisma.article.findUnique({
+    where: {
+      id: params?.id,
+    },
+    include: {
+      author: true,
+      comments: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
   if (!article) return notFound();
 
   // ضدعفونی کردن محتوا
@@ -54,7 +41,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
           {/* تصویر مقاله */}
           <div className="relative h-56 sm:h-72 md:h-80 w-full rounded-2xl overflow-hidden shadow-lg">
             <Image
-              src={article.image}
+              src={article.coverImage || "/images/placeholder.png"}
               alt={article.title}
               fill
               className="object-cover"
@@ -67,9 +54,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
             <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-3">
               {article.title}
             </h1>
-            <div className="flex items-center gap-2 text-gray-500 text-xs sm:text-sm mb-6">
+            <div className="flex justify-end items-center gap-2 text-gray-500 text-xs sm:text-sm mb-6">
+              <span>
+                آخرین ویرایش: {article.updatedAt.toLocaleDateString("fa")}
+              </span>
               <CalendarDays size={16} />
-              <span>{article.date}</span>
             </div>
 
             <article
@@ -86,19 +75,8 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
             {/* لیست کامنت‌ها */}
             <div className="space-y-6">
-              {article.comments.length > 0 ? (
-                article.comments.map((c) => (
-                  <div
-                    key={c.id}
-                    className="bg-gray-50 border rounded-xl p-4 shadow-sm"
-                  >
-                    <p className="text-gray-700 mb-2">{c.text}</p>
-                    <div className="text-xs text-gray-500 flex justify-between">
-                      <span>{c.user}</span>
-                      <span>{c.createdAt}</span>
-                    </div>
-                  </div>
-                ))
+              {article?.comments?.length > 0 ? (
+                <Comments articleId={article.id} />
               ) : (
                 <p className="text-gray-500">هنوز نظری ثبت نشده است.</p>
               )}
