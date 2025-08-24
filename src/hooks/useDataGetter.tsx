@@ -53,7 +53,7 @@ export default function useDataGetter<T = any>({
             responseType,
           });
 
-          const result = response.data;
+          const result: T = response.data;
           setState({ data: result, loading: false, error: null });
           resolve(result);
           onSuccess?.(result);

@@ -2,272 +2,293 @@
 
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import ReCAPTCHA from "react-google-recaptcha";
-import { Send, Loader2, CheckCircle } from "lucide-react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Send,
+  Loader2,
+  CheckCircle,
+  Phone,
+  Mail,
+  MapPin,
+  RefreshCcw,
+} from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
+import Captcha from "@/components/Captcha/Captcha";
+import { cn } from "@/lib/utils";
+import useDataGetter from "@/hooks/useDataGetter";
+import { Button } from "@/components/ui/button";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+const ContactUsSchema = z.object({
+  name: z.string().min(2, "نام باید حداقل ۲ کاراکتر باشد"),
+  email: z.string().email("ایمیل معتبر نیست"),
+  message: z.string().min(5, "پیام باید حداقل ۵ کاراکتر باشد"),
+  captcha: z.string().min(1, "کد امنیتی الزامی است"),
+});
+
+type ContactUsFormValues = z.infer<typeof ContactUsSchema>;
+export interface Data {
+  status: number;
+  message: string;
+  description: string;
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+}
 
 const ContactUs = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState<string | null>(null);
-
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<ContactUsFormValues>({
+    resolver: zodResolver(ContactUsSchema),
+  });
 
-  const onSubmit = async (data: any) => {
-    if (!captchaValue) {
-      toast.error('لطفاً گزینه "من ربات نیستم" را تأیید کنید');
-      return;
-    }
+  const { fetch: fetchCaptcha, data: captcha } = useDataGetter({
+    url: "/captcha",
+    responseType: "blob",
+  });
+  const { data, error, fetch, loading } = useDataGetter<Data>({
+    url: "contact-us",
+    immediatelyFetch: false,
+    method: "POST",
+    onFailure(error) {
+      toast.error(error?.response?.data?.message);
+      fetchCaptcha?.({});
+    },
+    onSuccess(data) {
+      reset();
+    },
+  });
 
-    setIsSubmitting(true);
-
-    try {
-      const response = await axios.post("/api/contact", {
-        ...data,
-        captcha: captchaValue,
-      });
-
-      if (response.data.success) {
-        toast.success("پیام شما با موفقیت ارسال شد!");
-        reset();
-        setIsSuccess(true);
-        setTimeout(() => setIsSuccess(false), 3000);
-      }
-    } catch (error) {
-      toast.error("خطا در ارسال پیام. لطفاً مجدداً تلاش کنید.");
-    } finally {
-      setIsSubmitting(false);
-      setCaptchaValue(null);
-    }
+  const onSubmit = async (data: ContactUsFormValues) => {
+    console.log({ data });
+    fetch?.({
+      inputBody: { ...data },
+    });
   };
 
+  if (data?.id)
+    return (
+      <div className="min-h-screen mx-auto container mt-12 text-center">
+        <div className="flex justify-center items-center gap-2">
+          <h2 className="text-3xl">پیام شما با موفقیت ارسال شد</h2>
+        </div>
+        <DotLottieReact
+          className="w-96 h-64 mx-auto"
+          speed={0.75}
+          src="/success.lottie"
+          autoplay
+          loop={false}
+        />
+
+        <div>{data?.description}</div>
+      </div>
+    );
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+    <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+      <div className="text-center mb-12 md:mb-16">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
           با ما در تماس باشید
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          برای هرگونه سوال، پیشنهاد یا انتقاد، فرم زیر را پر کنید و ما در اسرع
-          وقت با شما تماس خواهیم گرفت.
+        <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed text-base md:text-lg">
+          سوال، پیشنهاد یا انتقاد دارید؟ فرم زیر را پر کنید تا در کوتاه‌ترین
+          زمان با شما ارتباط بگیریم.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-400 p-8 text-white">
-            <h2 className="text-2xl font-bold mb-4">اطلاعات تماس</h2>
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 bg-blue-500 rounded-lg p-2">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                    />
-                  </svg>
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden md:flex border border-gray-100">
+        {/* Contact Information */}
+        <div className="md:w-2/5 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 md:p-10 text-white flex flex-col justify-center relative">
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
+          <div className="relative z-10 space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold mb-6">اطلاعات تماس</h2>
+              <div className="text-blue-100 opacity-90">
+                از طریق راه‌های زیر با ما در ارتباط باشید.
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex items-start space-x-3 space-x-reverse">
+                <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
+                  <Phone className="h-5 w-5" />
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium">تلفن</h3>
-                  <p className="mt-1 text-blue-100">021-12345678</p>
+                <div>
+                  <h3 className="font-semibold">تلفن</h3>
+                  <a
+                    href="tel:+989118286606"
+                    className="text-blue-100 opacity-90"
+                  >
+                    0911-828-6606
+                  </a>
                 </div>
               </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 bg-blue-500 rounded-lg p-2">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
+
+              <div className="flex items-start space-x-3 space-x-reverse">
+                <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
+                  <Mail className="h-5 w-5" />
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium">ایمیل</h3>
-                  <p className="mt-1 text-blue-100">info@example.com</p>
+                <div>
+                  <h3 className="font-semibold">ایمیل</h3>
+                  <a
+                    href="mailto:info@farachob.com"
+                    className="text-blue-100 opacity-90"
+                  >
+                    info@farachob.com
+                  </a>
                 </div>
               </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 bg-blue-500 rounded-lg p-2">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
+
+              <div className="flex items-start space-x-3 space-x-reverse">
+                <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
+                  <MapPin className="h-5 w-5" />
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium">آدرس</h3>
-                  <p className="mt-1 text-blue-100">
-                    تهران، خیابان آزادی، پلاک ۱۲۳
+                <div>
+                  <h3 className="font-semibold">آدرس</h3>
+                  <p className="text-blue-100 opacity-90">
+                    مازندران، بابل، شهرک صنعتی منصور کنده، مجتمع صنعتی فراچوب
                   </p>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="md:w-1/2 p-8">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Contact Form */}
+        <div className="md:w-3/5 p-8 md:p-10 bg-white">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name */}
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   نام کامل <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="name"
-                  type="text"
-                  {...register("name", { required: "نام الزامی است" })}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  {...register("name")}
+                  className={cn(
+                    "w-full px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent",
                     errors.name ? "border-red-500" : "border-gray-300"
-                  }`}
+                  )}
+                  placeholder="نام و نام خانوادگی"
                 />
                 {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.name.message as string}
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.name.message}
                   </p>
                 )}
               </div>
 
+              {/* Email */}
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   ایمیل <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="email"
                   type="email"
-                  {...register("email", {
-                    required: "ایمیل الزامی است",
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "ایمیل معتبر نیست",
-                    },
-                  })}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  {...register("email")}
+                  className={cn(
+                    "w-full px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent",
                     errors.email ? "border-red-500" : "border-gray-300"
-                  }`}
+                  )}
+                  placeholder="example@domain.com"
                 />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.email.message as string}
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.email.message}
                   </p>
                 )}
               </div>
+            </div>
 
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  تلفن همراه
-                </label>
+            {/* Message */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                پیام شما <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                rows={4}
+                {...register("message")}
+                className={cn(
+                  "w-full px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                  errors.message ? "border-red-500" : "border-gray-300"
+                )}
+                placeholder="متن پیام خود را اینجا بنویسید..."
+              />
+              {errors.message && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.message.message}
+                </p>
+              )}
+            </div>
+
+            {/* Captcha */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                کد امنیتی <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <input
-                  id="phone"
-                  type="tel"
-                  {...register("phone")}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  پیام شما <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  {...register("message", { required: "پیام الزامی است" })}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.message ? "border-red-500" : "border-gray-300"
-                  }`}
-                ></textarea>
-                {errors.message && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.message.message as string}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex justify-center">
-                <ReCAPTCHA
-                  sitekey={
-                    process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
-                    "YOUR_SITE_KEY"
-                  }
-                  onChange={(value) => setCaptchaValue(value)}
-                  hl="fa" // زبان فارسی
-                />
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                    isSubmitting || isSuccess
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="animate-spin mr-2" />
-                      در حال ارسال...
-                    </>
-                  ) : isSuccess ? (
-                    <>
-                      <CheckCircle className="mr-2" />
-                      ارسال شد!
-                    </>
-                  ) : (
-                    <>
-                      <Send className="mr-2" />
-                      ارسال پیام
-                    </>
+                  type="text"
+                  {...register("captcha")}
+                  className={cn(
+                    "px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent md:max-w-[180px]",
+                    errors.captcha ? "border-red-500" : "border-gray-300"
                   )}
-                </button>
+                  placeholder="کد را وارد کنید"
+                />
+                <div className="flex-grow">
+                  <div className="flex items-center gap-2">
+                    {captcha ? (
+                      <img
+                        src={URL.createObjectURL(captcha)}
+                        alt="CAPTCHA"
+                        className="cursor-pointer rounded border border-gray-300"
+                      />
+                    ) : (
+                      <div className="h-10 w-32 animate-pulse rounded bg-gray-200"></div>
+                    )}
+                    <Button
+                      onClick={() => fetchCaptcha?.({})}
+                      type="button"
+                      size="icon"
+                      left={<RefreshCcw className="h-4 w-4" />}
+                      variant="ghost"
+                      tooltip="دریافت مجدد کپچا"
+                    />
+                  </div>
+                </div>
               </div>
-            </form>
-          </div>
+              {errors.captcha && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.captcha.message}
+                </p>
+              )}
+            </div>
+
+            {/* Submit */}
+            <Button
+              type="submit"
+              disabled={loading}
+              left={
+                loading ? (
+                  <Loader2 className="animate-spin ml-2 h-5 w-5" />
+                ) : (
+                  <Send className="ml-2 h-5 w-5" />
+                )
+              }
+              className="w-full flex justify-center items-center px-6 py-3.5 rounded-lg shadow font-semibold text-white transition-all duration-300 disabled:cursor-not-allowed disabled:bg-neutral-500"
+            >
+              {loading ? "در حال ارسال..." : " ارسال پیام"}
+            </Button>
+          </form>
         </div>
       </div>
     </div>
