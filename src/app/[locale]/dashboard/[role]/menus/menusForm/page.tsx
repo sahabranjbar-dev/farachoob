@@ -29,8 +29,9 @@ import {
 import useDataGetter from "@/hooks/useDataGetter";
 import useParams from "@/hooks/useParams";
 import useTabular from "@/hooks/useTabular";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { mutate } from "swr";
 
 type FormValues = {
   id?: number;
@@ -56,12 +57,12 @@ const MenusFormPage = () => {
       if (data?.id) {
         form.reset({
           id: data?.id,
-          title: data?.title || "",
-          href: data?.href || "",
-          icon: data?.icon || "",
-          permissionId: data?.permissionId || "",
+          title: data?.title,
+          href: data?.href,
+          icon: data?.icon,
+          permissionId: data?.permissionId,
           status: data?.status ?? true,
-          parentId: data?.parentId || "",
+          parentId: data?.parentId,
         });
       }
     },
@@ -76,6 +77,8 @@ const MenusFormPage = () => {
     url: "dashboard/menus",
     method: id ? "PUT" : "POST",
     immediatelyFetch: false,
+    showError: true,
+    showSuccessMessage: true,
   });
   const form = useForm<FormValues>({
     defaultValues: {
@@ -91,20 +94,21 @@ const MenusFormPage = () => {
   } = useDataGetter({
     url: "dashboard/permissions",
     immediatelyFetch: Boolean(id),
+    params: {
+      pageSize: 50,
+    },
   });
+
   const onSubmit = (data: FormValues) => {
     fetch?.({
       inputBody: data,
-    })
-      .then((data) => {
-        setActiveParam({
-          pageType: "EDIT",
-          id: data?.id,
-        });
-      })
-      .finally(() => {
-        window.location.reload();
+    }).then((data) => {
+      setActiveParam({
+        pageType: "EDIT",
+        id: data?.id,
       });
+      mutate("/api/dashboard/sidebarMenu");
+    });
   };
 
   const {
@@ -114,6 +118,9 @@ const MenusFormPage = () => {
   } = useDataGetter({
     url: "dashboard/menus",
     immediatelyFetch: true,
+    params: {
+      pageSize: 50,
+    },
   });
 
   return (
@@ -226,15 +233,12 @@ const MenusFormPage = () => {
                             <Spinner />
                           ) : (
                             permissions?.resultList?.map(
-                              (permission: {
-                                id: string;
-                                farsiTitle: string;
-                              }) => (
+                              (permission: { id: string; title: string }) => (
                                 <SelectItem
                                   key={permission.id}
                                   value={permission.id}
                                 >
-                                  {permission.farsiTitle}
+                                  {permission.title}
                                 </SelectItem>
                               )
                             )
@@ -288,7 +292,7 @@ const MenusFormPage = () => {
               >
                 ذخیره
               </Button>
-              <Button variant="outline" onClick={closeCurrentTab}>
+              <Button left={<X />} variant="outline" onClick={closeCurrentTab}>
                 انصراف
               </Button>
             </div>

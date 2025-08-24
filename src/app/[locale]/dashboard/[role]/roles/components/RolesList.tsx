@@ -25,7 +25,7 @@ const RolesList = () => {
         title: "دسترسی‌های این نقش",
         render(v, row, meta) {
           return v?.length
-            ? v?.map((item: any) => item?.permission?.description).join(",")
+            ? v?.map((item: any) => item?.permission?.title).join(",")
             : "---";
         },
       },

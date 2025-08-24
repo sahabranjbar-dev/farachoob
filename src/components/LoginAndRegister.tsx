@@ -52,7 +52,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
         >
           <User className="w-5 h-5" />
           <span className="truncate max-w-[120px]">
-            {session.user.name || session.user.email}
+            {session.user.name || "کاربر میهمان"}
           </span>
           <ChevronDown
             className={`w-4 h-4 transition-transform ${
@@ -63,7 +63,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
 
         {open && (
           <div
-            className="absolute right-0 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+            className="absolute left-5 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50"
             role="menu"
           >
             <div className="py-1 flex flex-col">
@@ -74,7 +74,9 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
                 className="flex justify-around items-center gap-2 px-4 py-2 text-sm text-blue-700 hover:bg-orange-100 rounded-md transition-colors"
               >
                 <LayoutDashboardIcon />
-                <span className="max-w-8 min-w-10 w-10">داشبورد</span>
+                <span className="max-w-8 min-w-10 w-10 text-nowrap">
+                  پنل کاربری
+                </span>
               </Link>
               <LogoutButton />
             </div>

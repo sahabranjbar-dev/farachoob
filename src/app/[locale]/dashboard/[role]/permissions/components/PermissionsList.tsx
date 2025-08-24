@@ -12,12 +12,12 @@ const PermissionsList = () => {
         title: "ردیف",
       },
       {
-        field: "farsiTitle",
+        field: "title",
         title: "نام فارسی",
       },
       {
-        field: "englishTitle",
-        title: "نام انگلیسی",
+        field: "permissionKey",
+        title: "permissionKey",
       },
       {
         field: "roles",

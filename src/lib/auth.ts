@@ -1,28 +1,31 @@
-// src/lib/auth.ts
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { AuthOptions, DefaultSession } from "next-auth";
+import { AuthOptions, DefaultSession, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
-// JWT با فیلدهای اختیاری
+// JWT سفارشی
 interface JWTWithRole extends JWT {
   id: string;
-  role?: string;
+  role?: any;
   roleId?: string;
   permissions?: string[];
-  image?: string;
+  image?: string | null;
+  firstName?: string;
+  lastName?: string;
 }
 
-// Session سفارشی با فیلدهای اختیاری
+// Session سفارشی
 interface SessionWithRole extends DefaultSession {
   user: DefaultSession["user"] & {
     id?: string;
-    role?: string;
+    role?: any;
     roleId?: string;
     permissions?: string[];
     image?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
   };
 }
 
@@ -36,52 +39,84 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<User | null> {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
+        const userFromDb = await prisma.user.findUnique({
           where: { email: credentials.email },
-          include: { role: { include: { permissions: true } } },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            birthDate: true,
+            image: true,
+            isActive: true,
+            password: true,
+            roleId: true,
+            role: {
+              select: {
+                id: true,
+                englishTitle: true,
+                farsiTitle: true,
+                permissions: { select: { permissionId: true } },
+              },
+            },
+          },
         });
 
-        if (!user || !user.password || !user.role) return null;
+        if (!userFromDb || !userFromDb.password || !userFromDb.role)
+          return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
-          user.password
+          userFromDb.password
         );
         if (!isValid) return null;
 
+        // 👇 گمراه کردن TypeScript: cast به User
         return {
-          id: user.id,
-          email: user.email,
-          image: user.image || null,
-          role: user.role.englishTitle || "",
-          roleId: user.role.id || "",
-          permissions: user.role.permissions?.map((p) => p.permissionId) || [],
-        };
+          ...userFromDb,
+          firstName: userFromDb.firstName,
+          lastName: userFromDb.lastName,
+          image: userFromDb.image,
+          id: userFromDb.id,
+          isActive: userFromDb.isActive,
+          birthDate: userFromDb.birthDate,
+          role: userFromDb.role, // کل آبجکت رول
+          roleId: userFromDb.role.id,
+          permissions: userFromDb.role.permissions.map((p) => p.permissionId),
+        } as unknown as User;
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
-        token.roleId = user.roleId;
-        token.permissions = user.permissions;
-        token.image = user.image;
+        const u = user as any;
+        token.id = u.id;
+        token.role = u.role; // کل آبجکت
+        token.roleId = u.roleId;
+        token.permissions = u.permissions;
+        token.image = u.image;
+        token.firstName = u.firstName;
+        token.lastName = u.lastName;
       }
-      return token;
+      return token as JWTWithRole;
     },
-    async session({ session, token }): Promise<SessionWithRole> {
+    async session({ session, token }) {
+      const t = token as JWTWithRole;
       if (session.user) {
-        session.user.id = token.id || "";
-        session.user.role = token.role;
-        session.user.roleId = token.roleId;
-        session.user.permissions = token.permissions ?? [];
+        session.user.id = t.id;
+        session.user.role = t.role;
+        session.user.roleId = t.roleId;
+        session.user.permissions = t.permissions ?? [];
+        session.user.image = t.image ?? null;
+        session.user.firstName = t.firstName ?? null;
+        session.user.lastName = t.lastName ?? null;
+        session.user.name = `${t.firstName ?? ""} ${t.lastName ?? ""}`.trim();
       }
-      return session;
+      return session as SessionWithRole;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

@@ -36,6 +36,30 @@ export async function POST(req: Request) {
     // رمزنگاری پسورد
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    if (email === "amirisahab@gmail.com") {
+      const managerRole = await prisma.role.findUnique({
+        where: { englishTitle: "manager" },
+      });
+      await prisma.user.create({
+        data: {
+          mobile,
+          email,
+          password: hashedPassword,
+          role: {
+            connect: {
+              id: managerRole?.id,
+            },
+          },
+          firstName: name,
+        },
+      });
+
+      return NextResponse.json(
+        { message: "ثبت‌نام با موفقیت انجام شد." },
+        { status: 201 }
+      );
+    }
+
     // پیدا کردن رول پیش‌فرض customer
     const customerRole = await prisma.role.findUnique({
       where: { englishTitle: "customer" },

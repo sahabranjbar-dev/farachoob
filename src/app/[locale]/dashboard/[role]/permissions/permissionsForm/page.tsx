@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import PermissionForm from "../components/PermissionForm";
 import { prisma } from "@/lib/prisma"; // assuming this is how you import Prisma
+import { PermissionKey } from "@/constants/MENU_CONFIG";
 
 interface IPermissionFormPage {
   params?: Promise<{}>;
@@ -22,8 +23,8 @@ const PermissionFormPage = async ({
         },
         select: {
           id: true,
-          name: true,
-          description: true,
+          permissionKey: true,
+          title: true,
           createdAt: true,
           updateAt: true,
           roles: { select: { role: true, roleId: true } },
@@ -33,9 +34,9 @@ const PermissionFormPage = async ({
       return (
         <PermissionForm
           initialData={{
-            description: permission?.description,
+            title: permission?.title,
             id: permission?.id,
-            name: permission?.name,
+            permissionKey: permission?.permissionKey,
           }}
         />
       );

@@ -46,8 +46,8 @@ const UserFormPage = async ({ params, searchParams }: IUserFormPage) => {
                 permission: {
                   select: {
                     id: true,
-                    name: true,
-                    description: true,
+                    title: true,
+                    permissionKey: true,
                   },
                 },
               },

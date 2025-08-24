@@ -6,6 +6,8 @@ import { User, Mail, Lock, Eye, EyeOff, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import Image from "next/image";
+import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 type RegisterFormData = {
   name: string;
@@ -51,7 +53,10 @@ const RegisterPage = () => {
       setLoading(false);
       if (response.ok) {
         setMessage({ type: "success", text: t("REGISTRATION_SUCCESS") });
-        router.replace("/auth/login");
+        toast.success(t("REGISTRATION_SUCCESS"));
+        setTimeout(() => {
+          router.replace("/auth/login");
+        }, 1000);
       } else {
         setMessage({
           type: "error",

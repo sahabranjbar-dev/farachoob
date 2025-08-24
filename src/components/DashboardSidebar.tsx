@@ -28,7 +28,7 @@ interface Props {
     name: string;
     permissions?: string[];
     image?: string | null;
-    roles?: Role;
+    role?: Role;
   };
 }
 
@@ -41,10 +41,11 @@ export function DashboardSidebar({ user }: Props) {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+  console.log({ user });
 
   const pathname = usePathname();
   const { open } = useTabular();
-  const role = useSession().data?.user.role;
+  const role = useSession().data?.user.role.englishTitle;
 
   const isRouteActive = (href: string) => pathname.includes(href);
 
@@ -75,9 +76,9 @@ export function DashboardSidebar({ user }: Props) {
           </Avatar>
           <div className="flex flex-col truncate">
             <span className="font-bold text-lg truncate">{user.name}</span>
-            {user.roles && (
+            {user.role?.farsiTitle && (
               <span className="text-xs text-muted-foreground capitalize mt-0.5 truncate">
-                {user.roles}
+                {user.role.farsiTitle}
               </span>
             )}
           </div>

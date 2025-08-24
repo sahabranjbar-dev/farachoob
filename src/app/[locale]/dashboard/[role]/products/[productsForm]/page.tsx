@@ -31,7 +31,6 @@ const ProductsFormPage = async ({ searchParams }: IProductsFormPage) => {
       }
     } catch (error: any) {
       console.error("خطا در دریافت محصول:", error);
-      // می‌تونی اینجا toast یا redirect هم بزنی
     }
   }
 

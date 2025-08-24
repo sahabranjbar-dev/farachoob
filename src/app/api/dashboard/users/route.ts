@@ -60,8 +60,8 @@ export async function GET(request: Request) {
                 permission: {
                   select: {
                     id: true,
-                    name: true,
-                    description: true,
+                    title: true,
+                    permissionKey: true,
                   },
                 },
               },
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
       image: user.image,
       role: user.role ? user.role.farsiTitle : null,
       permissions: user.role
-        ? user.role.permissions.map((item) => item.permission.name)
+        ? user.role.permissions.map((item) => item.permission.title)
         : [],
     }));
 

@@ -18,9 +18,8 @@ export default async function DashboardLayout({
         <DashboardSidebar
           user={{
             name: session?.user.name ?? "user",
-            // TODO: check is necessery
             permissions: session?.user.permissions,
-            roles: session?.user.role,
+            role: session?.user.role,
             image: session?.user?.image,
           }}
         />

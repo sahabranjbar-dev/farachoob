@@ -17,9 +17,9 @@ export default async function DashboardLayout({
 
   const role = host?.split("/").splice(5)[0];
 
-  if (role !== session?.user.role) {
+  if (role !== session?.user.role?.englishTitle) {
     return redirect({
-      href: `/dashboard/${session?.user?.role}`,
+      href: `/dashboard/${session?.user?.role?.englishTitle}`,
       locale,
     });
   }

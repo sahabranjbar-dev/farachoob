@@ -31,6 +31,7 @@ import {
 import useTabular from "@/hooks/useTabular";
 import useDataGetter from "@/hooks/useDataGetter";
 import { toast } from "sonner";
+import { X } from "lucide-react";
 
 interface IUserForm {
   initialData?: any;
@@ -52,17 +53,14 @@ interface FormValues {
 const UserForm = ({ initialData, roles = [] }: IUserForm) => {
   const form = useForm<FormValues>({
     defaultValues: {
-      id: initialData?.id || "",
-      firstName: initialData?.firstName || "",
-      lastName: initialData?.lastName || "",
-      email: initialData?.email || "",
-      mobile: initialData?.mobile || "",
-      birthDate: initialData?.birthDate
-        ? new Date(initialData.birthDate)
-        : null,
-      image: initialData?.image || null,
-      roleId: initialData?.role?.id || "",
-      password: "",
+      id: initialData?.id,
+      firstName: initialData?.firstName,
+      lastName: initialData?.lastName,
+      email: initialData?.email,
+      mobile: initialData?.mobile,
+      birthDate: initialData?.birthDate,
+      image: initialData?.image,
+      roleId: initialData?.role?.id,
     },
   });
 
@@ -79,7 +77,6 @@ const UserForm = ({ initialData, roles = [] }: IUserForm) => {
         if (data) {
           toast.success("کاربر با موفقیت ویرایش شد.");
         }
-        closeCurrentTab();
       })
       .catch((err) => {
         console.error("Error updating user:", err);
@@ -244,7 +241,7 @@ const UserForm = ({ initialData, roles = [] }: IUserForm) => {
               <Button type="submit" variant="primary">
                 ذخیره
               </Button>
-              <Button variant="outline" onClick={closeCurrentTab}>
+              <Button left={<X />} variant="outline" onClick={closeCurrentTab}>
                 انصراف
               </Button>
             </div>

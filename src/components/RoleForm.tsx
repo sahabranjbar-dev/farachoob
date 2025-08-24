@@ -11,6 +11,9 @@ import { Textarea } from "./ui/textarea";
 import useDataGetter from "@/hooks/useDataGetter";
 import FullScreenLoading from "./FullScreenLoading";
 import Spinner from "./Spinner";
+import { Card, CardHeader, CardTitle } from "./ui/card";
+import { CheckIcon, ChevronDown, X } from "lucide-react";
+import useTabular from "@/hooks/useTabular";
 
 export interface FormValues {
   id: string;
@@ -18,7 +21,7 @@ export interface FormValues {
   englishTitle: string;
   description?: string;
   createdAt?: string;
-  status?: boolean;
+  status: boolean;
   updateAt?: string;
   users?: User[];
   permissions?: Permission[];
@@ -50,8 +53,8 @@ export interface Permission {
 
 export interface Permission2 {
   id: string;
-  name: string;
-  description: string;
+  title: string;
+  permissionKey: string;
   createdAt: string;
   updateAt: string;
 }
@@ -61,16 +64,27 @@ interface Props {
 }
 
 const RoleForm = ({ initialData }: Props) => {
-  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<FormValues>({
     defaultValues: {
       farsiTitle: "",
       englishTitle: "",
       description: "",
       status: true,
-      permissionIds: initialData?.permissions?.map((item) => item.permissionId),
+      permissionIds: initialData?.permissions?.map(
+        (item) => item.permission.id
+      ),
       ...initialData,
     },
+  });
+
+  const { closeCurrentTab } = useTabular();
+
+  const { fetch: rolesSubmit, loading: rolesSubmitLoading } = useDataGetter({
+    url: "dashboard/roles",
+    method: initialData?.id ? "PUT" : "POST",
+    showError: true,
+    showSuccessMessage: true,
+    immediatelyFetch: false,
   });
 
   const onSubmit = useCallback(
@@ -82,36 +96,16 @@ const RoleForm = ({ initialData }: Props) => {
       permissionIds,
       id,
     }: FormValues) => {
-      const isEdit = !!id;
-      setLoading(true);
-      try {
-        const response = await fetch("/api/dashboard/roles", {
-          method: isEdit ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            farsiTitle,
-            englishTitle,
-            description,
-            status,
-            permissionIds,
-            id,
-          }),
-        });
-        if (!response.ok) {
-          toast.error("مشکلی به وجود آمده است");
-        }
-        const result = await response.json();
-
-        if (result.status) {
-          toast.success("عملیات با موفقیت انجام شد", {
-            position: "bottom-center",
-          });
-        }
-      } catch (error) {
-        toast.error("مشکلی به وجود آمده است");
-      } finally {
-        setLoading(false);
-      }
+      rolesSubmit?.({
+        inputBody: {
+          farsiTitle,
+          englishTitle,
+          description,
+          status,
+          permissionIds,
+          id,
+        },
+      });
     },
     []
   );
@@ -123,68 +117,61 @@ const RoleForm = ({ initialData }: Props) => {
     loading: loadingPermissions,
   } = useDataGetter({
     url: "/dashboard/permissions",
-    immediatelyFetch: false,
+    immediatelyFetch: Boolean(initialData?.id),
+    params: {
+      pageSize: 30,
+    },
   });
 
   const options = permissionOptions?.resultList.map((item: any) => {
     return {
-      label: item.farsiTitle,
+      label: item.title,
       value: item?.id,
+      id: item?.id,
     };
   });
 
   console.log({ options });
 
   return (
-    <div>
-      {loading && <FullScreenLoading />}
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-center">
+          فرم {!!initialData?.id ? "ویرایش" : "ایجاد"} نقش
+        </CardTitle>
+      </CardHeader>
+      {rolesSubmitLoading && <FullScreenLoading />}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex justify-center items-center gap-2">
-            <FormField
-              name="farsiTitle"
-              render={({ field }) => {
-                return (
-                  <FormItem className="w-1/2">
-                    <FormLabel>نام فارسی</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="نام فارسی نقش را وارد کنید"
-                      />
-                    </FormControl>
-                  </FormItem>
-                );
-              }}
-            />
-            <FormField
-              name="englishTitle"
-              render={({ field }) => {
-                return (
-                  <FormItem className="w-1/2">
-                    <FormLabel>نام انگلیسی</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="نام انگلیسی نقش را وارد کنید"
-                      />
-                    </FormControl>
-                  </FormItem>
-                );
-              }}
-            />
-          </div>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid grid-cols-3 gap-4 p-4"
+        >
           <FormField
-            name="description"
+            name="farsiTitle"
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>توضیحات</FormLabel>
-
+                  <FormLabel>نام فارسی</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <Input
                       {...field}
-                      placeholder="توضیحات نقش را وارد کنید"
+                      placeholder="نام فارسی نقش را وارد کنید"
+                    />
+                  </FormControl>
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            name="englishTitle"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>نام انگلیسی</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="نام انگلیسی نقش را وارد کنید"
                     />
                   </FormControl>
                 </FormItem>
@@ -192,6 +179,18 @@ const RoleForm = ({ initialData }: Props) => {
             }}
           />
 
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem className="flex justify-between items-center border shadow rounded-md mx-1">
+                <FormLabel>وضعیت انتشار</FormLabel>
+                <FormControl>
+                  <SwitchRtl checked={field.value} onChange={field.onChange} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
           <FormField
             name="permissionIds"
             render={({ field }) => {
@@ -214,39 +213,39 @@ const RoleForm = ({ initialData }: Props) => {
               );
             }}
           />
+
           <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                <FormLabel className="mb-0">
-                  {field.value ? "فعال" : "غیرفعال"}
-                </FormLabel>
-                <FormControl>
-                  <SwitchRtl
-                    checked={!!field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
+            name="description"
+            render={({ field }) => {
+              return (
+                <FormItem className="col-start-1 col-end-4 row-start-3 w-full h-64">
+                  <FormLabel>توضیحات</FormLabel>
+
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="توضیحات نقش را وارد کنید"
+                    />
+                  </FormControl>
+                </FormItem>
+              );
+            }}
           />
-          <div className="flex justify-end gap-4">
-            <Button type="submit" variant="primary">
+          <div className="flex justify-end gap-4 col-start-3 row-start-4">
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={rolesSubmitLoading}
+            >
               ذخیره
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                form.reset();
-              }}
-            >
+            <Button left={<X />} variant="outline" onClick={closeCurrentTab}>
               انصراف
             </Button>
           </div>
         </form>
       </Form>
-    </div>
+    </Card>
   );
 };
 

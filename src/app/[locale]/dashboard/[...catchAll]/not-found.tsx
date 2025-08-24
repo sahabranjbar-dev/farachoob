@@ -20,7 +20,6 @@ export default function NotFoundPage({ route }: NotFoundPageProps) {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 150, damping: 10 }}
-        className="w-64 h-64"
       >
         <Player size={100} icon={error404} />
       </motion.div>

@@ -24,7 +24,7 @@ export default function useTabular() {
   const { data: session } = useSession();
   const locale = useLocale();
 
-  const role = session?.user?.role;
+  const role = session?.user?.role?.englishTitle;
 
   const activeTab = useMemo(
     () => tabs.find((tab) => tab.id === activeTabId),

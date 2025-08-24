@@ -58,13 +58,13 @@ model Role {
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String           @unique
-  description String?
-  menus       Menu[]
-  roles       RolePermission[]
-  createdAt   DateTime         @default(now())
-  updateAt    DateTime         @updatedAt
+  id            String           @id @default(uuid())
+  permissionKey PermissionKey    @unique
+  title         String
+  menus         Menu[]
+  roles         RolePermission[]
+  createdAt     DateTime         @default(now())
+  updateAt      DateTime         @updatedAt
 }
 
 model RolePermission {
@@ -202,4 +202,85 @@ model ContactMessage {
   email     String
   message   String
   createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  MESSAGE
+  ORDER
+}
+
+enum PermissionKey {
+  // Blogs
+  view_blogs
+  create_blogs
+  edit_blogs
+  delete_blogs
+
+  // Brands
+  view_brands
+  create_brands
+  edit_brands
+  delete_brands
+
+  // Categories
+  view_categories
+  create_categories
+  edit_categories
+  delete_categories
+
+  // Comments
+  view_comments
+  create_comments
+  edit_comments
+  delete_comments
+
+  // Menus
+  view_menus
+  create_menus
+  edit_menus
+  delete_menus
+
+  // Permissions
+  view_permissions
+  create_permissions
+  edit_permissions
+  delete_permissions
+
+  // Products
+  view_products
+  create_products
+  edit_products
+  delete_products
+
+  // Roles
+  view_roles
+  create_roles
+  edit_roles
+  delete_roles
+
+  // Users
+  view_users
+  create_users
+  edit_users
+  delete_users
+
+  //Setting
+  view_setting
+  create_setting
+  edit_setting
+  delete_setting
 }

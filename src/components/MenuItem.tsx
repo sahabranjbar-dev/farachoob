@@ -48,7 +48,7 @@ const MenuItem = ({ item, isActive, open, index, IconComponent }: Props) => {
         {/* Toggle Icon */}
         {hasChildren && (
           <span
-            className="ml-auto text-xs cursor-pointer"
+            className="text-xs cursor-pointer"
             onClick={(e) => {
               e.stopPropagation();
               setIsOpen(!isOpen);
@@ -89,13 +89,13 @@ const MenuItem = ({ item, isActive, open, index, IconComponent }: Props) => {
                     variant="ghost"
                     onClick={() => open(child.href, child.title)}
                     className={cn(
-                      "flex items-center gap-3 p-2 text-sm rounded-lg transition-colors",
+                      "flex justify-start items-center gap-3 p-2 text-sm rounded-lg transition-colors",
                       isChildActive
                         ? "bg-orange-400 text-white hover:bg-orange-500"
                         : "text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                     )}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex mr-4 items-center gap-3">
                       {child.icon && <Icon size={20} />}
                       <span className="truncate overflow-hidden whitespace-nowrap">
                         {child.title}

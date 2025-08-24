@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { PermissionKey } from "@/constants/MENU_CONFIG";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    console.log({ searchParams });
 
     // فیلترها
-    const name = searchParams.get("name") || undefined;
-    const description = searchParams.get("description") || undefined;
+    const title = searchParams.get("title") || undefined;
+    const permissionKey = searchParams.get("permissionKey") || undefined;
 
     // پجینیشن
     const page = Number(searchParams.get("page")) || 1;
@@ -18,11 +20,13 @@ export async function GET(request: Request) {
     const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
 
     // فیلترها
-    const filters = {
+    const filters: any = {
       AND: [
-        name ? { name: { contains: name } } : {},
-        description ? { description: { contains: description } } : {},
-      ],
+        title ? { title: { contains: title, mode: "insensitive" } } : undefined,
+        permissionKey
+          ? { permissionKey: permissionKey as PermissionKey }
+          : undefined,
+      ].filter(Boolean),
     };
 
     // گرفتن تعداد کل
@@ -35,10 +39,11 @@ export async function GET(request: Request) {
       orderBy: { [sortBy]: sortOrder },
       select: {
         id: true,
-        name: true,
-        description: true,
+        permissionKey: true,
         createdAt: true,
+        title: true,
         updateAt: true,
+        menus: true,
         roles: { select: { role: true, roleId: true } },
       },
     });
@@ -46,8 +51,8 @@ export async function GET(request: Request) {
     const permissionData = permissions.map((permission, index) => ({
       rowNumber: (page - 1) * pageSize + index + 1,
       id: permission.id,
-      englishTitle: permission.name,
-      farsiTitle: permission.description,
+      permissionKey: permission.permissionKey,
+      title: permission.title,
       createdAt: permission.createdAt,
       updateAt: permission.updateAt,
       roles: permission.roles,
@@ -70,9 +75,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, description } = body;
+    const { permissionKey, title } = body;
 
-    if (!name) {
+    if (!permissionKey) {
       return NextResponse.json(
         { message: "نام دسترسی الزامی است" },
         { status: 400 }
@@ -81,8 +86,9 @@ export async function POST(request: Request) {
 
     // چک کردن تکراری نبودن نام
     const exists = await prisma.permission.findUnique({
-      where: { name },
+      where: { permissionKey },
     });
+
     if (exists) {
       return NextResponse.json(
         { message: "این دسترسی قبلاً ثبت شده است" },
@@ -92,8 +98,8 @@ export async function POST(request: Request) {
 
     const permission = await prisma.permission.create({
       data: {
-        name,
-        description,
+        permissionKey,
+        title,
       },
     });
 
@@ -109,9 +115,9 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, name, description } = body;
+    const { id, permissionKey, title } = body;
 
-    if (!id || !name) {
+    if (!id || !title || !permissionKey) {
       return NextResponse.json(
         { message: "شناسه و نام دسترسی الزامی است" },
         { status: 400 }
@@ -121,7 +127,7 @@ export async function PUT(request: Request) {
     // چک تکراری نبودن نام به جز خود رکورد
     const exists = await prisma.permission.findFirst({
       where: {
-        name,
+        permissionKey,
         NOT: { id },
       },
     });
@@ -135,8 +141,8 @@ export async function PUT(request: Request) {
     const permission = await prisma.permission.update({
       where: { id },
       data: {
-        name,
-        description,
+        title,
+        permissionKey,
       },
     });
 
@@ -149,24 +155,23 @@ export async function PUT(request: Request) {
   }
 }
 
-// export async function DELETE(request: Request) {
-//   try {
-//     const { searchParams } = new URL(request.url);
-//     const idParam = searchParams.get("id");
-//     if (!idParam) {
-//       return NextResponse.json(
-//         { message: "شناسه دسترسی لازم است" },
-//         { status: 400 }
-//       );
-//     }
-//     const id = parseInt(idParam, 10);
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const idParam = searchParams.get("id");
+    if (!idParam) {
+      return NextResponse.json(
+        { message: "شناسه دسترسی لازم است" },
+        { status: 400 }
+      );
+    }
 
-//     await prisma.permission.delete({
-//       where: { id },
-//     });
+    await prisma.permission.delete({
+      where: { id: idParam },
+    });
 
-//     return NextResponse.json({ message: "دسترسی با موفقیت حذف شد" });
-//   } catch (error) {
-//     return NextResponse.json({ message: "خطا در حذف دسترسی" }, { status: 500 });
-//   }
-// }
+    return NextResponse.json({ message: "دسترسی با موفقیت حذف شد" });
+  } catch (error) {
+    return NextResponse.json({ message: "خطا در حذف دسترسی" }, { status: 500 });
+  }
+}

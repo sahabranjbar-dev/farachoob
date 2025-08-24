@@ -8,11 +8,7 @@ import UnauthorizedPage from "../unauthorized/page";
 import CustomerDashboardPage from "./(pages)/Customer";
 import { authOptions } from "@/lib/auth";
 
-const MainDashboardPage = async ({
-  params,
-}: {
-  params: Promise<{ role: string }>;
-}) => {
+const MainDashboardPage = async () => {
   const session = await getServerSession(authOptions);
   const locale = await getLocale();
 
@@ -24,7 +20,7 @@ const MainDashboardPage = async ({
     return;
   }
 
-  switch (session.user.role) {
+  switch (session.user.role?.englishTitle) {
     case "manager":
       return <ManagerDashboardPage />;
     case "customer":

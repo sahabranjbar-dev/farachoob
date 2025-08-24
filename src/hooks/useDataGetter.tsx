@@ -73,7 +73,7 @@ export default function useDataGetter<T = any>({
         }
       });
     },
-    [url, method, params, body]
+    []
   );
 
   useEffect(() => {

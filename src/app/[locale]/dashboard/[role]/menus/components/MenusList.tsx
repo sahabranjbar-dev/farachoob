@@ -28,7 +28,7 @@ const MenusList = () => {
         field: "permission",
         title: "دسترسی",
         render(v) {
-          return v?.description;
+          return v?.title;
         },
       },
       {
