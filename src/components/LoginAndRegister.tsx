@@ -46,7 +46,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
             e.stopPropagation();
             setOpen(!open);
           }}
-          className="flex items-center gap-2 rounded-lg border cursor-pointer px-4 py-2 text-sm font-medium hover:bg-gray-100 transition-colors"
+          className="flex items-center gap-2 rounded-lg border cursor-pointer px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
           aria-haspopup="true"
           aria-expanded={open}
         >

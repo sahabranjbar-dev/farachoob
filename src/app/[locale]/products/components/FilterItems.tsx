@@ -39,7 +39,7 @@ const FilterItems = ({
         </AccordionTrigger>
         <AccordionContent>
           {isPending && (
-            <div className="text-gray-500 text-sm mb-2 fixed top-0 right-0 w-screen h-screen bg-white bg-opacity-70 flex justify-center items-center z-100">
+            <div className="text-gray-500 text-sm mb-2 fixed top-0 right-0 w-screen h-screen bg-white dark:bg-black bg-opacity-70 flex justify-center items-center z-100">
               <FullScreenLoading />
             </div>
           )}

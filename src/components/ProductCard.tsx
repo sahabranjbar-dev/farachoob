@@ -6,7 +6,7 @@ import React from "react";
 interface Props {
   id: string;
   imageSrc?: string;
-  imageAlt?: string;
+  imageAlt: string;
   title?: string;
   description?: string;
   className?: string;
@@ -16,13 +16,13 @@ interface Props {
 }
 const ProductCard = ({
   imageSrc = "/images/placeholder.png",
-  imageAlt = "Product Image",
-  title = "Product Title",
-  description = "Product description goes here.",
+  imageAlt,
+  title,
+  description,
   className,
   style,
-  imageWidth = 300,
-  imageHeight = 300,
+  imageWidth = 350,
+  imageHeight = 500,
   id,
 }: Props) => {
   return (
@@ -53,7 +53,7 @@ const ProductCard = ({
           {title}
         </h4>
         <p className="text-neutral-500 pt-2 line-clamp-3 text-ellipsis">
-          {description + description + description + description}
+          {description}
         </p>
       </div>
     </Link>

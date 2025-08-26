@@ -3,11 +3,12 @@
 import SVGComponent from "@/assets/HeroPattern";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Instagram, Linkedin, Twitter } from "lucide-react";
+import { useLocale } from "next-intl";
 import React from "react";
 
 const Footer = () => {
   const pathname = usePathname();
-
+  const locale = useLocale();
   const isAuthPage =
     pathname?.startsWith("/auth") || pathname?.startsWith("/dashboard");
   if (isAuthPage) return;
@@ -31,7 +32,7 @@ const Footer = () => {
             <ul className="space-y-3">
               {[
                 { label: "درباره ما", href: "/about-use" },
-                { label: "تماس با ما", href: "/contact-use" },
+                { label: "تماس با ما", href: "/contact-us" },
                 { label: "سوالات متداول", href: "/faq" },
                 { label: "حریم خصوصی", href: "/privacy" },
                 { label: "شرایط و قوانین", href: "/terms" },
@@ -53,11 +54,9 @@ const Footer = () => {
             <h4 className="text-lg font-bold text-white">خدمات</h4>
             <ul className="space-y-3">
               {[
-                { label: "حساب کاربری من", href: "/profile" },
-                { label: "فروشگاه", href: "/shop" },
-                { label: "آرشیو مقالات", href: "/articles" },
-                { label: "سبد خرید", href: "/cart" },
-                { label: "نمایندگان", href: "/agents" },
+                { label: "حساب کاربری من", href: "/dashboard" },
+                { label: "فروشگاه", href: "/products" },
+                { label: "آرشیو مقالات", href: "/blogs" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -93,7 +92,7 @@ const Footer = () => {
                 <p>مجتمع صنعتی فراچوب</p>
                 <p>کدپستی: 3847283457</p>
                 <p>تلفن تماس: 011-xxxxxxx</p>
-                <p>ایمیل: info@frachob.ir</p>
+                <p>ایمیل: info@frachob.com</p>
               </address>
             </div>
 

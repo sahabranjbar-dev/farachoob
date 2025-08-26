@@ -15,7 +15,11 @@ interface Props {
 export default function Comments({ articleId }: Props) {
   const { data, error, isLoading, mutate, isValidating } = useSWR(
     `/api/comment?articleId=${articleId}`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    }
   );
 
   // 🔹 لودینگ
@@ -25,7 +29,7 @@ export default function Comments({ articleId }: Props) {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="border rounded-xl p-4 shadow-sm bg-gray-50 space-y-2"
+            className="border rounded-xl p-4 shadow-sm bg-gray-50 dark:bg-gray-900 space-y-2"
           >
             <div className="flex items-center space-x-2 space-x-reverse">
               <Skeleton className="h-10 w-10 rounded-full" />
@@ -78,7 +82,7 @@ export default function Comments({ articleId }: Props) {
           />
         ))
       ) : (
-        <p className="text-gray-500 text-sm text-center">
+        <p className="text-gray-500 dark:text-gray-50 text-sm text-center">
           هنوز نظری ثبت نشده است
         </p>
       )}

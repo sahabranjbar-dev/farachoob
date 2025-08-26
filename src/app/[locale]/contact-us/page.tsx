@@ -95,18 +95,18 @@ const ContactUs = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
       <div className="text-center mb-12 md:mb-16">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-50 mb-4">
           با ما در تماس باشید
         </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed text-base md:text-lg">
+        <p className="text-gray-600 dark:text-neutral-200 max-w-2xl mx-auto leading-relaxed text-base md:text-lg">
           سوال، پیشنهاد یا انتقاد دارید؟ فرم زیر را پر کنید تا در کوتاه‌ترین
           زمان با شما ارتباط بگیریم.
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden md:flex border border-gray-100">
+      <div className="bg-white  rounded-2xl shadow-lg overflow-hidden md:flex border border-gray-100">
         {/* Contact Information */}
-        <div className="md:w-2/5 bg-gradient-to-br from-blue-600 to-indigo-700 p-8 md:p-10 text-white flex flex-col justify-center relative">
+        <div className="md:w-2/5 bg-gradient-to-br from-orange-600 to-orange-400 p-8 md:p-10 text-white flex flex-col justify-center relative">
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
           <div className="relative z-10 space-y-8">
             <div>
@@ -118,7 +118,7 @@ const ContactUs = () => {
 
             <div className="space-y-6">
               <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
+                <div className="bg-blue-500/20 dark:bg-transparent p-2 rounded-lg mt-1">
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
@@ -133,7 +133,7 @@ const ContactUs = () => {
               </div>
 
               <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
+                <div className="bg-blue-500/20 dark:bg-transparent p-2 rounded-lg mt-1">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
@@ -148,7 +148,7 @@ const ContactUs = () => {
               </div>
 
               <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="bg-blue-500/20 p-2 rounded-lg mt-1">
+                <div className="bg-blue-500/20 dark:bg-transparent p-2 rounded-lg mt-1">
                   <MapPin className="h-5 w-5" />
                 </div>
                 <div>
@@ -163,12 +163,12 @@ const ContactUs = () => {
         </div>
 
         {/* Contact Form */}
-        <div className="md:w-3/5 p-8 md:p-10 bg-white">
+        <div className="md:w-3/5 p-8 md:p-10 bg-white dark:bg-gray-900">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                   نام کامل <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -188,7 +188,7 @@ const ContactUs = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                   ایمیل <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -210,7 +210,7 @@ const ContactUs = () => {
 
             {/* Message */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                 پیام شما <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -231,7 +231,7 @@ const ContactUs = () => {
 
             {/* Captcha */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                 کد امنیتی <span className="text-red-500">*</span>
               </label>
               <div className="flex flex-col md:flex-row md:items-center gap-4">

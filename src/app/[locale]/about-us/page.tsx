@@ -79,10 +79,12 @@ const AboutUs = () => {
         >
           {/* متن */}
           <div className="w-full md:w-1/2 space-y-4">
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {section.title}
             </h2>
-            <p className="text-gray-600 leading-relaxed">{section.text}</p>
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              {section.text}
+            </p>
           </div>
 
           {/* تصویر */}

@@ -27,7 +27,7 @@ export default async function BestSellingProducts() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-2">
+    <div className="grid grid-cols-1 gap-2 dark:bg-gray-600 p-3 rounded-md">
       {products.map((item) => (
         <Link href={`/products/${item?.id}`} key={item?.id} target="_blank">
           <BestSellingProductsCard key={item.id} product={item} />

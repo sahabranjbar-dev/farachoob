@@ -1,13 +1,13 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import { Button } from "../ui/button";
-import { CircleX, Reply, ThumbsDown, ThumbsUp } from "lucide-react";
 import CommentForm from "@/app/[locale]/blogs/components/CommentForm";
 import useDataGetter from "@/hooks/useDataGetter";
-import { useSession } from "next-auth/react";
-import { toast } from "sonner";
 import { Likes, User } from "@/types/common";
-import { cn } from "@/lib/utils";
+import { CircleX, Reply, ThumbsUp } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface Props {
   commentId?: string;
@@ -27,6 +27,7 @@ const RepliedForm = ({
   user,
 }: Props) => {
   const [showForm, setShowForm] = useState<boolean>(false);
+  const { theme } = useTheme();
   const session = useSession();
   const { fetch, data, loading } = useDataGetter({
     url: "/comment/likes",
@@ -70,9 +71,22 @@ const RepliedForm = ({
             fetch?.({});
           }}
           tooltip={liked ? "دیسلایک این نظر" : "لایک این نظر"}
-          left={<ThumbsUp size={256} color={liked ? "#14930b" : "black"} />}
+          left={
+            <ThumbsUp
+              size={256}
+              color={
+                liked
+                  ? theme === "dark"
+                    ? "green"
+                    : "#14930b"
+                  : theme === "dark"
+                  ? "orange"
+                  : "black"
+              }
+            />
+          }
           variant="ghost"
-          className="underline disabled:cursor-not-allowed disabled:bg-gray-50"
+          className="underline disabled:cursor-not-allowed disabled:bg-gray-50 dark:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           disabled={loading || isValidating}
         />
         {likes?.length ? `(${likes?.length})` : null}

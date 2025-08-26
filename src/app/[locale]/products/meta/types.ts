@@ -13,12 +13,15 @@ export interface IFiltersContent {
 }
 
 export interface IProduct {
+  englishTitle: string;
+  farsiTitle: string;
   id: string;
-  title?: string;
-  description?: string;
-  discount?: number;
-  rate?: number;
-  image?: string;
+  image: any;
+  price: number;
+  description: string;
+  stock: number;
+  brand: any;
+  category: any;
 }
 
 export interface IFilterSidebar {

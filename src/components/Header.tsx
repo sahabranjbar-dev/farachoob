@@ -26,7 +26,7 @@ const Header = () => {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="sticky top-0 z-50 shadow-md bg-white"
+      className="sticky top-0 z-50 shadow-md bg-white dark:bg-black"
     >
       {/* Top Header */}
       <div className="p-4 flex justify-between items-center bg-transparent">

@@ -28,13 +28,15 @@ const NewestProducts = () => {
     url: "/products",
   });
 
-  // if (loading) {
-  //   return (
-  //     <div className="text-center py-12">
-  //       <p className="text-gray-600 dark:text-gray-300">در حال بارگذاری...</p>
-  //     </div>
-  //   );
-  // }
+  console.log({ products });
+
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-600 dark:text-gray-300">در حال بارگذاری...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative py-16 bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 rounded-3xl overflow-hidden m-4 shadow-2xl">
@@ -96,8 +98,8 @@ const NewestProducts = () => {
                 <ProductCard
                   id={product.id}
                   imageSrc={product.image}
-                  imageAlt={product.title}
-                  title={product.title}
+                  imageAlt={product.englishTitle}
+                  title={product.farsiTitle}
                   description={product.description}
                   className="cursor-pointer bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col"
                 />

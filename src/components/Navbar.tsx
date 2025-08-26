@@ -1,28 +1,9 @@
 "use client";
 
-import {
-  Armchair,
-  Building2,
-  FileUser,
-  House,
-  Newspaper,
-  PhoneOutgoing,
-  Sofa,
-  Table,
-  LampDesk,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import { Fragment, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import useDataGetter from "@/hooks/useDataGetter";
+import { FileUser, House, Newspaper, PhoneOutgoing, Sofa } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 const Navbar = () => {
   const t = useTranslations("Navbar");
@@ -39,7 +20,6 @@ const Navbar = () => {
       },
       { id: "about", title: "درباره ما", url: "/about-us", icon: FileUser },
       { id: "products", title: "محصولات", url: "/products", icon: Sofa },
-      { id: "services", title: "خدمات", url: "/services", icon: LampDesk },
     ],
     []
   );
@@ -51,7 +31,7 @@ const Navbar = () => {
         <Link
           key={item.id}
           href={item.url}
-          className="flex items-center gap-2 hover:text-orange-400 transition-colors duration-300 group"
+          className="flex items-center gap-2 dark:text-neutral-200 hover:text-orange-400 transition-colors duration-300 group "
         >
           <item.icon
             size={18}

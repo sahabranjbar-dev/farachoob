@@ -75,7 +75,6 @@ export default function CommentForm({
       closeForm?.();
     },
     onFailure(error) {
-      console.log({ error });
       toast.error(error?.response?.data?.error, {
         position: "bottom-center",
       });
@@ -96,13 +95,13 @@ export default function CommentForm({
         captcha: data.captcha,
         commentParentId: commentId,
       },
-    });
+    }).finally(() => fetchCaptcha?.({}));
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 rounded-xl border bg-white p-6 shadow-md"
+      className="space-y-4 rounded-xl border bg-white dark:bg-black dark:border-2  p-6 shadow-md"
     >
       <h3 className="text-lg font-semibold">{title}</h3>
 
@@ -112,6 +111,7 @@ export default function CommentForm({
           placeholder="نظر خود را بنویسید..."
           {...register("content")}
           required={false}
+          className="dark:bg-gray-800"
         />
         {errors.content && (
           <p className="mt-1 text-sm text-red-500">{errors.content.message}</p>
@@ -139,14 +139,24 @@ export default function CommentForm({
         </Button>
       </div>
 
-      <div>
-        <Input placeholder="کپچا" {...register("captcha")} required={false} />
+      <div className="">
+        <Input
+          placeholder="کپچا"
+          {...register("captcha")}
+          required={false}
+          className="dark:bg-gray-800"
+        />
         {errors.captcha && (
           <p className="mt-1 text-sm text-red-500">{errors.captcha.message}</p>
         )}
       </div>
 
-      <Button type="submit" disabled={addCommentLoading}>
+      <Button
+        variant="primary"
+        type="submit"
+        disabled={addCommentLoading}
+        className="dark:**:text-gray-200"
+      >
         {addCommentLoading ? "در حال ارسال..." : "ثبت نظر"}
       </Button>
     </form>

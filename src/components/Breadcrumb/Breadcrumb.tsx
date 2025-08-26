@@ -110,7 +110,10 @@ const Breadcrumb = forwardRef(({}, ref: React.ForwardedRef<HTMLDivElement>) => {
             <Button
               size="icon"
               variant="ghost"
-              onClick={closeAllTabs}
+              onClick={() => {
+                closeAllTabs();
+                open("/", "داشبورد");
+              }}
               className="hover:bg-orange-100 dark:hover:bg-orange-900"
               aria-label="بستن همه تب‌ها"
             >

@@ -7,6 +7,7 @@ import DOMPurify from "isomorphic-dompurify";
 import CommentForm from "../components/CommentForm";
 import BestSellingProducts from "../components/BestSellingProducts";
 import Comments from "@/components/Comments/Comments";
+import Article from "../components/Article";
 
 interface BlogPageProps {
   params: { id: string };
@@ -30,7 +31,6 @@ export default async function BlogPage({ params }: BlogPageProps) {
   });
   if (!article) return notFound();
 
-  // ضدعفونی کردن محتوا
   const safeContent = DOMPurify.sanitize(article.content);
 
   return (
@@ -51,20 +51,17 @@ export default async function BlogPage({ params }: BlogPageProps) {
 
           {/* عنوان و محتوا */}
           <div className="mt-6 border p-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-3">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 dark:text-gray-200 mb-3">
               {article.title}
             </h1>
-            <div className="flex justify-end items-center gap-2 text-gray-500 text-xs sm:text-sm mb-6">
+            <div className="flex justify-end items-center gap-2 text-gray-500 dark:text-gray-300 text-xs sm:text-sm mb-6">
               <span>
                 آخرین ویرایش: {article.updatedAt.toLocaleDateString("fa")}
               </span>
               <CalendarDays size={16} />
             </div>
 
-            <article
-              className="prose prose-sm sm:prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-700 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline"
-              dangerouslySetInnerHTML={{ __html: safeContent }}
-            />
+            <Article safeContent={safeContent} />
           </div>
 
           {/* بخش کامنت‌ها */}
@@ -92,7 +89,9 @@ export default async function BlogPage({ params }: BlogPageProps) {
         {/* سایدبار */}
         <aside className="lg:col-span-2">
           <div className="border rounded-2xl shadow-lg p-4 sticky top-28">
-            <h3 className="font-bold text-gray-700 mb-4">محصولات پرفروش</h3>
+            <h3 className="font-bold text-gray-700 dark:text-gray-100 mb-4">
+              محصولات پرفروش
+            </h3>
             <BestSellingProducts />
           </div>
         </aside>

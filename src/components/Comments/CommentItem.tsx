@@ -22,10 +22,10 @@ const CommentItem = ({
   isValidating,
 }: Props) => {
   return (
-    <div className="bg-gray-50 border rounded-xl p-4 shadow-sm m-4">
-      <p className="text-gray-700 mb-2">{content}</p>
-      <div className="text-xs text-gray-500 flex justify-between">
-        <span>{name}</span>
+    <div className="bg-gray-50 dark:bg-gray-900 border rounded-xl p-4 shadow-sm m-4">
+      <p className="text-gray-700 dark:text-white mb-2 mr-4">{content}</p>
+      <div className="text-xs text-gray-600 dark:text-gray-200 flex justify-between mr-6">
+        <span className="text-gray-800 dark:text-gray-200">{name}</span>
         <span>
           {updatedAt ? new Date(updatedAt).toLocaleString("fa") : "لحظاتی پیش"}
         </span>

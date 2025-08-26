@@ -46,12 +46,10 @@ export default async function Blogs() {
     orderBy: { publishedAt: "desc" },
     include: { author: true, comments: true },
   });
-  console.log({ articles });
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Hero Section - Elegant Design */}
-      <section className="relative py-14 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
+      <section className="relative py-14 bg-gradient-to-br from-gray-50 to-white dark:from-gray-700 dark:to-gray-950 overflow-hidden">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div
@@ -66,7 +64,7 @@ export default async function Blogs() {
         <div className="container relative mx-auto px-6 text-center">
           <div className="mb-8">
             <div className="w-16 h-0.5 bg-gradient-to-r from-indigo-400 to-blue-400 mx-auto mb-6"></div>
-            <h1 className="text-4xl sm:text-5xl font-medium text-gray-800 mb-6 tracking-tight leading-tight">
+            <h1 className="text-4xl sm:text-5xl font-medium text-gray-800 dark:text-gray-50 mb-6 tracking-tight leading-tight">
               مقالات سایت فراچوب
             </h1>
           </div>
@@ -79,7 +77,7 @@ export default async function Blogs() {
           {articles.map((post) => (
             <article
               key={post.id}
-              className="group bg-white rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 shadow-sm hover:shadow-md"
+              className="group bg-white dark:bg-neutral-600 rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-4px] border border-gray-100 shadow-sm hover:shadow-md"
             >
               <div className="relative h-60 w-full overflow-hidden">
                 <Image
@@ -111,21 +109,21 @@ export default async function Blogs() {
               </div>
 
               <div className="p-6">
-                <h3 className="text-xl font-medium text-gray-800 mb-3 leading-relaxed group-hover:text-gray-600 transition-colors">
+                <h3 className="text-xl font-medium text-gray-800 dark:text-gray-100 mb-3 leading-relaxed group-hover:text-gray-600 transition-colors">
                   {post.title}
                 </h3>
 
                 <Link
                   href={`/blogs/${post.id}`}
-                  className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 transition-colors group/btn font-medium"
+                  className="flex items-center justify-end gap-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 transition-colors group/btn font-medium"
                 >
-                  <span className="border-b border-transparent group-hover/btn:border-gray-300 transition-all">
-                    مطالعه مقاله
-                  </span>
                   <ArrowRight
-                    size={14}
+                    size={20}
                     className="mt-0.5 transition-transform group-hover/btn:translate-x-1"
                   />
+                  <span className="border-b border-transparent group-hover/btn:border-gray-300 dark:group-hover/btn:border-gray-700 transition-all">
+                    مطالعه مقاله
+                  </span>
                 </Link>
               </div>
             </article>

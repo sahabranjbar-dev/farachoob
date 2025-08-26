@@ -119,7 +119,7 @@ const RoleForm = ({ initialData }: Props) => {
     url: "/dashboard/permissions",
     immediatelyFetch: Boolean(initialData?.id),
     params: {
-      pageSize: 30,
+      pageSize: 50,
     },
   });
 
@@ -130,8 +130,6 @@ const RoleForm = ({ initialData }: Props) => {
       id: item?.id,
     };
   });
-
-  console.log({ options });
 
   return (
     <Card>
