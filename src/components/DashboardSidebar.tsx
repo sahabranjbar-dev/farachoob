@@ -41,7 +41,6 @@ export function DashboardSidebar({ user }: Props) {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
-  console.log({ user });
 
   const pathname = usePathname();
   const { open } = useTabular();

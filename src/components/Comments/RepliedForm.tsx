@@ -39,7 +39,6 @@ const RepliedForm = ({
       userId: session?.data?.user?.id,
     },
     onSuccess(data) {
-      console.log({ data });
       toast.success(data?.message);
       mutate?.();
     },

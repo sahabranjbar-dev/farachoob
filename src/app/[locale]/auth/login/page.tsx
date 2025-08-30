@@ -99,12 +99,12 @@ const LoginPage = () => {
 
         <div className="flex-1 p-8 md:p-12 lg:p-16 space-y-8 bg-white lg:rounded-r-2xl">
           <div className="text-left">
-            <h2 className="text-3xl font-extrabold text-gray-900 md:text-4xl">
-              {t("SIGN_IN_HEADING")}
+            <h2 className="text-center text-3xl text-gray-500  md:text-4xl">
+              ورود به داشبورد{" "}
+              <Link href="/" className="text-gray-900 font-extrabold underline">
+                فراچوب
+              </Link>
             </h2>
-            <p className="mt-1 text-sm text-gray-700">
-              {t("SIGN_IN_SUBHEADING")}
-            </p>
           </div>
 
           {message && (
@@ -264,7 +264,7 @@ const LoginPage = () => {
               )}
             </button>
 
-            <div className="relative flex justify-center text-sm">
+            {/* <div className="relative flex justify-center text-sm">
               <div className="bg-white z-10 px-2 text-gray-600">
                 {t("OR_SEPARATOR")}
               </div>
@@ -277,7 +277,7 @@ const LoginPage = () => {
             >
               {t("SIGN_IN_OTHER_BUTTON")}
             </Link>
-
+*/}
             <p className="text-center text-sm text-gray-700">
               {t("NO_ACCOUNT_QUESTION")}{" "}
               <Link

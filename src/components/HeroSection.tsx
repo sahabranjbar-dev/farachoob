@@ -1,62 +1,108 @@
 "use client";
-import { useRef } from "react";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 const HeroSection = () => {
-  const rightRef = useRef<HTMLDivElement>(null);
-  const leftRef = useRef<HTMLDivElement>(null);
+  const refs = {
+    text: useRef<HTMLDivElement>(null),
+    image: useRef<HTMLDivElement>(null),
+  };
 
-  useGSAP(() => {
-    if (rightRef.current && leftRef.current) {
-      gsap.from(rightRef.current, {
-        x: 1000,
-        duration: 1.3,
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-slide-in");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    Object.values(refs).forEach((ref) => {
+      if (ref.current) observer.observe(ref.current);
+    });
+
+    return () => {
+      Object.values(refs).forEach((ref) => {
+        if (ref.current) observer.unobserve(ref.current);
       });
-      gsap.from(leftRef.current, {
-        x: -1000,
-        duration: 1.3,
-      });
-    }
-  }, []);
+    };
+  }, [refs]);
 
   return (
     <div
-      className="w-full bg-white dark:bg-slate-900 rounded-md relative"
       dir="rtl"
+      className="flex flex-col lg:flex-row items-center gap-8 p-8 mt-8"
     >
-      {/* Header */}
-      <header className="flex lg:flex-row flex-col-reverse items-center gap-12 lg:gap-0 justify-between px-8 mt-10">
-        {/* متن */}
-        <div
-          ref={rightRef}
-          className="w-full lg:w-[45%] dark:text-[#abc2d3] text-right"
-        >
-          <p className="text-gray-500 dark:text-slate-400">
-            به وب‌سایت رسمی فراچوب خوش آمدید
-          </p>
-          <h1 className="text-[32px] sm:text-[48px] font-bold leading-[45px] sm:leading-[70px] mt-2">
-            <span className="text-orange-500">فراچوب</span>، همراه شما در طراحی
-            و تولید مبلمان اداری مدرن
-          </h1>
-          <p className="mt-4 text-[1rem] text-gray-600 dark:text-slate-400">
-            ما در فراچوب با تیمی متخصص، آماده‌ایم تا فضای کاری شما را با بهترین
-            طراحی و کیفیت، متحول کنیم.
-          </p>
+      {/* متن */}
+      <div
+        ref={refs.text}
+        className="w-full lg:w-1/2 text-right opacity-0 transition-all duration-700 -translate-y-10"
+      >
+        <h1 className="text-3xl sm:text-5xl font-bold mt-2">
+          <span className="text-orange-500">فراچوب</span>، همراه شما در طراحی و
+          تولید مبلمان اداری مدرن
+        </h1>
+        <p className="mt-4 text-gray-600">
+          ما در فراچوب با تیمی متخصص، آماده‌ایم تا فضای کاری شما را با بهترین
+          طراحی و کیفیت، متحول کنیم.
+        </p>
+        <div className="mt-6 flex gap-4">
+          <Link
+            href="/products"
+            className="px-4 py-2 bg-orange-500 text-white rounded"
+          >
+            مشاهده محصولات
+          </Link>
+          <Link href="/contact-us" className="px-4 py-2 border rounded">
+            تماس با ما
+          </Link>
         </div>
+      </div>
 
-        {/* تصویر */}
-        <div ref={leftRef} className="w-full lg:w-[55%]">
-          <Image
-            src="/images/hero.png"
-            alt="مبلمان اداری"
-            width={700}
-            height={700}
-            className="mx-auto"
-          />
-        </div>
-      </header>
+      {/* تصویر */}
+      <div
+        ref={refs.image}
+        className="w-full lg:w-1/2 opacity-0 transition-all duration-700"
+      >
+        <Image
+          src="/images/hero.png"
+          alt="مبلمان اداری"
+          width={700}
+          height={700}
+          className="mx-auto"
+          priority
+        />
+      </div>
+
+      <style jsx>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(var(--start-x));
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .animate-slide-in {
+          animation: slideIn 1s forwards ease-out;
+        }
+
+        .animate-slide-in:nth-child(1) {
+          --start-x: 5rem;
+        }
+
+        .animate-slide-in:nth-child(2) {
+          --start-x: -5rem;
+          animation-delay: 0.3s;
+        }
+      `}</style>
     </div>
   );
 };

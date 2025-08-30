@@ -13,11 +13,12 @@ import { Input } from "./ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { motion } from "framer-motion";
 import { usePathname } from "@/i18n/navigation";
+import { useState } from "react";
 
 const Header = () => {
   const t = useTranslations("Header");
   const pathname = usePathname();
-
+  const [open, setOpen] = useState(false);
   const isAuthPage =
     pathname?.startsWith("/auth") || pathname?.startsWith("/dashboard");
   if (isAuthPage) return;
@@ -32,14 +33,14 @@ const Header = () => {
       <div className="p-4 flex justify-between items-center bg-transparent">
         {/* Mobile Menu Sidebar */}
         <div className="md:hidden">
-          <Sheet>
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <motion.div whileTap={{ scale: 0.9 }}>
                 <AlignJustify size={24} />
               </motion.div>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <SideBarMenu />
+              <SideBarMenu setOpen={setOpen} key="sidebarmenu" />
             </SheetContent>
           </Sheet>
         </div>
@@ -63,7 +64,7 @@ const Header = () => {
           </Link>
           <div className="hidden md:flex justify-between items-center gap-4">
             <ModeToggle />
-            <LanguageSwitcher />
+            {/* <LanguageSwitcher /> */}
           </div>
         </div>
 

@@ -28,8 +28,6 @@ const NewestProducts = () => {
     url: "/products",
   });
 
-  console.log({ products });
-
   if (loading) {
     return (
       <div className="text-center py-12">

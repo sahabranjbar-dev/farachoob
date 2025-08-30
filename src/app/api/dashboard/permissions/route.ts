@@ -5,8 +5,6 @@ import { PermissionKey } from "@/constants/MENU_CONFIG";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    console.log({ searchParams });
-
     // فیلترها
     const title = searchParams.get("title") || undefined;
     const permissionKey = searchParams.get("permissionKey") || undefined;

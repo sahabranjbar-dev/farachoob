@@ -138,8 +138,11 @@ const RegisterPage = () => {
         {/* Right Section */}
         <div className="flex-1 p-8 md:p-12 lg:p-16 space-y-8 bg-white lg:rounded-r-2xl">
           <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900 md:text-4xl">
-              {t("CREATE_ACCOUNT_HEADING")}
+            <h2 className="text-3xl text-gray-500 md:text-4xl">
+              ثبت‌نام در داشبورد{" "}
+              <Link href="/" className="font-extrabold text-gray-900 underline">
+                فراچوب
+              </Link>
             </h2>
           </div>
 
@@ -241,7 +244,7 @@ const RegisterPage = () => {
             </button>
           </form>
 
-          <div className="relative flex justify-center text-sm">
+          {/* <div className="relative flex justify-center text-sm">
             <div className="bg-white z-10 px-2 text-gray-600">یا</div>
             <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gray-300"></div>
           </div>
@@ -252,7 +255,7 @@ const RegisterPage = () => {
           >
             ثبت نام با شماره موبایل
           </Link>
-
+*/}
           <p className="text-center text-sm text-gray-600">
             {t("ALREADY_HAVE_ACCOUNT_QUESTION")}{" "}
             <Link

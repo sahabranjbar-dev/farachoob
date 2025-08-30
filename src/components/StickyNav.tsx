@@ -1,10 +1,16 @@
 "use client";
 
-import { usePathname } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { Home, Layers2, ShoppingCart, User } from "lucide-react";
+import {
+  Book,
+  Home,
+  Layers2,
+  PhoneCallIcon,
+  ShoppingCart,
+  User,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import React from "react";
 
 const StickyNav = () => {
@@ -19,23 +25,28 @@ const StickyNav = () => {
       icon: Home,
     },
     {
-      title: t("Category"),
-      url: "/category",
+      title: "محصولات",
+      url: "/products",
       icon: Layers2,
     },
     {
-      title: t("Cart"),
-      url: "/cart",
-      icon: ShoppingCart,
+      title: "مقالات",
+      url: "/blogs",
+      icon: Book,
     },
     {
-      title: t("Profile"),
-      url: "/profile",
+      title: "تماس با ما",
+      url: "/contact-us",
+      icon: PhoneCallIcon,
+    },
+    {
+      title: "داشبورد",
+      url: "/dashboard",
       icon: User,
     },
   ];
 
-  if (pathname.startsWith("/auth")) return
+  if (pathname.startsWith("/auth")) return;
   return (
     <div className="md:hidden fixed bottom-0 right-0 w-full bg-white border-t shadow-lg z-50 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex justify-between items-end p-2 h-16 my-2">

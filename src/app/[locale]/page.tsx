@@ -7,10 +7,8 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      {/* <ScrollSnap /> */}
       <MakeTrust />
       <Services />
-
       <NewestProducts />
     </>
   );

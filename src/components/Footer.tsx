@@ -88,10 +88,14 @@ const Footer = () => {
             <div className="space-y-4">
               <h4 className="text-lg font-bold text-white">نشانی ما</h4>
               <address className="text-gray-300 text-sm not-italic space-y-2">
-                <p>مازندران، بابل، شهرک صنعتی منصور کنده،</p>
-                <p>مجتمع صنعتی فراچوب</p>
+                <p>مازندران، بابل، شهرک صنعتی منصور کنده، مجتمع صنعتی فراچوب</p>
                 <p>کدپستی: 3847283457</p>
-                <p>تلفن تماس: 011-xxxxxxx</p>
+                <p className="text-base">
+                  تلفن تماس:{" "}
+                  <span dir="rtl" className="font-medium">
+                    0911-828-6606
+                  </span>
+                </p>
                 <p>ایمیل: info@frachob.com</p>
               </address>
             </div>

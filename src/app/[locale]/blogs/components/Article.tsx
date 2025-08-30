@@ -9,8 +9,6 @@ interface Props {
 }
 const Article = ({ safeContent }: Props) => {
   const { theme } = useTheme();
-  console.log({ theme });
-
   return (
     <article
       className={cn(

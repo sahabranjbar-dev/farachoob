@@ -192,8 +192,6 @@ const RoleForm = ({ initialData }: Props) => {
           <FormField
             name="permissionIds"
             render={({ field }) => {
-              console.log({ field });
-
               return (
                 <MultiSelect
                   onClickCapture={() => {

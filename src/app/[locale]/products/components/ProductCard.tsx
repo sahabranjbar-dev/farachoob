@@ -10,8 +10,8 @@ interface IProductsPage {
 }
 
 export function ProductCard({ product }: IProductsPage) {
-  const { id, farsiTitle, price, brand, category, description, image } =
-    product;
+  const { id, farsiTitle, brand, category, description, image } = product;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

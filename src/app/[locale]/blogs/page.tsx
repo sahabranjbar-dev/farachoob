@@ -131,7 +131,7 @@ export default async function Blogs() {
         </div>
 
         {/* Subtle Footer */}
-        <div className="mt-32 text-center px-4">
+        <div className="mt-32 text-center my-6 px-4">
           <div className="w-16 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mx-auto mb-8"></div>
           <h3 className="text-xl font-light text-gray-600 mb-4">
             طراحی محیط کار برای بهره‌وری و آسایش

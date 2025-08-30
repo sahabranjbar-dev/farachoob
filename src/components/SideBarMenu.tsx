@@ -1,19 +1,23 @@
 "use client";
 
-import { Armchair, FileUser, Home, PhoneOutgoing, Search } from "lucide-react";
-import { Input } from "./ui/input";
-import { ModeToggle } from "./ModeToggle";
-import LanguageSwitcher from "./LanguageSwitcher";
-import Link from "next/link";
+import { Link, usePathname } from "@/i18n/navigation";
+import clsx from "clsx";
+import { Armchair, FileUser, Home, PhoneOutgoing } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { usePathname } from "@/i18n/navigation";
+import LanguageSwitcher from "./LanguageSwitcher";
 import LoginAndRegister from "./LoginAndRegister";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet";
+import { ModeToggle } from "./ModeToggle";
 import { Separator } from "./ui/separator";
-import { Button } from "./ui/button";
+import { SheetHeader, SheetTitle } from "./ui/sheet";
+import { Dispatch, SetStateAction } from "react";
 
-const SideBarMenu = () => {
+interface Props {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const SideBarMenu = ({ setOpen }: Props) => {
   const t = useTranslations("SideBarHeader");
+
   const pathname = usePathname();
 
   const items = [
@@ -44,32 +48,36 @@ const SideBarMenu = () => {
       <SheetHeader>
         <SheetTitle className="">
           {/* {t("Menu")} */}
-          <div className="relative mt-8">
+          {/* <div className="relative mt-8">
             <Input
               type="text"
               placeholder={t("Search")}
               className="rounded placeholder:font-light pl-8 bg-[#EBEBEB]"
             />
             <Search className="absolute left-2 top-2" size={"18px"} />
-          </div>
+          </div> */}
         </SheetTitle>
       </SheetHeader>
 
       <Separator />
 
       <div className="space-y-2">
-        {items.map((item) => (
-          <Button
+        {items.map((item, index) => (
+          <Link
             key={item.title}
-            asChild
-            variant={item.url === pathname ? "secondary" : "ghost"}
-            className="w-full justify-start px-6 py-6"
+            href={item.url}
+            className={clsx(
+              "w-full flex items-center gap-2 justify-start px-6 py-6",
+              {
+                "bg-orange-400 text-white":
+                  pathname === item.url || pathname.startsWith(item.url + "/"),
+              }
+            )}
+            onClick={() => setOpen(false)}
           >
-            <Link href={item.url}>
-              <item.icon className="mr-2 h-4 w-4" />
-              <span className="font-light">{item.title}</span>
-            </Link>
-          </Button>
+            <item.icon className="mr-2 h-4 w-4" />
+            <span className="font-light">{item.title}</span>
+          </Link>
         ))}
       </div>
 
@@ -78,7 +86,7 @@ const SideBarMenu = () => {
       <div className="flex justify-between items-center w-full p-2">
         <div className="flex justify-start items-center">
           <ModeToggle />
-          <LanguageSwitcher />
+          {/* <LanguageSwitcher /> */}
         </div>
         <LoginAndRegister nameSpace="Header" />
       </div>

@@ -63,12 +63,12 @@ const ContactUs = () => {
       fetchCaptcha?.({});
     },
     onSuccess(data) {
+      window.scrollTo(0, 0);
       reset();
     },
   });
 
   const onSubmit = async (data: ContactUsFormValues) => {
-    console.log({ data });
     fetch?.({
       inputBody: { ...data },
     });
@@ -93,7 +93,7 @@ const ContactUs = () => {
     );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+    <div className="max-w-6xl mx-auto px-4 py-12 md:py-10">
       <div className="text-center mb-12 md:mb-16">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-50 mb-4">
           با ما در تماس باشید
@@ -106,42 +106,36 @@ const ContactUs = () => {
 
       <div className="bg-white  rounded-2xl shadow-lg overflow-hidden md:flex border border-gray-100">
         {/* Contact Information */}
-        <div className="md:w-2/5 bg-gradient-to-br from-orange-600 to-orange-400 p-8 md:p-10 text-white flex flex-col justify-center relative">
+        <div className="hidden md:flex md:w-2/5 bg-gradient-to-br from-orange-600 to-orange-400 p-8 md:p-10 text-white  flex-col justify-center relative">
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
           <div className="relative z-10 space-y-8">
             <div>
               <h2 className="text-2xl font-bold mb-6">اطلاعات تماس</h2>
-              <div className="text-blue-100 opacity-90">
+              <div className="text-gray-50">
                 از طریق راه‌های زیر با ما در ارتباط باشید.
               </div>
             </div>
 
             <div className="space-y-6">
               <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="bg-blue-500/20 dark:bg-transparent p-2 rounded-lg mt-1">
+                <div className="bg-gray-text-gray:bg-transparent p-2 rounded-lg mt-1">
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
                   <h3 className="font-semibold">تلفن</h3>
-                  <a
-                    href="tel:+989118286606"
-                    className="text-blue-100 opacity-90"
-                  >
+                  <a href="tel:+989118286606" className="text-gray-50">
                     0911-828-6606
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start space-x-3 space-x-reverse">
-                <div className="bg-blue-500/20 dark:bg-transparent p-2 rounded-lg mt-1">
+                <div className="bg-gray-text-gray:bg-transparent p-2 rounded-lg mt-1">
                   <Mail className="h-5 w-5" />
                 </div>
                 <div>
                   <h3 className="font-semibold">ایمیل</h3>
-                  <a
-                    href="mailto:info@farachob.com"
-                    className="text-blue-100 opacity-90"
-                  >
+                  <a href="mailto:info@farachob.com" className="text-gray-50">
                     info@farachob.com
                   </a>
                 </div>
@@ -153,7 +147,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold">آدرس</h3>
-                  <p className="text-blue-100 opacity-90">
+                  <p className="text-gray-50">
                     مازندران، بابل، شهرک صنعتی منصور کنده، مجتمع صنعتی فراچوب
                   </p>
                 </div>
