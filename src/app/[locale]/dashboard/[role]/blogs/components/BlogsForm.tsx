@@ -258,7 +258,7 @@ const BlogForm = ({ initialData }: Props) => {
                 onClick={closeCurrentTab}
                 className="flex items-center gap-2"
               >
-                <X size={18} /> انصراف
+                <X size={18} /> بستن
               </Button>
             </div>
           </form>

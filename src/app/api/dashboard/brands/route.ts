@@ -68,17 +68,37 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { id, farsiTitle, englishTitle } = await request.json();
+    const { farsiTitle, englishTitle } = await request.json();
     const brand = await prisma?.brand.create({
       data: {
         englishTitle,
         farsiTitle,
-        id,
       },
     });
 
     return NextResponse.json(brand, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: "خطا در ایجاد برند" }, { status: 500 });
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const { id, farsiTitle, englishTitle } = await request.json();
+
+    const brand = await prisma?.brand.update({
+      where: { id },
+      data: {
+        englishTitle,
+        farsiTitle,
+      },
+    });
+
+    return NextResponse.json(brand, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "خطا در ویرایش برند" },
+      { status: 500 }
+    );
   }
 }

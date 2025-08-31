@@ -52,6 +52,9 @@ export default function PermissionForm({ initialData }: Props) {
     fetch?.({
       inputBody: payload,
     }).then((data) => {
+      toast.success(
+        `${initialData?.id ? "ویرایش" : "ایجاد"} مجوز با موفقیت انجام شد`
+      );
       closeCurrentTab();
       open("/permissions/permissionsForm", `فرم ویرایش ${data?.title}`, {
         pageType: "EDIT",
@@ -65,7 +68,7 @@ export default function PermissionForm({ initialData }: Props) {
       {loading ? <FullScreenLoading /> : null}
       <CardHeader>
         <CardTitle className="text-center">
-          فرم {!!initialData?.id ? "ویرایش" : "ایجاد"} منو
+          فرم {!!initialData?.id ? "ویرایش" : "ایجاد"} مجوز
         </CardTitle>
       </CardHeader>
       <Form {...form}>
@@ -112,7 +115,7 @@ export default function PermissionForm({ initialData }: Props) {
               ذخیره
             </Button>
             <Button left={<X />} variant="outline" onClick={closeCurrentTab}>
-              انصراف
+              بستن
             </Button>
           </div>
         </form>

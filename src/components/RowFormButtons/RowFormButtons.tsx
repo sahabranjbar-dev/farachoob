@@ -15,6 +15,8 @@ import { PencilLine, Trash2 } from "lucide-react";
 import { IRowFormButtons } from "./meta/types";
 import useTabular from "@/hooks/useTabular";
 import { useList } from "@/container/ListContainer/ListContainer";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import FullScreenLoading from "../FullScreenLoading";
 
 const RowFormButtons = ({
   id,
@@ -30,10 +32,12 @@ const RowFormButtons = ({
 
   const pathType = pathname.split("/")[pathname.split("/").length - 1];
 
-  const { fetch: deleteMenu } = useDataGetter({
+  const { fetch: deleteMenu, loading } = useDataGetter({
     url: deleterUrl,
     method: "DELETE",
     immediatelyFetch: false,
+    showError: true,
+    showSuccessMessage: true,
   });
   const deleteMenuHandler = () => {
     deleteMenu?.({}).then(() => {
@@ -42,23 +46,34 @@ const RowFormButtons = ({
   };
   return (
     <div className="flex justify-center items-center gap-4">
-      <PencilLine
-        className="text-blue-500 cursor-pointer hover:bg-blue-100 transition-colors duration-300 rounded-full h-6 w-6 p-2 box-content"
-        onClick={() => {
-          const path = formPath
-            ? `/${pathType}/${formPath}`
-            : `/${pathType}/${pathType}Form`;
-          open(path, `فرم ویرایش ${title ?? ""}`, {
-            pageType: "EDIT",
-            id,
-          });
-        }}
-      />
+      {loading && <FullScreenLoading />}
+      <Tooltip>
+        <TooltipTrigger>
+          <PencilLine
+            className="text-blue-500 cursor-pointer hover:bg-blue-100 transition-colors duration-300 rounded-full h-6 w-6 p-2 box-content"
+            onClick={() => {
+              const path = formPath
+                ? `/${pathType}/${formPath}`
+                : `/${pathType}/${pathType}Form`;
+              open(path, `فرم ویرایش ${title ?? ""}`, {
+                pageType: "EDIT",
+                id,
+              });
+            }}
+          />
+        </TooltipTrigger>
+        <TooltipContent>ویرایش</TooltipContent>
+      </Tooltip>
 
       <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Trash2 className="text-red-500 cursor-pointer hover:bg-red-100 transition-colors duration-300 rounded-full h-6 w-6 p-2 box-content" />
-        </AlertDialogTrigger>
+        <Tooltip disableHoverableContent={loading}>
+          <TooltipTrigger>
+            <AlertDialogTrigger>
+              <Trash2 className="text-red-500 cursor-pointer hover:bg-red-100 transition-colors duration-300 rounded-full h-6 w-6 p-2 box-content" />
+            </AlertDialogTrigger>
+          </TooltipTrigger>
+          <TooltipContent>حذف</TooltipContent>
+        </Tooltip>
         <AlertDialogContent dir="rtl" className="text-right">
           <AlertDialogHeader>
             <AlertDialogTitle>آیا از حذف مطمئن هستید؟</AlertDialogTitle>
@@ -68,7 +83,7 @@ const RowFormButtons = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogCancel>بستن</AlertDialogCancel>
             <AlertDialogAction
               className="variant-primary"
               onClick={deleteMenuHandler}

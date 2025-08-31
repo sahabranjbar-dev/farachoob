@@ -121,7 +121,7 @@ const ProductsForm = ({ initialData }: Props) => {
     try {
       setProdcutLoading(true);
       const response = await axios({
-        url: id ? `/api/dashboard/products/${id}` : "/api/dashboard/products",
+        url: "/api/dashboard/products",
         method: id ? "PUT" : "POST",
         data: formData,
         headers: {
@@ -432,7 +432,7 @@ const ProductsForm = ({ initialData }: Props) => {
                 left={<X className="w-5 h-5" />}
                 onClick={closeCurrentTab}
               >
-                انصراف
+                بستن
               </Button>
             </div>
           </form>

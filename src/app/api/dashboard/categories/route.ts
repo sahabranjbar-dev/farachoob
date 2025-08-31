@@ -85,3 +85,24 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const { farsiTitle, englishTitle, id } = await request.json();
+
+    const category = await prisma?.category.update({
+      where: { id },
+      data: {
+        englishTitle,
+        farsiTitle,
+      },
+    });
+
+    return NextResponse.json(category, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "خطا در ویرایش دسته‌بندی" },
+      { status: 500 }
+    );
+  }
+}

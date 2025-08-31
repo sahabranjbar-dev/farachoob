@@ -24,7 +24,13 @@ const BrandList = () => {
         field: "id",
         title: "عملیات",
         render(v, row, meta) {
-          return <RowFormButtons id={v} deleterUrl="" title={row.farsiTitle} />;
+          return (
+            <RowFormButtons
+              id={v}
+              deleterUrl={`dashboard/brands/${v}`}
+              title={row.farsiTitle}
+            />
+          );
         },
       },
     ],

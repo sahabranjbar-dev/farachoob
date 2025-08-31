@@ -293,7 +293,7 @@ const MenusFormPage = () => {
                 ذخیره
               </Button>
               <Button left={<X />} variant="outline" onClick={closeCurrentTab}>
-                انصراف
+                بستن
               </Button>
             </div>
           </form>

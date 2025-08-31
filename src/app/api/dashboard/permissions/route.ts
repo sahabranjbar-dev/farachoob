@@ -121,8 +121,14 @@ export async function PUT(request: Request) {
         { status: 400 }
       );
     }
+    // بررسی معتبر بودن مقدار enum
+    if (!Object.values(PermissionKey).includes(permissionKey)) {
+      return NextResponse.json(
+        { message: "کلید دسترسی نامعتبر است" },
+        { status: 400 }
+      );
+    }
 
-    // چک تکراری نبودن نام به جز خود رکورد
     const exists = await prisma.permission.findFirst({
       where: {
         permissionKey,
