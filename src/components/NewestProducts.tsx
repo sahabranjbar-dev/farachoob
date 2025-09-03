@@ -36,6 +36,8 @@ const NewestProducts = () => {
     );
   }
 
+  if (!products?.resultList?.length) return;
+
   return (
     <div className="relative py-16 bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 rounded-3xl overflow-hidden m-4 shadow-2xl">
       {/* افکت پس‌زمینه */}

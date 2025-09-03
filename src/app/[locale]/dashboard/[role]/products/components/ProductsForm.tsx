@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import Image from "next/image";
 import axios from "axios";
 import { toast } from "sonner";
@@ -37,9 +37,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import ImagesUpload from "./ImagesUpload";
 
 // Types
-interface FormValues {
+export interface FormValues {
   id?: string;
   farsiTitle: string;
   englishTitle: string;
@@ -47,9 +48,19 @@ interface FormValues {
   brandId?: string;
   categoryId?: string;
   stock?: number;
-  image?: File | string | null;
   description?: string;
+  variations?: Variation[];
 }
+
+type Variation = {
+  colorName?: string;
+  colorCode?: string;
+  price?: number;
+  stock?: number;
+  imageUrl?: File | string;
+  id?: string;
+  image?: File | null;
+};
 
 interface Props {
   initialData?: Partial<FormValues>;
@@ -58,7 +69,6 @@ interface Props {
 const ProductsForm = ({ initialData }: Props) => {
   const id = initialData?.id;
   const { closeCurrentTab, open } = useTabular();
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [productLoading, setProdcutLoading] = useState<boolean>(false);
   const form = useForm<FormValues>({
     defaultValues: {
@@ -68,8 +78,15 @@ const ProductsForm = ({ initialData }: Props) => {
       brandId: "",
       categoryId: "",
       stock: 0,
-      image: null,
       description: "",
+      variations: [
+        {
+          colorCode: "",
+          colorName: "",
+          price: 0,
+          stock: 0,
+        },
+      ],
       ...initialData,
     },
   });
@@ -92,24 +109,30 @@ const ProductsForm = ({ initialData }: Props) => {
     immediatelyFetch: Boolean(initialData?.categoryId),
   });
 
-  const handleImageChange = useCallback(
-    (file: File | null, onChange: (val: any) => void) => {
-      onChange(file);
-      if (file) {
-        const preview = URL.createObjectURL(file);
-        setImagePreview(preview);
-      } else {
-        setImagePreview(null);
-      }
-    },
-    []
-  );
+  console.log({ initialData });
 
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
-    if (data.image && typeof data.image !== "string") {
-      formData.append("image", data.image);
+    console.log({ data });
+
+    // variations
+    if (data.variations?.length) {
+      data.variations.forEach((item, index) => {
+        formData.append(`variations[${index}].colorName`, item.colorName ?? "");
+        formData.append(`variations[${index}].colorCode`, item.colorCode ?? "");
+        formData.append(`variations[${index}].price`, String(item.price ?? 0));
+        formData.append(`variations[${index}].stock`, String(item.stock ?? 0));
+
+        // فایل یا لینک تصویر
+        if (item.image instanceof File) {
+          formData.append(`variations[${index}].image`, item.image);
+        } else if (typeof item.imageUrl === "string") {
+          formData.append(`variations[${index}].imageUrl`, item.imageUrl);
+        }
+      });
     }
+
+    // محصول اصلی
     formData.append("farsiTitle", data.farsiTitle);
     formData.append("englishTitle", data.englishTitle);
     formData.append("price", String(data.price).replace(/,/g, ""));
@@ -146,9 +169,10 @@ const ProductsForm = ({ initialData }: Props) => {
     }
   };
 
-  const imageUrl = form.getValues("image");
-  const isImageUrl = typeof imageUrl === "string" && imageUrl.length > 0;
-
+  const { fields, append, remove } = useFieldArray({
+    name: "variations",
+    control: form.control,
+  });
   return (
     <Card>
       <CardHeader>
@@ -314,82 +338,12 @@ const ProductsForm = ({ initialData }: Props) => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem className="col-span-1 md:col-span-3">
-                    <FormLabel className="font-medium">تصویر محصول</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center gap-4">
-                        <label
-                          htmlFor="image-upload"
-                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                            <p className="text-sm text-gray-500">
-                              تصویر را اینجا رها کنید یا کلیک کنید
-                            </p>
-                          </div>
-                          <Input
-                            id="image-upload"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) =>
-                              handleImageChange(
-                                e.target.files?.[0] ?? null,
-                                field.onChange
-                              )
-                            }
-                          />
-                        </label>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <ImagesUpload
+                fields={fields}
+                append={append}
+                remove={remove}
+                parentForm={form}
               />
-
-              {(imagePreview || isImageUrl) && (
-                <div className="col-span-1 md:col-span-3">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-32 h-32 rounded-md overflow-hidden border border-gray-200">
-                      {imagePreview ? (
-                        <Image
-                          src={imagePreview}
-                          alt="پیش‌نمایش تصویر"
-                          fill
-                          className="object-cover"
-                        />
-                      ) : isImageUrl ? (
-                        <Image
-                          src={imageUrl as string}
-                          alt="تصویر محصول"
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                          <ImageIcon className="w-8 h-8 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        form.setValue("image", null);
-                        setImagePreview(null);
-                      }}
-                    >
-                      حذف تصویر
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="flex justify-end gap-4 pt-4">

@@ -10,7 +10,9 @@ interface IProductsPage {
 }
 
 export function ProductCard({ product }: IProductsPage) {
-  const { id, farsiTitle, brand, category, description, image } = product;
+  console.log({ product });
+
+  const { id, farsiTitle, brand, category, description, variations } = product;
 
   return (
     <motion.div
@@ -22,8 +24,8 @@ export function ProductCard({ product }: IProductsPage) {
       {/* تصویر محصول با نوار طلایی زیرش */}
       <div className="relative w-full aspect-[4/3] overflow-hidden">
         <Image
-          src={image || "/images/placeholder.png"}
-          alt={farsiTitle}
+          src={variations?.[0]?.images?.[0]?.url || "/images/placeholder.png"}
+          alt={farsiTitle ?? "product image"}
           fill
           className="object-contain transition-transform duration-300 group-hover:scale-105"
         />

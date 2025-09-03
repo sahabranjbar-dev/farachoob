@@ -101,6 +101,11 @@ export default async function ProductsPage({ searchParams }: IProductsPage) {
     include: {
       brand: true,
       category: true,
+      variations: {
+        include: {
+          images: true,
+        },
+      },
     },
   });
 

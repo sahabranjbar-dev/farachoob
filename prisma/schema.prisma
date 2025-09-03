@@ -100,19 +100,38 @@ model Product {
   farsiTitle   String
   englishTitle String
   price        Float?
-  image        String?
   stock        Int?
   createdAt    DateTime  @default(now())
   updateAt     DateTime? @updatedAt
   description  String?
-  colors       String[]
   comments     String[]
   brandId      String?
   categoryId   String?
 
-  brand     Brand?     @relation(fields: [brandId], references: [id])
-  category  Category?  @relation(fields: [categoryId], references: [id])
-  cartItems CartItem[]
+  brand      Brand?      @relation(fields: [brandId], references: [id])
+  category   Category?   @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
+  variations Variation[]
+}
+
+model Variation {
+  id        String  @id @default(cuid())
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  colorName String?
+  colorCode String?
+  price     Float
+  stock     Int
+
+  images VariationImage[]
+}
+
+model VariationImage {
+  id          String    @id @default(cuid())
+  url         String
+  variation   Variation @relation(fields: [variationId], references: [id], onDelete: Cascade)
+  variationId String
 }
 
 model Brand {

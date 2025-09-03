@@ -1,5 +1,5 @@
 import React from "react";
-import ProductsForm from "../components/ProductsForm";
+import ProductsForm, { FormValues } from "../components/ProductsForm";
 import { prisma } from "@/lib/prisma"; // مطمئن شو prisma import شده
 
 interface IProductsFormPage {
@@ -10,12 +10,19 @@ const ProductsFormPage = async ({ searchParams }: IProductsFormPage) => {
   const reasolvedSearchParams = await searchParams;
   const { id } = reasolvedSearchParams;
 
-  let sanitizedProduct = undefined;
+  let sanitizedProduct: Partial<FormValues> = {};
 
   if (id) {
     try {
-      const product = await prisma?.product?.findUnique({
+      const product = await prisma.product.findUnique({
         where: { id },
+        include: {
+          variations: {
+            include: {
+              images: true,
+            },
+          },
+        },
       });
 
       if (product) {
@@ -24,7 +31,16 @@ const ProductsFormPage = async ({ searchParams }: IProductsFormPage) => {
           brandId: product.brandId ?? undefined,
           categoryId: product.categoryId ?? undefined,
           stock: product.stock ?? undefined,
-          image: product.image, // always null, since we can't convert string to File here
+          variations:
+            product.variations.map((item) => ({
+              imageUrl: item.images?.[0]?.url ?? "", // اگر فقط اولین تصویر رو میخوای
+              colorCode: item.colorCode ?? "",
+              colorName: item.colorName ?? "",
+              id: item.id ?? "",
+              price: item.price ?? 0,
+              stock: item.stock ?? 0,
+            })) ?? [],
+
           description: product.description ?? undefined,
           price: product.price ?? undefined,
         };

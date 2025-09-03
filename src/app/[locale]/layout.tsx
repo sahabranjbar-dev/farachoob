@@ -119,7 +119,7 @@ export default async function LocaleLayout({
       <body className={`${myFont.className} overflow-x-hidden`}>
         <SessionProviderWrapper session={session}>
           <NextIntlClientProvider locale={locale} messages={messages}>
-            <ThemeProvider attribute="class" defaultTheme="system">
+            <ThemeProvider attribute="class" defaultTheme="light">
               <>
                 <Header />
                 {children}
