@@ -96,7 +96,7 @@ const Footer = () => {
                     0911-828-6606
                   </span>
                 </p>
-                <p>ایمیل: info@frachob.com</p>
+                <p>ایمیل: farachoobcompany@gmail.com</p>
               </address>
             </div>
 
