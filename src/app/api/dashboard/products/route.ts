@@ -177,12 +177,10 @@ export async function POST(req: Request) {
       // 🖼️ آپلود عکس‌های ورییشن
       const files = formData.getAll(`variations[${i}].image`) as File[];
       const uploadedUrls: string[] = [];
-      console.log({ files });
 
       for (const file of files) {
         if (file && file.size > 0 && file.type.startsWith("image/")) {
           const url = await uploadFile(file, "products/variations");
-          console.log({ url });
 
           uploadedUrls.push(url);
         }
@@ -250,116 +248,99 @@ const productUpdateSchema = z.object({
   comments: z.array(z.string()).optional().default([]),
   image: z.any().optional(),
 });
+export async function PUT(req: Request) {
+  try {
+    const formData = await req.formData();
 
-// // PUT: ویرایش محصول
-// export async function PUT(req: NextRequest) {
-//   try {
-//     const formData = await req.formData();
+    // 🟢 گرفتن id محصول
+    const productId = formData.get("id") as string;
+    if (!productId) {
+      return NextResponse.json(
+        { error: "شناسه محصول الزامی است." },
+        { status: 400 }
+      );
+    }
 
-//     const rawData = {
-//       id: formData.get("id"),
-//       farsiTitle: formData.get("farsiTitle"),
-//       englishTitle: formData.get("englishTitle"),
-//       price: formData.get("price") ?? 0,
-//       stock: formData.get("stock") ?? 0,
-//       brandId: formData.get("brandId"),
-//       categoryId: formData.get("categoryId"),
-//       description: formData.get("description"),
-//       colors: formData.getAll("colors"),
-//       comments: formData.getAll("comments"),
-//       image: formData.get("image"),
-//     };
+    // 🟢 فیلدهای اصلی
+    const farsiTitle = formData.get("farsiTitle") as string;
+    const englishTitle = formData.get("englishTitle") as string;
+    const price = Number(formData.get("price"));
+    const stock = Number(formData.get("stock") ?? 0);
+    const description = (formData.get("description") as string) || null;
+    const brandId = (formData.get("brandId") as string) || null;
+    const categoryId = (formData.get("categoryId") as string) || null;
+    const comments = formData.getAll("comments") as string[];
 
-//     const parsed = productUpdateSchema.safeParse(rawData);
-//     if (!parsed.success) {
-//       return NextResponse.json(
-//         { error: parsed.error.flatten() },
-//         { status: 400 }
-//       );
-//     }
+    // 🟢 گرفتن ورییشن‌ها
+    const variations: any[] = [];
+    let i = 0;
+    while (
+      formData.has(`variations[${i}].colorName`) ||
+      formData.has(`variations[${i}].price`)
+    ) {
+      const colorName = formData.get(`variations[${i}].colorName`) as string;
+      const colorCode = formData.get(`variations[${i}].colorCode`) as string;
+      const vPrice = Number(formData.get(`variations[${i}].price`));
+      const vStock = Number(formData.get(`variations[${i}].stock`) ?? 0);
 
-//     const {
-//       id,
-//       farsiTitle,
-//       englishTitle,
-//       price,
-//       stock,
-//       description,
-//       brandId,
-//       categoryId,
-//       colors,
-//       comments,
-//       image,
-//     } = parsed.data;
+      const files = formData.getAll(`variations[${i}].image`) as File[];
+      const uploadedUrls: string[] = [];
 
-//     const existing = await prisma.product.findUnique({ where: { id } });
-//     if (!existing)
-//       return NextResponse.json({ error: "محصول یافت نشد." }, { status: 404 });
+      for (const file of files) {
+        if (file && file.size > 0 && file.type.startsWith("image/")) {
+          const url = await uploadFile(file, "products/variations");
+          uploadedUrls.push(url);
+        }
+      }
 
-//     let imageUrl = existing.image;
-//     const imageFile = formData.get("image") as File | null;
-//     if (imageFile && typeof imageFile !== "string" && imageFile.size > 0) {
-//       const buffer = Buffer.from(await imageFile.arrayBuffer());
-//       const uploadRes = await new Promise((resolve, reject) => {
-//         cloudinary.uploader
-//           .upload_stream({ folder: "products" }, (err, result) => {
-//             if (err) reject(err);
-//             else resolve(result);
-//           })
-//           .end(buffer);
-//       });
-//       imageUrl = (uploadRes as any).secure_url;
-//     }
+      variations.push({
+        colorName,
+        colorCode,
+        price: vPrice,
+        stock: vStock,
+        images: uploadedUrls,
+      });
 
-//     const updated = await prisma.product.update({
-//       where: { id },
-//       data: {
-//         farsiTitle,
-//         englishTitle,
-//         price: Number(price),
-//         stock: Number(stock),
-//         description,
-//         image: imageUrl,
-//         colors,
-//         comments,
-//         ...(brandId && { brand: { connect: { id: brandId } } }),
-//         ...(categoryId && { category: { connect: { id: categoryId } } }),
-//       },
-//     });
+      i++;
+    }
 
-//     return NextResponse.json(updated, { status: 200 });
-//   } catch (error) {
-//     console.error("خطای ویرایش محصول:", error);
-//     return NextResponse.json(
-//       { error: "خطا در ویرایش محصول." },
-//       { status: 500 }
-//     );
-//   }
-// }
+    // 🟢 آپدیت در دیتابیس
+    const product = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        farsiTitle,
+        englishTitle,
+        price,
+        stock,
+        description,
+        comments,
+        ...(brandId && { brand: { connect: { id: brandId } } }),
+        ...(categoryId && { category: { connect: { id: categoryId } } }),
 
-// // DELETE: حذف محصول
-// export async function DELETE(req: NextRequest) {
-//   try {
-//     const session = await getServerSession(authOptions);
-//     if (!session?.user?.id)
-//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        // ورییشن‌های قبلی پاک میشن و دوباره ساخته میشن
+        variations: {
+          deleteMany: {}, // حذف همه ورییشن‌های قبلی
+          create: variations.map((v) => ({
+            colorName: v.colorName,
+            colorCode: v.colorCode,
+            price: v.price,
+            stock: v.stock,
+            images: {
+              create: v.images.map((url: string) => ({ url })),
+            },
+          })),
+        },
+      },
+      include: {
+        variations: {
+          include: { images: true, product: true },
+        },
+      },
+    });
 
-//     const body = await req.json();
-//     const id = body.id;
-//     if (!id)
-//       return NextResponse.json(
-//         { error: "شناسه محصول الزامی است." },
-//         { status: 400 }
-//       );
-
-//     const existing = await prisma.product.findUnique({ where: { id } });
-//     if (!existing)
-//       return NextResponse.json({ error: "محصول یافت نشد." }, { status: 404 });
-
-//     await prisma.product.delete({ where: { id } });
-//     return NextResponse.json({ message: "محصول با موفقیت حذف شد.", id });
-//   } catch (error) {
-//     console.error("خطای حذف محصول:", error);
-//     return NextResponse.json({ error: "خطا در حذف محصول." }, { status: 500 });
-//   }
-// }
+    return NextResponse.json(product, { status: 200 });
+  } catch (error) {
+    console.error("❌ خطای آپدیت محصول:", error);
+    return NextResponse.json({ error: "خطا در آپدیت محصول." }, { status: 500 });
+  }
+}

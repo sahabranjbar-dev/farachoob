@@ -7,27 +7,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { Product, Variation } from "@/types/Product";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface IproductDataPage {
   productData: Product;
 }
 
 export default function productDataPage({ productData }: IproductDataPage) {
-  console.log({ productData });
-
-  const [selectedColor, setSelectedColor] = useState<string>("");
-  const [isHovering, setIsHovering] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    productData?.variations?.[0]?.colorName || ""
+  );
+  const [showMore, setShowMore] = useState<boolean>(false);
   const params = useParams();
   const id = params.id;
-
   return (
     <div className="max-w-7xl min-h-screen mx-auto px-4 py-12 md:py-20">
-      {/* Background Decoration */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-orange-50 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-gradient-to-r from-blue-50 to-transparent rounded-full blur-3xl opacity-70" />
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* productData Gallery */}
         <div className="relative">
@@ -38,29 +33,32 @@ export default function productDataPage({ productData }: IproductDataPage) {
             transition={{ delay: 0.3 }}
             className="absolute top-4 right-4 bg-white shadow-lg rounded-full px-4 py-2 z-10 flex items-center"
           >
-            <span className="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+            <span
+              className={cn("w-3 h-3 rounded-full mx-2 animate-pulse", {
+                "bg-green-500": productData?.stock && productData.stock > 0,
+                "bg-red-500": !productData?.stock || productData.stock <= 0,
+              })}
+            ></span>
             <span className="text-sm font-medium text-gray-700">
-              موجود در انبار
+              {productData?.stock && productData.stock > 0
+                ? "موجود در انبار"
+                : "ناموجود"}
             </span>
           </motion.div>
 
           {/* Main Image */}
-          <div
-            className="relative w-full aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 shadow-2xl"
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-          >
+          <div className="relative w-full aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 shadow-2xl">
             <AnimatePresence mode="wait">
               <motion.div key={selectedColor} className="w-full h-full">
                 <Image
                   src={
-                    productData?.variations?.[0]?.images?.[0]?.url ||
-                    "/images/placeholder.png"
+                    productData?.variations?.find(
+                      (item) => item.colorName === selectedColor
+                    )?.images?.[0]?.url || "/images/placeholder.png"
                   }
                   alt={productData?.farsiTitle || "محصول"}
                   fill
                   className="object-contain p-8 transition-all duration-300"
-                  style={{ transform: isHovering ? "scale(1.05)" : "scale(1)" }}
                   priority
                 />
               </motion.div>
@@ -79,9 +77,14 @@ export default function productDataPage({ productData }: IproductDataPage) {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className={cn(
-                    "w-10 h-10 rounded-full border-2 transition-all shadow-md"
+                    "w-10 h-10 rounded-full border-2 transition-all shadow-md",
+                    {
+                      "outline-4 outline-blue-600":
+                        item.colorName === selectedColor,
+                    }
                   )}
                   style={{ backgroundColor: item?.colorCode }}
+                  onClick={() => setSelectedColor(item.colorName || "")}
                 />
               ))}
             </motion.div>
@@ -125,8 +128,11 @@ export default function productDataPage({ productData }: IproductDataPage) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight"
+              className="text-3xl font-bold text-gray-900 dark:text-gray-100 leading-tight"
             >
+              <span className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                نام محصول:{" "}
+              </span>
               {productData?.farsiTitle}
             </motion.h1>
           </div>
@@ -138,7 +144,20 @@ export default function productDataPage({ productData }: IproductDataPage) {
             transition={{ delay: 0.4 }}
             className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed"
           >
-            {productData?.description}
+            <span className="text-lg font-medium text-gray-900 dark:text-gray-100">
+              توضیحات:
+            </span>
+            <span className={cn("block", showMore ? "" : "line-clamp-4")}>
+              {productData?.description ?? "---"}
+            </span>
+            <Button
+              className="mt-2 text-blue-500"
+              variant="link"
+              onClick={() => setShowMore(!showMore)}
+              left={showMore ? <ChevronUp /> : <ChevronDown />}
+            >
+              {showMore ? "نمایش کمتر" : "نمایش بیشتر"}
+            </Button>
           </motion.p>
 
           {/* Color Selector */}
@@ -148,45 +167,30 @@ export default function productDataPage({ productData }: IproductDataPage) {
             transition={{ delay: 0.5 }}
             className="space-y-4"
           >
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <span className="text-lg font-medium text-gray-900 dark:text-gray-100">
               رنگ انتخابی:{" "}
-              <span className="text-orange-600">
-                {/* {productData.colorNames[selectedColor]} */}
-              </span>
-            </h3>
-            {/* <div className="flex gap-3">
-              {productData.availableColors.map((color) => (
+              <span className="text-orange-600">{selectedColor}</span>
+            </span>
+            <div className="flex gap-3 my-2">
+              {productData?.variations?.map((color) => (
                 <motion.button
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
+                  key={color?.colorName}
+                  onClick={() => setSelectedColor(color?.colorName || "")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={cn(
-                    "w-12 h-12 rounded-xl border-2 transition-all flex items-center justify-center",
-                    colorClasses[color],
-                    selectedColor === color
-                      ? "ring-2 ring-offset-2 ring-orange-500 border-white shadow-lg"
+                    "w-fit h-fit p-4 rounded-xl border-2 transition-all flex items-center justify-center text-white",
+                    selectedColor === color?.colorName
+                      ? "ring-2 ring-offset-2 ring-blue-500 border-white shadow-lg"
                       : "border-gray-200 shadow-md"
                   )}
-                  title={mockproductData.colorNames[color]}
+                  title={color.colorName}
+                  style={{ backgroundColor: color?.colorCode }}
                 >
-                  {selectedColor === color && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-white"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
+                  {color.colorName}
                 </motion.button>
               ))}
-            </div> */}
+            </div>
           </motion.div>
 
           {/* Features */}

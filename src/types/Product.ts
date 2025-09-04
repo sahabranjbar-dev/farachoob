@@ -18,10 +18,10 @@ export interface Product {
   id?: string;
   farsiTitle?: string;
   englishTitle?: string;
-  price?: number;
-  stock?: number;
-  createdAt?: string;
-  updateAt?: string;
+  price?: number | undefined | null;
+  stock?: number | undefined | null;
+  createdAt?: Date | null;
+  updateAt?: Date | null;
   description?: any;
   comments?: any[];
   brandId?: any;

@@ -29,12 +29,9 @@ const ImagesUpload = ({ fields, append, remove, parentForm }: Props) => {
   const [imagePreviews, setImagePreviews] = useState<
     Record<number, string | null>
   >({});
-  console.log({ parentForm, fields });
-
   const imageUrl = parentForm.getValues("");
   const isImageUrl = typeof imageUrl === "string" && imageUrl.length > 0;
 
-  console.log({ imagePreviews, imageUrl });
   const handleImageChange = useCallback(
     (file: File | null, onChange: (val: any) => void, index: number) => {
       onChange(file);
@@ -119,7 +116,23 @@ const ImagesUpload = ({ fields, append, remove, parentForm }: Props) => {
               <FormItem>
                 <FormLabel>قیمت</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} placeholder="قیمت" />
+                  <Input
+                    type="text"
+                    {...field}
+                    placeholder="قیمت"
+                    onChange={(e) => {
+                      field.onChange(
+                        e.target.value
+                          .replace(/[٬,]/g, "")
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      );
+                    }}
+                    value={
+                      field.value !== null && field.value !== undefined
+                        ? field.value.toLocaleString("fa")
+                        : ""
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

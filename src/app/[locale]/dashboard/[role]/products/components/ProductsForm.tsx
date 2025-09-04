@@ -113,14 +113,16 @@ const ProductsForm = ({ initialData }: Props) => {
 
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
-    console.log({ data });
 
     // variations
     if (data.variations?.length) {
       data.variations.forEach((item, index) => {
         formData.append(`variations[${index}].colorName`, item.colorName ?? "");
         formData.append(`variations[${index}].colorCode`, item.colorCode ?? "");
-        formData.append(`variations[${index}].price`, String(item.price ?? 0));
+        formData.append(
+          `variations[${index}].price`,
+          String(item.price).replace(/,/g, "")
+        );
         formData.append(`variations[${index}].stock`, String(item.stock ?? 0));
 
         // فایل یا لینک تصویر
@@ -140,7 +142,7 @@ const ProductsForm = ({ initialData }: Props) => {
     formData.append("categoryId", data.categoryId ?? "");
     formData.append("description", data.description ?? "");
     formData.append("stock", String(data.stock ?? 0));
-
+    if (id) formData.append("id", id);
     try {
       setProdcutLoading(true);
       const response = await axios({

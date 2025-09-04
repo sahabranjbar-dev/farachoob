@@ -10,8 +10,6 @@ interface IProductsPage {
 }
 
 export function ProductCard({ product }: IProductsPage) {
-  console.log({ product });
-
   const { id, farsiTitle, brand, category, description, variations } = product;
 
   return (
