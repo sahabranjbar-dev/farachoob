@@ -2,8 +2,5 @@
   "app": "farachoobcompany",
   "platform": "next",
   "port": 3000,
-  "build": { "location": "iran" },
-  "node": {
-    "packageManager": "pnpm"
-  }
+  "build": { "location": "iran" }
 }
