@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { RefreshCcw } from "lucide-react";
 import useDataGetter from "@/hooks/useDataGetter";
+import Image from "next/image";
 
 const Captcha = () => {
   const { fetch: fetchCaptcha, data } = useDataGetter({
@@ -12,7 +13,7 @@ const Captcha = () => {
   return (
     <div className="flex items-center gap-2">
       {data ? (
-        <img
+        <Image
           src={URL.createObjectURL(data)}
           alt="CAPTCHA"
           className="cursor-pointer rounded border border-gray-300"

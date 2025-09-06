@@ -12,6 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useDataGetter from "@/hooks/useDataGetter";
 import useSWR, { mutate } from "swr";
+import Image from "next/image";
 
 // ✅ اسکیمای ولیدیشن
 const CommentSchema = z.object({
@@ -121,7 +122,7 @@ export default function CommentForm({
       {/* کپچا */}
       <div className="flex items-center gap-2">
         {data ? (
-          <img
+          <Image
             src={URL.createObjectURL(data)}
             alt="CAPTCHA"
             className="cursor-pointer rounded border border-gray-300"

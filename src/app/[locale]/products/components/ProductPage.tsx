@@ -10,11 +10,11 @@ import { Product, Variation } from "@/types/Product";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-interface IproductDataPage {
+interface IProductDataPage {
   productData: Product;
 }
 
-export default function productDataPage({ productData }: IproductDataPage) {
+export default function ProductDataPage({ productData }: IProductDataPage) {
   const [selectedColor, setSelectedColor] = useState<string>(
     productData?.variations?.[0]?.colorName || ""
   );

@@ -30,7 +30,7 @@ const HeroSection = () => {
         if (ref.current) observer.unobserve(ref.current);
       });
     };
-  }, [refs]);
+  }, [refs.image, refs.text]);
 
   return (
     <div

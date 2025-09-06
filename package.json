@@ -1,11 +1,12 @@
 {
-  "name": "farachoob",
+  "name": "farachoobcompany",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "postinstall": "prisma generate --schema=prisma/schema.prisma",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3000",
     "lint": "next lint"
   },
   "dependencies": {

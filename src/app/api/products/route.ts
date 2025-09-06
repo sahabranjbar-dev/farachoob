@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
           englishTitle: true,
           farsiTitle: true,
           id: true,
-          image: true,
+          variations: true,
           price: true,
           description: true,
           stock: true,

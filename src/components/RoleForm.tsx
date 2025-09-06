@@ -107,7 +107,7 @@ const RoleForm = ({ initialData }: Props) => {
         },
       });
     },
-    []
+    [rolesSubmit]
   );
 
   const {

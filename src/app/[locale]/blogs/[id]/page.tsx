@@ -10,15 +10,18 @@ import Comments from "@/components/Comments/Comments";
 import Article from "../components/Article";
 
 interface BlogPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export const revalidate = 3600;
 
 export default async function BlogPage({ params }: BlogPageProps) {
+  const resolvedParams = await params;
+
+  const { id } = resolvedParams;
   const article = await prisma.article.findUnique({
     where: {
-      id: params?.id,
+      id,
     },
     include: {
       author: true,
