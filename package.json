@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "postinstall": "prisma generate --schema=prisma/schema.prisma",
+    "postinstall": "prisma generate --schema=src/prisma/schema.prisma",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push"
   },
