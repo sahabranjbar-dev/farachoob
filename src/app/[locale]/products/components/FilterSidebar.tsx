@@ -1,6 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FilterItems from "./FilterItems";
 import PriceFilter from "./PriceFilter";
+import prisma from "@/lib/prisma";
 
 interface Props {
   resolvedSearchParams?: any;

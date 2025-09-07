@@ -1,5 +1,7 @@
 import RoleForm from "@/components/RoleForm";
 import React from "react";
+import prisma from "@/lib/prisma";
+
 interface IRolesFormPage {
   params: Promise<any>;
   searchParams: Promise<{ pageType: string; id: string }>;

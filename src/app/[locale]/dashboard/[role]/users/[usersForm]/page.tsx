@@ -1,5 +1,6 @@
 import React from "react";
 import UserForm from "../components/UserForm";
+import prisma from "@/lib/prisma";
 
 interface IUserFormPage {
   params: Promise<any>;

@@ -6,6 +6,7 @@ import { SortSelect } from "./components/SortSelect";
 import ProductsPagination from "./components/ProductsPagination";
 import ScrollToTopOnPageChange from "./components/ScrollToTopOnPageChange";
 import EmptyProducts from "@/components/EmptyProducts";
+import prisma from "@/lib/prisma";
 
 interface IProductsPage {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;

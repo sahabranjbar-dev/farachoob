@@ -1,5 +1,6 @@
 import React from "react";
 import BrandForm from "../components/BrandForm";
+import prisma from "@/lib/prisma";
 
 interface IBrandFormPage {
   searchParams: Promise<{ pageType: string; id: string }>;

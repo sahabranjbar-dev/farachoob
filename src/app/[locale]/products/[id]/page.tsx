@@ -1,5 +1,6 @@
 import React from "react";
 import ProductPage from "../components/ProductPage";
+import prisma from "@/lib/prisma";
 
 interface IProductPageWrapper {
   params: Promise<{ id: string }>;
