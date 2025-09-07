@@ -1,7 +1,7 @@
 // /app/api/seed-permissions/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { PermissionKey } from "@/constants/MENU_CONFIG";
+import prisma from "@/lib/prisma";
 
 const ALLOWED_SECRET = process.env.SEED_SECRET_KEY;
 

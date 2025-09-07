@@ -1,6 +1,6 @@
 // /app/api/seed-roles/route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 const ALLOWED_SECRET = process.env.SEED_SECRET_KEY;
 

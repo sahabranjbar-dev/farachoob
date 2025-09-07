@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary"; // کانفیگ جدا برای cloudinary بساز
 import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import prisma from "@/lib/prisma";
 
 export interface Body {
   name: string;
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         status: 200,
-        message: "پیام با موفقیت ارسال شد",
+        messages: "پیام با موفقیت ارسال شد",
         description: `همکاران ما به زودی با شما تماس خواهند گرفت`,
         ...contactMessageData,
       },

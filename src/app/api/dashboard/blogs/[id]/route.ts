@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary"; // فرض بر اینه که کانفیگ cloudinary داری
 import { authOptions } from "@/lib/auth";

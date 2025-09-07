@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { PermissionKey } from "@/constants/MENU_CONFIG";
 
 export async function GET(request: Request) {

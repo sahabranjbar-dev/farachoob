@@ -3,6 +3,7 @@
 import { MENU_CONFIG, PermissionKey } from "@/constants/MENU_CONFIG";
 import bcrypt from "bcrypt";
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 const ALLOWED_SECRET = process.env.SEED_SECRET_KEY;
 
