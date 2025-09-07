@@ -2,13 +2,11 @@
 
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { XCircle } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { auth } from "../../../../../firebase";
 
 type FormData = {
   mobile: string;
