@@ -1,6 +1,6 @@
 import React from "react";
 import BlogsForm from "../components/BlogsForm";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 interface IBlogsFormPageProps {
   searchParams: Promise<{ pageType: string; id: string }>;

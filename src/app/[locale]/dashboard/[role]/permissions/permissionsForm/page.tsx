@@ -1,7 +1,5 @@
-import { notFound } from "next/navigation";
+import prisma from "@/lib/prisma";
 import PermissionForm from "../components/PermissionForm";
-import { prisma } from "@/lib/prisma"; // assuming this is how you import Prisma
-import { PermissionKey } from "@/constants/MENU_CONFIG";
 
 interface IPermissionFormPage {
   params?: Promise<{}>;

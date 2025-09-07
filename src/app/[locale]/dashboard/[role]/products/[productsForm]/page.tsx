@@ -1,6 +1,6 @@
 import React from "react";
 import ProductsForm, { FormValues } from "../components/ProductsForm";
-import { prisma } from "@/lib/prisma"; // مطمئن شو prisma import شده
+import prisma from "@/lib/prisma";
 
 interface IProductsFormPage {
   searchParams: Promise<{ pageType: string; id: string }>;
