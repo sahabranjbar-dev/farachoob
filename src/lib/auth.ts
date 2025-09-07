@@ -1,9 +1,9 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "./prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { AuthOptions, DefaultSession, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import prisma from "./prisma";
 
 // JWT سفارشی
 interface JWTWithRole extends JWT {

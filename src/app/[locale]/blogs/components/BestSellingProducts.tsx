@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import BestSellingProductsCard from "./BestSellingProductsCard";
+import prisma from "@/lib/prisma";
 
 export interface Product {
   id: string;
