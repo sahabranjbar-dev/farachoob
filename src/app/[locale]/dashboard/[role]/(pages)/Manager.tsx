@@ -138,7 +138,7 @@ const ManagerDashboardPage = () => {
                 outerRadius={120}
                 fill="#8884d8"
                 dataKey="value"
-                label={({ name, percent }) =>
+                label={({ name, percent }: any) =>
                   `${name} ${((percent ? percent : 1) * 100).toFixed(0)}%`
                 }
               >
