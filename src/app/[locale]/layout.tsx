@@ -13,6 +13,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { Toaster } from "@/components/ui/sonner";
 import { authOptions } from "@/lib/auth";
+import { getMessages } from "next-intl/server";
 
 const myFont = LocalFont({
   src: [
@@ -110,9 +111,8 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = JSON.parse(
-    readFileSync(path.resolve(`./messages/${locale}.json`), "utf-8")
-  );
+  const messages = await getMessages();
+
   const session = await getServerSession(authOptions);
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
