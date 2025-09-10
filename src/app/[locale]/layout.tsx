@@ -110,8 +110,9 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = (await import(`@/messages/${locale}.json`)).default;
-
+  const messages = JSON.parse(
+    readFileSync(path.resolve(`./messages/${locale}.json`), "utf-8")
+  );
   const session = await getServerSession(authOptions);
   return (
     <html lang={locale} suppressHydrationWarning dir="rtl">
