@@ -1,22 +1,20 @@
 // middleware.ts
-
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
+import { routing } from "@/i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-// لیست مسیرهایی که نیاز به احراز هویت دارند
 const protectedRoutes = ["/dashboard", "/admin", "/profile", "/panel"];
 
 export async function middleware(request: any) {
+  // ابتدا بررسی احراز هویت
   const { nextUrl } = request;
-  const isProtected = protectedRoutes.some((path) =>
-    nextUrl.pathname.includes(path)
-  );
+  const pathname = nextUrl.pathname;
 
-  // اگر مسیر محافظت‌شده بود، توکن رو بررسی کن
+  const isProtected = protectedRoutes.some((path) => pathname.includes(path));
+
   if (isProtected) {
     const token = await getToken({
       req: request,
@@ -24,15 +22,16 @@ export async function middleware(request: any) {
     });
 
     if (!token) {
-      // توکن وجود نداره یا منقضی شده => ریدایرکت به لاگین
-      const locale = nextUrl.locale || "fa";
+      // استخراج locale از مسیر
+      const locale = pathname.split("/")[1] || "fa";
+      const validLocale = routing.locales.includes(locale) ? locale : "fa";
+
       return NextResponse.redirect(
-        new URL(`/${locale}/auth/login`, request.url)
+        new URL(`/${validLocale}/auth/login`, request.url)
       );
     }
   }
 
-  // در نهایت next-intl middleware رو اجرا کن
   return intlMiddleware(request);
 }
 

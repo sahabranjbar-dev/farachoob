@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import LocalFont from "next/font/local";
 import { notFound } from "next/navigation";
-import "../../app/globals.css";
+import "./globals.css";
 import { readFileSync } from "fs";
 import path from "path";
 import { Toaster } from "@/components/ui/sonner";
@@ -18,7 +18,7 @@ import { getMessages } from "next-intl/server";
 const myFont = LocalFont({
   src: [
     {
-      path: "../../../public/fonts/Samim-FD.woff2",
+      path: "../../public/fonts/Samim-FD.woff2",
       weight: "500",
       style: "normal",
     },
@@ -107,9 +107,6 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
 
   const messages = await getMessages();
 
