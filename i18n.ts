@@ -1,3 +1,4 @@
+// i18n.ts
 import { getRequestConfig } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -10,6 +11,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    messages: (await import(`./src/messages/${locale}.json`)).default,
+    messages: (await import(`@/messages/${locale}.json`)).default,
   };
 });

@@ -1,6 +1,8 @@
 import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+const withNextIntl = createNextIntlPlugin();
+
 const nextConfig: NextConfig = {
   images: {
     domains: ["res.cloudinary.com", "assets3.lottiefiles.com"],
@@ -23,5 +25,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);
