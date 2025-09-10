@@ -3,22 +3,18 @@ import Header from "@/components/Header";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 import StickyNav from "@/components/StickyNav";
 import { ThemeProvider } from "@/components/theme-provider";
-import { routing } from "@/i18n/routing";
-import { getServerSession } from "next-auth";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import LocalFont from "next/font/local";
-import { notFound } from "next/navigation";
-import "./globals.css";
-import { readFileSync } from "fs";
-import path from "path";
 import { Toaster } from "@/components/ui/sonner";
 import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import LocalFont from "next/font/local";
+import "../globals.css";
 
 const myFont = LocalFont({
   src: [
     {
-      path: "../../public/fonts/Samim-FD.woff2",
+      path: "../../../public/fonts/Samim-FD.woff2",
       weight: "500",
       style: "normal",
     },
