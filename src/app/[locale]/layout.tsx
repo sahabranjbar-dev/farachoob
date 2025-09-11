@@ -8,19 +8,8 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import LocalFont from "next/font/local";
 import "../globals.css";
-
-const myFont = LocalFont({
-  src: [
-    {
-      path: "../../../public/fonts/Samim-FD.woff2",
-      weight: "500",
-      style: "normal",
-    },
-  ],
-  display: "swap",
-});
+import { myFont } from "../layout";
 
 export const metadata = {
   title: "فراچوب | بزرگترین تولیدکننده میز و صندلی اداری در شمال کشور",

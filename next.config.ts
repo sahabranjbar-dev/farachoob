@@ -24,10 +24,6 @@ const nextConfig: NextConfig = {
     JWT_SECRET: process.env.JWT_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
-  i18n: {
-    defaultLocale: "fa",
-    locales: ["fa", "en"],
-  },
 };
 
 export default withNextIntl(nextConfig);
