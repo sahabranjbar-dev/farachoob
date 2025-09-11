@@ -2,7 +2,7 @@ import React from "react";
 
 const Spinner = () => {
   return (
-    <>
+    <div className="relative">
       <div className="absolute top-0 right-0 flex justify-center items-center h-full w-full">
         <div role="status">
           <svg
@@ -24,7 +24,7 @@ const Spinner = () => {
           <span className="sr-only">Loading...</span>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

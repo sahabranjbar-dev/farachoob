@@ -1,11 +1,10 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useLocale } from "next-intl";
 import { useEffect, useMemo, useTransition, useCallback } from "react";
 import { useTabStore } from "../../stores/tabStore";
 import { useLoadingStore } from "../../stores/loadingStore";
-import { useRouter } from "@/i18n/navigation"; // router سفارشی
+import { useRouter } from "next/navigation";
 
 export default function useTabular() {
   const {
@@ -22,7 +21,6 @@ export default function useTabular() {
 
   const router = useRouter();
   const { data: session } = useSession();
-  const locale = useLocale();
 
   const role = session?.user?.role?.englishTitle;
 

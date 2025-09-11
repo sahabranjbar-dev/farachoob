@@ -1,5 +1,5 @@
 "use client";
-import CommentForm from "@/app/[locale]/blogs/components/CommentForm";
+import CommentForm from "@/app/blogs/components/CommentForm";
 import useDataGetter from "@/hooks/useDataGetter";
 import { Likes, User } from "@/types/common";
 import { CircleX, Reply, ThumbsUp } from "lucide-react";

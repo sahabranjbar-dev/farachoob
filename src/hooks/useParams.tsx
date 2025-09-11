@@ -1,7 +1,6 @@
 "use client";
 
-import { usePathname } from "@/i18n/navigation";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 function useParams<T extends Record<string, string | string[] | undefined>>() {

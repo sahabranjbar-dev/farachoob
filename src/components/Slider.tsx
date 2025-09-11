@@ -10,7 +10,7 @@ import "swiper/css/effect-flip";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Navigation as nav, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
 const Slider = ({ intems }: Props) => {
   return (
     <Swiper
-      modules={[Navigation, Pagination, Autoplay]}
+      modules={[nav, Pagination, Autoplay]}
       spaceBetween={50}
       slidesPerView={1}
       navigation

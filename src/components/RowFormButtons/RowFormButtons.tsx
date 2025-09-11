@@ -10,13 +10,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import useDataGetter from "@/hooks/useDataGetter";
-import { usePathname } from "@/i18n/navigation";
 import { PencilLine, Trash2 } from "lucide-react";
 import { IRowFormButtons } from "./meta/types";
 import useTabular from "@/hooks/useTabular";
 import { useList } from "@/container/ListContainer/ListContainer";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import FullScreenLoading from "../FullScreenLoading";
+import { usePathname } from "next/navigation";
 
 const RowFormButtons = ({
   id,

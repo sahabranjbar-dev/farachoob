@@ -2,18 +2,16 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { LogIn, User, ChevronDown, LayoutDashboardIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
-import { Link } from "@/i18n/navigation";
 import LogoutButton from "./LogoutButton";
 import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 interface Props {
   nameSpace: string;
 }
 
 const LoginAndRegister = ({ nameSpace }: Props) => {
-  const t = useTranslations(nameSpace);
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -93,7 +91,7 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
       className="flex justify-center items-center flex-row-reverse text-sm gap-2 cursor-pointer px-3 py-2 rounded-lg border hover:bg-gray-100 transition-colors"
     >
       <LogIn className="rotate-180" size={20} />
-      <span>{t("Login") + " / " + t("Register")}</span>
+      <span>{`ورود / ثبت نام`}</span>
     </Link>
   );
 };

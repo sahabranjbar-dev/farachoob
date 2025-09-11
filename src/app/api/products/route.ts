@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    console.log({ searchParams });
 
     const brand = searchParams.get("brand") || undefined;
     const category = searchParams.get("category") || undefined;

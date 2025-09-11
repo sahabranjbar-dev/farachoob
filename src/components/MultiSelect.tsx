@@ -29,7 +29,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import Spinner from "./Spinner";
-import Loading from "@/app/[locale]/products/loading";
+import Loading from "@/app/products/loading";
 
 const multiSelectVariants = cva(
   "m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300",

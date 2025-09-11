@@ -4,7 +4,7 @@ import { Key, useEffect, useState } from "react";
 import {
   Autoplay,
   EffectCoverflow,
-  Navigation,
+  Navigation as nav,
   Pagination,
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -15,8 +15,7 @@ import "swiper/css/pagination";
 import ProductCard from "./ProductCard";
 import useDataGetter from "@/hooks/useDataGetter";
 import { Skeleton } from "./ui/skeleton";
-import { IProduct } from "@/app/[locale]/products/meta/types";
-import { Link } from "@/i18n/navigation";
+import { IProduct } from "@/app/products/meta/types";
 
 const NewestProducts = () => {
   const {
@@ -79,7 +78,7 @@ const NewestProducts = () => {
                 }
               : false // 👈 لودینگ نیازی به autoplay نداره
           }
-          modules={[EffectCoverflow, Pagination, Navigation, Autoplay]}
+          modules={[EffectCoverflow, Pagination, nav, Autoplay]}
           className="mySwiper pb-14"
         >
           {loading ? ( // 👈 شرط رو برعکس کردم

@@ -11,7 +11,7 @@ const FullScreenLoading = ({ visibleBackground = true }: Props) => {
   return (
     <div
       className={cn(
-        "bg-white absolute w-full h-full inset-0 z-50 flex items-center justify-center dark:bg-black",
+        "bg-white absolute w-full h-full inset-0 z-500 flex items-center justify-center dark:bg-black",
         {
           "bg-white/80 dark:bg-black/50": visibleBackground,
         }

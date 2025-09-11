@@ -1,14 +1,13 @@
 "use client";
 
 import SVGComponent from "@/assets/HeroPattern";
-import { Link, usePathname } from "@/i18n/navigation";
 import { Instagram, Linkedin, Twitter } from "lucide-react";
-import { useLocale } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 const Footer = () => {
   const pathname = usePathname();
-  const locale = useLocale();
   const isAuthPage =
     pathname?.startsWith("/auth") || pathname?.startsWith("/dashboard");
   if (isAuthPage) return;

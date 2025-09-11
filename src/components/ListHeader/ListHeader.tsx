@@ -1,17 +1,15 @@
 "use client";
 
-import React, { cloneElement, createElement, useState } from "react";
-import { Button } from "../ui/button";
-import { Funnel, Plus, RefreshCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useList } from "@/container/ListContainer/ListContainer";
-import { IListHeader } from "./meta/types";
-import { usePathname, useRouter } from "@/i18n/navigation";
-import { useParams } from "next/navigation";
 import useTabular from "@/hooks/useTabular";
-import { AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Funnel, Plus, RefreshCcw } from "lucide-react";
+import { useState } from "react";
 import ExportButton from "../ExportButton";
+import { Button } from "../ui/button";
+import { IListHeader } from "./meta/types";
+import { usePathname } from "next/navigation";
 
 const ListHeader = ({
   hasRefresh = true,

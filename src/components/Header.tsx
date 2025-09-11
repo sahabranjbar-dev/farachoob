@@ -1,22 +1,18 @@
 "use client";
 
-import { AlignJustify, Search, ShoppingCart } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import { AlignJustify } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import LanguageSwitcher from "./LanguageSwitcher";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import LoginAndRegister from "./LoginAndRegister";
 import { ModeToggle } from "./ModeToggle";
 import Navbar from "./Navbar";
 import SideBarMenu from "./SideBarMenu";
-import { Input } from "./ui/input";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { motion } from "framer-motion";
-import { usePathname } from "@/i18n/navigation";
-import { useState } from "react";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 const Header = () => {
-  const t = useTranslations("Header");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const isAuthPage =

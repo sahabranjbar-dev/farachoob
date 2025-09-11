@@ -1,6 +1,15 @@
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+import StickyNav from "@/components/StickyNav";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import "./globals.css";
 import localFont from "next/font/local";
 
-export const myFont = localFont({
+const myFont = localFont({
   src: [
     {
       path: "../../public/fonts/Samim-FD.woff2",
@@ -10,16 +19,99 @@ export const myFont = localFont({
   ],
   display: "swap",
 });
+export const metadata = {
+  title: "فراچوب | بزرگترین تولیدکننده میز و صندلی اداری در شمال کشور",
+  description:
+    "تولیدکننده تخصصی میز اداری، صندلی مدیرتی، مبلمان اداری و تجهیزات چوبی با کیفیت ممتاز و قیمت مناسب | تحویل سریع در سراسر ایران",
+  keywords: [
+    "میز اداری",
+    "صندلی اداری",
+    "مبلمان اداری",
+    "تجهیزات چوبی اداری",
+    "فراچوب",
+    "farachoob",
+    "تولیدکننده میز اداری",
+    "میز کار چوبی",
+    "صندلی مدیرتی",
+    "میز کنفرانس",
+  ],
+  authors: [
+    {
+      name: "Sahab Ranjbar",
+      url: "https://sahabranjbar.dev",
+    },
+  ],
+  openGraph: {
+    title: "فراچوب | تولیدکننده ممتاز میز و صندلی اداری | Farachoob",
+    description:
+      "صنایع چوب فراچوب - تولیدکننده تخصصی میز اداری، صندلی مدیرتی و مبلمان اداری با ۳ دهه تجربه | کیفیت درجه یک با قیمت رقابتی",
+    url: "https://farachoob.ir",
+    siteName: "فراچوب | Farachoob",
+    images: [
+      {
+        url: "https://farachoob.ir/images/og-banner.jpg",
+        width: 1200,
+        height: 630,
+        alt: "نمونه محصولات فراچوب - میز اداری مدرن و صندلی مدیرتی لوکس",
+      },
+    ],
+    locale: "fa_IR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "فراچوب | تولیدکننده ممتاز میز و صندلی اداری",
+    description:
+      "تولیدات چوبی اداری با کیفیت عالی و طراحی مدرن - مناسب برای دفاتر کار، شرکتها و سازمانها",
+    images: ["https://farachoob.ir/images/twitter-card.jpg"],
+  },
+  alternates: {
+    canonical: "https://farachoob.ir",
+  },
+  metadataBase: new URL("https://farachoob.ir"),
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    other: {
+      rel: "farachoob-logo",
+      url: "/logo.png",
+    },
+  },
+};
 
-export default async function RootLayout({
+export default async function LocaleLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
   return (
-    <html suppressHydrationWarning dir="rtl">
+    <html lang={"fa-IR"} suppressHydrationWarning dir="rtl">
       <body className={`${myFont.className} overflow-x-hidden`}>
-        {children}
+        <SessionProviderWrapper session={session}>
+          <ThemeProvider attribute="class" defaultTheme="light">
+            <>
+              <Header />
+              {children}
+              <StickyNav />
+              <Toaster />
+              <Footer />
+            </>
+          </ThemeProvider>
+        </SessionProviderWrapper>
       </body>
     </html>
   );

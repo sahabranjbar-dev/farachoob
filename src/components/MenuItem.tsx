@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronLeft } from "lucide-react";
 import * as Icons from "lucide-react";
-import { usePathname } from "@/i18n/navigation";
+import { usePathname } from "next/navigation";
 
 interface Props {
   item: {

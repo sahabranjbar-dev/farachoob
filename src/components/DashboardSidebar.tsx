@@ -8,7 +8,6 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Role } from "@/types/dashboard";
 import { motion } from "framer-motion";
@@ -20,6 +19,7 @@ import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 import useTabular from "@/hooks/useTabular";
 import MenuItem from "./MenuItem";
+import { usePathname } from "next/navigation";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

@@ -1,43 +1,40 @@
 "use client";
 
-import { Link, usePathname } from "@/i18n/navigation";
 import clsx from "clsx";
 import { Armchair, FileUser, Home, PhoneOutgoing } from "lucide-react";
-import { useTranslations } from "next-intl";
-import LanguageSwitcher from "./LanguageSwitcher";
 import LoginAndRegister from "./LoginAndRegister";
 import { ModeToggle } from "./ModeToggle";
 import { Separator } from "./ui/separator";
 import { SheetHeader, SheetTitle } from "./ui/sheet";
 import { Dispatch, SetStateAction } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface Props {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const SideBarMenu = ({ setOpen }: Props) => {
-  const t = useTranslations("SideBarHeader");
-
   const pathname = usePathname();
 
   const items = [
     {
-      title: t("Home"),
+      title: "صفحه نخست",
       url: "/",
       icon: Home,
     },
     {
-      title: t("Products"),
+      title: "محصولات",
       url: "/products",
       icon: Armchair,
     },
     {
-      title: t("Contact-us"),
+      title: "ارتباط با ما",
       url: "/contact-us",
       icon: PhoneOutgoing,
     },
     {
-      title: t("About-us"),
+      title: "درباره ما",
       url: "/about-us",
       icon: FileUser,
     },
@@ -46,17 +43,7 @@ const SideBarMenu = ({ setOpen }: Props) => {
   return (
     <>
       <SheetHeader>
-        <SheetTitle className="">
-          {/* {t("Menu")} */}
-          {/* <div className="relative mt-8">
-            <Input
-              type="text"
-              placeholder={t("Search")}
-              className="rounded placeholder:font-light pl-8 bg-[#EBEBEB]"
-            />
-            <Search className="absolute left-2 top-2" size={"18px"} />
-          </div> */}
-        </SheetTitle>
+        <SheetTitle></SheetTitle>
       </SheetHeader>
 
       <Separator />

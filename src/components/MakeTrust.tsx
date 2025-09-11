@@ -1,8 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
+
 const MakeTrust = () => {
   const data = useMemo(
     () => [

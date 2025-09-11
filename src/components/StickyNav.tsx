@@ -1,6 +1,5 @@
 "use client";
 
-import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import {
   Book,
@@ -10,17 +9,16 @@ import {
   ShoppingCart,
   User,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 const StickyNav = () => {
-  const t = useTranslations("StickyNav");
-
   const pathname = usePathname();
 
   const items = [
     {
-      title: t("Home"),
+      title: "صفحه نخست",
       url: "/",
       icon: Home,
     },
