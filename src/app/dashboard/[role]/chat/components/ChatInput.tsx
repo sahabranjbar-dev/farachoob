@@ -1,43 +1,68 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { io } from "socket.io-client";
 import { ChatContext } from "../container/ChatContainer";
-
-const socket = io();
+import { useSocket } from "../container/SocketContainer";
 
 type FormValues = {
   message: string;
 };
 
 const ChatInput = () => {
-  const { register, handleSubmit, reset, watch } = useForm<FormValues>();
-  const { userInfo } = useContext(ChatContext);
+  const { register, handleSubmit, reset, watch, setValue } =
+    useForm<FormValues>();
+  const { userInfo, conversationId } = useContext(ChatContext);
+  const { socket } = useSocket();
+
   const onSubmit = (data: FormValues) => {
-    console.log("Message:", data.message);
-    if (!data.message) return;
-    socket.emit("send-message", { text: data.message, userId: userInfo?.id });
-    reset(); // بعد از ارسال، ورودی خالی میشه
+    if (!data.message.trim()) return;
+
+    socket.emit("send-message", {
+      senderId: userInfo?.id,
+      content: data.message,
+      conversationId,
+    });
+
+    reset();
   };
 
+  // Handle Enter key (Enter = send, Shift+Enter = newline)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit(onSubmit)();
+      }
+    };
+
+    const textarea = document.querySelector<HTMLTextAreaElement>(
+      "textarea[name='message']"
+    );
+    textarea?.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      textarea?.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleSubmit, onSubmit]);
+
   return (
-    <div className="absolute bottom-0 w-full bg-white">
+    <div className="absolute bottom-0 left-0 right-0 max-w-full bg-white">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="justify-between p-4 border-t items-center flex gap-2"
+        className="flex items-center justify-between gap-2 border-t p-4"
       >
-        <input
-          type="text"
+        <textarea
           placeholder="پیام خود را اینجا بنویسید..."
-          className="w-full border p-2 rounded"
+          className="w-full resize-none rounded border p-2 break-words whitespace-pre-wrap"
           {...register("message", { required: true })}
+          wrap="soft"
         />
         <Button
           disabled={!watch("message")}
           type="submit"
-          className="bg-indigo-500 hover:bg-indigo-600 text-white disabled:cursor-not-allowed"
+          className="rounded-2xl bg-indigo-500 text-white hover:bg-indigo-600 disabled:cursor-not-allowed"
         >
           ارسال
         </Button>

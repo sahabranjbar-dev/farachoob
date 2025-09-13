@@ -6,8 +6,6 @@ import Image from "next/image";
 
 const ChatContentHeader = () => {
   const { userInfo, setUserInfo } = useContext(ChatContext);
-  console.log({ userInfo });
-
   return (
     <div className="flex items-center justify-between p-2 border-b bg-indigo-500 text-white">
       <div>

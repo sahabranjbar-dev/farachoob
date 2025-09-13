@@ -1,6 +1,10 @@
 "use client";
 import React, { useContext } from "react";
 import { ChatContext } from "../container/ChatContainer";
+import { io } from "socket.io-client";
+import prisma from "@/lib/prisma";
+import useDataGetter from "@/hooks/useDataGetter";
+import { useSocket } from "../container/SocketContainer";
 
 export interface User {
   id: string;
@@ -22,25 +26,50 @@ interface Props {
   user: User;
 }
 
+export interface Conversation {
+  id: string;
+  title: any;
+  isGroup: boolean;
+  createdAt: string;
+  updatedAt: string;
+  participants: Participant[];
+}
+
+export interface Participant {
+  userId: string;
+}
+
 const UserItem = ({ user }: Props) => {
-  const { setUserInfo, setConversationId } = useContext(ChatContext);
+  const { setUserInfo, setConversationId, setLoading } =
+    useContext(ChatContext);
 
-  const handleClick = async () => {
+  const { socket } = useSocket();
+
+  const { fetch } = useDataGetter<Conversation>({
+    url: "/dashboard/conversations",
+    method: "POST",
+    immediatelyFetch: false,
+  });
+
+  const handleClick = () => {
     setUserInfo(user);
+    setLoading(true);
 
-    // صدا زدن API برای گرفتن/ساخت کانورسیشن
-    const res = await fetch("/api/dashboard/conversations", {
-      method: "POST",
-      body: JSON.stringify({ participantId: user.id }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await res.json();
-    setConversationId(data.id);
+    fetch?.({ inputBody: { participantId: user.id } })
+      .then((data) => {
+        if (data.id) {
+          socket.emit("join-conversation", { conversationId: data.id }); // مهم: مستقیم اینجا emit کنیم
+          setConversationId(data.id);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <div
-      onClick={handleClick}
+      onClick={() => {
+        handleClick();
+      }}
       className="p-2 border-b cursor-pointer hover:bg-gray-100"
     >
       {user.email}

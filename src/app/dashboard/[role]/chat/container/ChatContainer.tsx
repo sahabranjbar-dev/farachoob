@@ -9,20 +9,31 @@ export const ChatContext = React.createContext<{
   setUserInfo: React.Dispatch<React.SetStateAction<User | null>>;
   conversationId: string | null;
   setConversationId: React.Dispatch<React.SetStateAction<string | null>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   userInfo: null,
   setUserInfo: () => {},
   conversationId: null,
   setConversationId: () => {},
+  loading: false,
+  setLoading: () => {},
 });
 
 const ChatContainer = ({ children }: PropsWithChildren<Props>) => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState<boolean>(false);
   return (
     <ChatContext.Provider
-      value={{ userInfo, setUserInfo, conversationId, setConversationId }}
+      value={{
+        userInfo,
+        setUserInfo,
+        conversationId,
+        setConversationId,
+        loading,
+        setLoading,
+      }}
     >
       {children}
     </ChatContext.Provider>

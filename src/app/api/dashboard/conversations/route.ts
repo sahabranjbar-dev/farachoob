@@ -39,6 +39,7 @@ export async function POST(req: Request) {
       },
       include: {
         participants: { select: { userId: true } },
+        messages: true,
       },
     });
 
@@ -52,6 +53,7 @@ export async function POST(req: Request) {
         },
         include: {
           participants: { select: { userId: true } },
+          messages: true,
         },
       });
     }
