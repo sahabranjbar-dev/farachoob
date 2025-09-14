@@ -9,28 +9,28 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String?       @unique
+  id           String                    @id @default(uuid())
+  email        String?                   @unique
   password     String?
   firstName    String?
   lastName     String?
-  nationalId   String?       @unique
+  nationalId   String?                   @unique
   birthDate    DateTime?
-  mobile       String?       @unique
-  isActive     Boolean       @default(true)
-  isVerified   Boolean       @default(false)
+  mobile       String?                   @unique
+  isActive     Boolean                   @default(true)
+  isVerified   Boolean                   @default(false)
   image        String?
   roleId       String
-  role         Role          @relation(fields: [roleId], references: [id])
-  createdAt    DateTime      @default(now())
+  role         Role                      @relation(fields: [roleId], references: [id])
+  createdAt    DateTime                  @default(now())
   comments     Comment[]
   commentLikes CommentLike[]
-
-  CartItem CartItem[]
-  articles Article[]  @relation("UserArticles")
-
+  CartItem     CartItem[]
+  articles     Article[]                 @relation("UserArticles")
   messages     Message[]
   participants ConversationParticipant[]
+  projects     Project[]                 @relation("UserProject")
+  Project      Project[]
 }
 
 model OTP {
@@ -192,6 +192,9 @@ model Comment {
   articleId String
   article   Article @relation(fields: [articleId], references: [id])
 
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id])
+
   parentId String?
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies  Comment[] @relation("CommentReplies")
@@ -299,6 +302,12 @@ enum PermissionKey {
   create_setting
   edit_setting
   delete_setting
+
+  //Projects
+  view_projects
+  create_projects
+  edit_projects
+  delete_projects
 }
 
 model Conversation {
@@ -343,4 +352,22 @@ model MessageHistory {
   editedAt   DateTime @default(now())
 
   message Message @relation(fields: [messageId], references: [id])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  description String?
+  images      String[]
+  title       String
+  createdAt   DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  active      Boolean  @default(true)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  Comment Comment[]
+
+  authorId String
+  author   User   @relation("UserProject", fields: [authorId], references: [id])
 }

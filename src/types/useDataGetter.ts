@@ -1,4 +1,4 @@
-import { AxiosHeaders, Method, ResponseType } from "axios";
+import { Method, RawAxiosRequestHeaders, ResponseType } from "axios";
 
 export interface useDataGetterInputs<Body = any, Params = any> {
   url?: string;
@@ -10,7 +10,7 @@ export interface useDataGetterInputs<Body = any, Params = any> {
   onFailure?: (error?: any) => void;
   showError?: boolean;
   responseType?: ResponseType;
-  headers?: AxiosHeaders;
+  headers?: any;
   showSuccessMessage?: boolean;
 }
 

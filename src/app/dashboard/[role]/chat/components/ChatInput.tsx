@@ -5,6 +5,7 @@ import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ChatContext } from "../container/ChatContainer";
 import { useSocket } from "../container/SocketContainer";
+import { useSession } from "next-auth/react";
 
 type FormValues = {
   message: string;
@@ -13,14 +14,16 @@ type FormValues = {
 const ChatInput = () => {
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<FormValues>();
-  const { userInfo, conversationId } = useContext(ChatContext);
+  const { conversationId } = useContext(ChatContext);
   const { socket } = useSocket();
+  const session = useSession();
 
+  const senderId = session.data?.user.id;
   const onSubmit = (data: FormValues) => {
     if (!data.message.trim()) return;
 
     socket.emit("send-message", {
-      senderId: userInfo?.id,
+      senderId,
       content: data.message,
       conversationId,
     });

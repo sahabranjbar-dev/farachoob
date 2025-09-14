@@ -4,6 +4,8 @@ import { ChatContext } from "../container/ChatContainer";
 import useDataGetter from "@/hooks/useDataGetter";
 import { useSocket } from "../container/SocketContainer";
 import { Check, CheckCheck, Clock } from "lucide-react";
+import { useSession } from "next-auth/react";
+import clsx from "clsx";
 
 export interface Message {
   id: string;
@@ -32,6 +34,9 @@ const ChatMessages = () => {
 
   const { conversationId } = useContext(ChatContext);
   const { socket } = useSocket();
+  const session = useSession();
+
+  const userId = session.data?.user.id;
 
   const [messages, setMessages] = useState<MessageWithLoading[]>([]);
 
@@ -57,12 +62,15 @@ const ChatMessages = () => {
       setMessages((prev) => [...prev, { ...data, loading: true }]);
 
       // call API to persist
+      if (data.senderId !== userId) return;
+
       postMessage?.({
         inputBody: { content: data.content },
       }).then((saved) => {
-        setMessages((prev) =>
-          prev.map((m) => (m.loading && m.content === data.content ? saved : m))
-        );
+        setMessages((prev) => {
+          const resolvedMessage = prev.filter((item) => !item?.loading);
+          return [...resolvedMessage, saved];
+        });
       });
     };
 
@@ -107,10 +115,15 @@ const ChatMessages = () => {
           .toString()
           .padStart(2, "0")}`;
 
+        const isOwnMessage = msg.senderId === userId;
+
         return (
           <div
-            key={msg.id}
-            className="p-4 border rounded bg-indigo-500 text-white inline-flex w-fit justify-start items-end gap-2"
+            key={msg.id || msg.content}
+            className={clsx(
+              "p-4 border rounded text-white inline-flex w-fit justify-start items-end gap-2",
+              isOwnMessage ? " bg-indigo-500 ml-auto" : " bg-blue-500 mr-auto"
+            )}
           >
             <div dir="auto" className="break-words whitespace-pre-wrap">
               {msg.content}
@@ -122,12 +135,16 @@ const ChatMessages = () => {
               </span>
               <span>
                 {msg.loading ? (
-                  <Clock size={20} className="opacity-70" />
-                ) : msg.read ? (
-                  <CheckCheck size={20} className="opacity-70" />
-                ) : (
-                  <Check size={20} className="opacity-70" />
-                )}
+                  isOwnMessage ? (
+                    <Clock size={20} className="opacity-70" />
+                  ) : null
+                ) : isOwnMessage ? (
+                  msg.read ? (
+                    <CheckCheck size={20} className="opacity-70" />
+                  ) : (
+                    <Check size={20} className="opacity-70" />
+                  )
+                ) : null}
               </span>
             </div>
           </div>

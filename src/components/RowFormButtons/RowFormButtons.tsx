@@ -1,3 +1,4 @@
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -68,7 +69,7 @@ const RowFormButtons = ({
       <AlertDialog>
         <Tooltip disableHoverableContent={loading}>
           <TooltipTrigger>
-            <AlertDialogTrigger>
+            <AlertDialogTrigger asChild>
               <Trash2 className="text-red-500 cursor-pointer hover:bg-red-100 transition-colors duration-300 rounded-full h-6 w-6 p-2 box-content" />
             </AlertDialogTrigger>
           </TooltipTrigger>

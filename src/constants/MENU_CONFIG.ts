@@ -84,6 +84,12 @@ export enum PermissionKey {
   CreateSetting = "create_setting",
   EditSetting = "edit_setting",
   DeleteSetting = "delete_setting",
+
+  //Projects
+  ViewProjects = "view_projects",
+  CreateProjects = "create_projects",
+  EditProjects = "edit_projects",
+  DeleteProjects = "delete_projects",
 }
 
 export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
@@ -188,7 +194,7 @@ export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
   },
   [AppMenu.Setting]: {
     href: "/setting",
-    title: "تنظیملت کاربری",
+    title: "تنظیمات کاربری",
     icon: "Settings",
     permissions: {
       view: PermissionKey.ViewSetting,
