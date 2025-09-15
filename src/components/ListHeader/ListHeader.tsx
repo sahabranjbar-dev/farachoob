@@ -5,11 +5,13 @@ import useTabular from "@/hooks/useTabular";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Funnel, Plus, RefreshCcw } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ExportButton from "../ExportButton";
 import { Button } from "../ui/button";
 import { IListHeader } from "./meta/types";
-import { usePathname } from "next/navigation";
+import { usePermissions } from "@/container/PermissionProvider/context/PermissionProviderContext";
+import { useSession } from "next-auth/react";
 
 const ListHeader = ({
   hasRefresh = true,
@@ -25,10 +27,16 @@ const ListHeader = ({
   const pathType = pathname.split("/")[pathname.split("/").length - 1];
 
   const { open } = useTabular();
+
+  const { userPermissions } = usePermissions();
+
+  const hasCreate = userPermissions?.hasCreate;
+  const hasExportPermission = userPermissions?.hasExport;
+
   return (
     <div>
       <div className="flex items-start justify-start gap-2 my-2">
-        {
+        {!!hasCreate && (
           <Button
             onClick={() => {
               const path = formPath
@@ -42,7 +50,8 @@ const ListHeader = ({
           >
             <Plus />
           </Button>
-        }
+        )}
+
         {hasRefresh && (
           <Button
             variant="outline"
@@ -66,7 +75,9 @@ const ListHeader = ({
           <Funnel />
         </Button>
 
-        {hasExport && exportUrl && <ExportButton exportUrl={exportUrl} />}
+        {hasExportPermission && hasExport && exportUrl && (
+          <ExportButton exportUrl={exportUrl} />
+        )}
       </div>
       <motion.div
         initial={false}

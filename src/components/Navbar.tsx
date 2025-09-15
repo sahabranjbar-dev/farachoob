@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { IProduct } from "@/app/products/meta/types";
 
 export interface ICategory {
   id: string;
@@ -27,16 +28,6 @@ export interface ICategory {
   englishTitle: string;
   createdAt: string;
   updateAt: string;
-}
-
-export interface IProduct {
-  id: string;
-  title: string;
-  farsiTitle: string;
-  image: string;
-  price: number;
-  categoryId: string;
-  createdAt: string;
 }
 
 const navItems = [
@@ -58,18 +49,23 @@ const Navbar = () => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<ICategory | null>(null);
 
+  // 🔹 کش محلی برای ذخیره محصولات هر دسته
+  const [categoryCache, setCategoryCache] = useState<
+    Record<string, IProduct[]>
+  >({});
+
   const {
-    data: productCategories = [],
+    data: productCategories,
     loading: isLoadingCategories,
     error: categoriesError,
     fetch: refetchCategories,
   } = useDataGetter<ICategory[]>({ url: "/categories" });
 
   const {
-    data: products = [],
+    data: products,
     loading: isLoadingProducts,
     fetch: fetchProducts,
-  } = useDataGetter<IProduct[]>({
+  } = useDataGetter<{ resultList?: IProduct[] }>({
     url: "/products",
     immediatelyFetch: false,
   });
@@ -89,19 +85,28 @@ const Navbar = () => {
     };
   }, [clearHover]);
 
-  const handleCategoryHover = (category: ICategory) => {
+  const handleCategoryHover = async (category: ICategory) => {
     setActiveCategory(category);
-    fetchProducts?.({
-      inputParams: {
-        category: category.englishTitle.trim().replace(/\s+/g, "_"),
-      },
+
+    // 🔹 اگر دیتا قبلاً فچ شده بود، نیازی به درخواست مجدد نیست
+    if (categoryCache[category.id]) return;
+
+    const result = await fetchProducts?.({
+      inputParams: { categoryId: category.id },
     });
+
+    if (result?.resultList) {
+      setCategoryCache((prev) => ({
+        ...prev,
+        [category.id]: result.resultList!,
+      }));
+    }
   };
 
   const categoryLinks = useMemo(() => {
     if (!productCategories?.length) return null;
 
-    return productCategories.map((cat) => (
+    return productCategories?.map((cat) => (
       <motion.div
         key={cat.id}
         whileHover={{ scale: 1.02 }}
@@ -126,13 +131,13 @@ const Navbar = () => {
   }, [productCategories, activeCategory]);
 
   const categoryProducts = useMemo(() => {
-    if (!activeCategory || isLoadingProducts) return null;
+    if (!activeCategory) return null;
 
-    const filteredProducts = products?.filter(
-      (product) => product.categoryId === activeCategory.id
-    );
+    const cachedProducts = categoryCache[activeCategory.id];
 
-    if (filteredProducts?.length === 0) {
+    if (isLoadingProducts && !cachedProducts) return null;
+
+    if (!cachedProducts || cachedProducts.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center h-full p-6 text-center">
           <ImageIcon size={48} className="text-gray-300 mb-4" />
@@ -145,7 +150,7 @@ const Navbar = () => {
 
     return (
       <div className="grid grid-cols-1 gap-4">
-        {filteredProducts?.slice(0, 3).map((product) => (
+        {cachedProducts.slice(0, 3).map((product) => (
           <motion.div
             key={product.id}
             initial={{ opacity: 0, x: 10 }}
@@ -153,9 +158,9 @@ const Navbar = () => {
             className="flex gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
-              {product.image ? (
+              {product.variations[0].images[0].id ? (
                 <Image
-                  src={product.image}
+                  src={product.variations[0].images[0].url}
                   alt={product.farsiTitle}
                   fill
                   className="object-cover"
@@ -189,7 +194,7 @@ const Navbar = () => {
         </motion.div>
       </div>
     );
-  }, [activeCategory, products, isLoadingProducts]);
+  }, [activeCategory, categoryCache, isLoadingProducts]);
 
   return (
     <nav className="hidden md:flex items-center justify-center gap-8 bg-white/20 backdrop-blur-xl px-8 py-4 rounded-2xl shadow-lg border border-white/30 relative">
@@ -225,7 +230,6 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* زیرمنوی محصولات */}
           {item.id === "products" && (
             <AnimatePresence>
               {hovered === "products" && (
@@ -238,7 +242,7 @@ const Navbar = () => {
                   onMouseEnter={() => clearHover.cancel()}
                   onMouseLeave={clearHover}
                 >
-                  {/* بخش دسته‌بندی‌ها */}
+                  {/* دسته‌بندی‌ها */}
                   <div className="w-1/3 border-left border-gray-200 pr-5 mr-5">
                     <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100">
                       دسته‌بندی‌ها
@@ -277,7 +281,7 @@ const Navbar = () => {
                     </div>
                   </div>
 
-                  {/* بخش محصولات */}
+                  {/* محصولات */}
                   <div className="w-2/3">
                     <h3 className="text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100">
                       {activeCategory
@@ -293,7 +297,8 @@ const Navbar = () => {
                           شوند
                         </p>
                       </div>
-                    ) : isLoadingProducts ? (
+                    ) : isLoadingProducts &&
+                      !categoryCache[activeCategory.id] ? (
                       <div className="flex flex-col gap-4">
                         {[1, 2, 3].map((i) => (
                           <div key={i} className="flex gap-3 p-3">

@@ -310,6 +310,10 @@ enum PermissionKey {
   create_projects
   edit_projects
   delete_projects
+
+  //export and import
+  can_export
+  can_import
 }
 
 model Conversation {

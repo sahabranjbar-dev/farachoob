@@ -16,7 +16,7 @@ export interface IProduct {
   englishTitle: string;
   farsiTitle: string;
   id: string;
-  image: any;
+  variations: Variation[];
   price: number;
   description: string;
   stock: number;
@@ -24,6 +24,21 @@ export interface IProduct {
   category: any;
 }
 
+export interface Variation {
+  id: string;
+  productId: string;
+  colorName: string;
+  colorCode: string;
+  price: number;
+  stock: number;
+  images: Image[];
+}
+
+export interface Image {
+  id: string;
+  url: string;
+  variationId: string;
+}
 export interface IFilterSidebar {
   fetch?: ({ inputBody, inputParams, inputUrl }: IFetchData) => Promise<any>;
 }

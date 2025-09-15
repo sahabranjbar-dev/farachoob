@@ -96,7 +96,7 @@ const NewestProducts = () => {
               <SwiperSlide key={product.id} className="!w-80 !h-auto">
                 <ProductCard
                   id={product.id}
-                  imageSrc={product.image}
+                  imageSrc={product.variations[0].images[0].url}
                   imageAlt={product.englishTitle}
                   title={product.farsiTitle}
                   description={product.description}

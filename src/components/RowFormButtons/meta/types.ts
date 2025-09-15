@@ -3,4 +3,5 @@ export interface IRowFormButtons {
   formPath?: string;
   deleterUrl?: string;
   title?: string;
+  hasPage?: boolean;
 }

@@ -6,7 +6,15 @@ import { useFieldArray, useForm } from "react-hook-form";
 import Image from "next/image";
 import axios from "axios";
 import { toast } from "sonner";
-import { X, Upload, Image as ImageIcon, CheckIcon } from "lucide-react";
+import {
+  X,
+  Upload,
+  Image as ImageIcon,
+  CheckIcon,
+  RefreshCcw,
+  MessageCircleWarning,
+  Plus,
+} from "lucide-react";
 
 import useTabular from "@/hooks/useTabular";
 import useDataGetter from "@/hooks/useDataGetter";
@@ -95,6 +103,7 @@ const ProductsForm = ({ initialData }: Props) => {
     data: brandsData,
     fetch: fetchBrands,
     loading: brandsLoading,
+    error: brandsError,
   } = useDataGetter({
     url: "/dashboard/brands",
     immediatelyFetch: Boolean(initialData?.brandId),
@@ -104,6 +113,7 @@ const ProductsForm = ({ initialData }: Props) => {
     data: categoriesData,
     fetch: fetchCategories,
     loading: categoriesLoading,
+    error: categoriesError,
   } = useDataGetter({
     url: "/dashboard/categories",
     immediatelyFetch: Boolean(initialData?.categoryId),
@@ -254,6 +264,8 @@ const ProductsForm = ({ initialData }: Props) => {
                   data: brandsData,
                   loading: brandsLoading,
                   fetch: fetchBrands,
+                  error: brandsError,
+                  createUrl: "/brands/brandsForm",
                 },
                 {
                   name: "categoryId",
@@ -261,51 +273,92 @@ const ProductsForm = ({ initialData }: Props) => {
                   data: categoriesData,
                   loading: categoriesLoading,
                   fetch: fetchCategories,
+                  error: categoriesError,
+                  createUrl: "/categories/categoriesForm",
                 },
-              ].map(({ name, label, data, loading, fetch }, i) => (
-                <FormField
-                  key={i}
-                  control={form.control}
-                  name={name as keyof FormValues}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-medium">{label}</FormLabel>
-                      <FormControl>
-                        <Select
-                          value={
-                            typeof field.value === "string"
-                              ? field.value
-                              : field.value !== undefined &&
-                                field.value !== null
-                              ? String(field.value)
-                              : undefined
-                          }
-                          onValueChange={field.onChange}
-                          onOpenChange={() =>
-                            !data?.resultList?.length && fetch?.({})
-                          }
-                        >
-                          <SelectTrigger className="bg-gray-50 w-full">
-                            <SelectValue placeholder={`انتخاب ${label}`} />
-                          </SelectTrigger>
-                          <SelectContent className="min-h-40">
-                            {loading ? (
-                              <Spinner />
-                            ) : (
-                              data?.resultList?.map((item: any) => (
-                                <SelectItem key={item.id} value={item.id}>
-                                  {item.farsiTitle}
-                                </SelectItem>
-                              ))
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
+              ].map(
+                (
+                  { name, label, data, loading, fetch, error, createUrl },
+                  i
+                ) => (
+                  <FormField
+                    key={i}
+                    control={form.control}
+                    name={name as keyof FormValues}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-medium">{label}</FormLabel>
+                        <FormControl>
+                          <Select
+                            value={
+                              typeof field.value === "string"
+                                ? field.value
+                                : field.value !== undefined &&
+                                  field.value !== null
+                                ? String(field.value)
+                                : undefined
+                            }
+                            onValueChange={field.onChange}
+                            onOpenChange={() =>
+                              !data?.resultList?.length && fetch?.({})
+                            }
+                          >
+                            <SelectTrigger className="bg-gray-50 w-full">
+                              <SelectValue placeholder={`انتخاب ${label}`} />
+                            </SelectTrigger>
+                            <SelectContent className="min-h-40">
+                              <Button
+                                onClick={() =>
+                                  open(createUrl, `فرم ایجاد ${label}`, {
+                                    pageType: "create",
+                                  })
+                                }
+                                className=""
+                                tooltip={`ایجاد ${label}`}
+                                left={<Plus />}
+                              />
+                              {loading ? (
+                                // --- حالت لودینگ
+                                <div className="flex justify-center items-center h-20">
+                                  <Spinner />
+                                </div>
+                              ) : error ? (
+                                // --- حالت خطا
+                                <div className="flex flex-col justify-center items-center gap-2 p-4 text-red-500">
+                                  <span>خطا در دریافت {label}</span>
+                                  <Button
+                                    onClick={() => fetch?.({})}
+                                    className="text-sm bg-blue-500 hover:bg-blue-600"
+                                    left={<RefreshCcw />}
+                                  >
+                                    تلاش مجدد
+                                  </Button>
+                                </div>
+                              ) : !data?.resultList?.length ? (
+                                // --- حالت خالی بودن دیتا
+                                <div className="flex justify-center items-center min-h-40 gap-2">
+                                  <p className="text-gray-400">
+                                    {label} موجود نیست
+                                  </p>
+                                  <MessageCircleWarning color="gray" />
+                                </div>
+                              ) : (
+                                // --- حالت موفق
+                                data?.resultList?.map((item: any) => (
+                                  <SelectItem key={item.id} value={item.id}>
+                                    {item.farsiTitle}
+                                  </SelectItem>
+                                ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )
+              )}
 
               <FormField
                 control={form.control}

@@ -35,8 +35,8 @@ const Footer = () => {
                 { label: "سوالات متداول", href: "/#" },
                 { label: "حریم خصوصی", href: "/#" },
                 { label: "شرایط و قوانین", href: "/#" },
-              ].map((item) => (
-                <li key={item.href}>
+              ].map((item, index) => (
+                <li key={index}>
                   <Link
                     href={item.href}
                     className="text-gray-300 hover:text-white transition-colors duration-200 text-sm"

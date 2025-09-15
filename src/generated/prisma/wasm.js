@@ -132,6 +132,7 @@ exports.Prisma.UserScalarFieldEnum = {
   isActive: 'isActive',
   isVerified: 'isVerified',
   image: 'image',
+  sessionToken: 'sessionToken',
   roleId: 'roleId',
   createdAt: 'createdAt'
 };
@@ -254,6 +255,7 @@ exports.Prisma.CommentScalarFieldEnum = {
   updatedAt: 'updatedAt',
   userId: 'userId',
   articleId: 'articleId',
+  projectId: 'projectId',
   parentId: 'parentId'
 };
 
@@ -315,6 +317,18 @@ exports.Prisma.MessageHistoryScalarFieldEnum = {
   messageId: 'messageId',
   oldContent: 'oldContent',
   editedAt: 'editedAt'
+};
+
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  description: 'description',
+  images: 'images',
+  title: 'title',
+  createdAt: 'createdAt',
+  updateAt: 'updateAt',
+  active: 'active',
+  userId: 'userId',
+  authorId: 'authorId'
 };
 
 exports.Prisma.SortOrder = {
@@ -382,7 +396,13 @@ exports.PermissionKey = exports.$Enums.PermissionKey = {
   view_setting: 'view_setting',
   create_setting: 'create_setting',
   edit_setting: 'edit_setting',
-  delete_setting: 'delete_setting'
+  delete_setting: 'delete_setting',
+  view_projects: 'view_projects',
+  create_projects: 'create_projects',
+  edit_projects: 'edit_projects',
+  delete_projects: 'delete_projects',
+  can_export: 'can_export',
+  can_import: 'can_import'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
@@ -415,7 +435,8 @@ exports.Prisma.ModelName = {
   Conversation: 'Conversation',
   ConversationParticipant: 'ConversationParticipant',
   Message: 'Message',
-  MessageHistory: 'MessageHistory'
+  MessageHistory: 'MessageHistory',
+  Project: 'Project'
 };
 
 /**

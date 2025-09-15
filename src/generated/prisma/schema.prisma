@@ -20,6 +20,7 @@ model User {
   isActive     Boolean                   @default(true)
   isVerified   Boolean                   @default(false)
   image        String?
+  sessionToken String?                   @unique // اضافه کردن این فیلد
   roleId       String
   role         Role                      @relation(fields: [roleId], references: [id])
   createdAt    DateTime                  @default(now())
@@ -29,8 +30,9 @@ model User {
   articles     Article[]                 @relation("UserArticles")
   messages     Message[]
   participants ConversationParticipant[]
-  projects     Project[]                 @relation("UserProject")
-  Project      Project[]
+
+  Projects Project[] @relation("UserProject")
+  Project  Project[]
 }
 
 model OTP {
@@ -308,6 +310,10 @@ enum PermissionKey {
   create_projects
   edit_projects
   delete_projects
+
+  //export and import
+  can_export
+  can_import
 }
 
 model Conversation {

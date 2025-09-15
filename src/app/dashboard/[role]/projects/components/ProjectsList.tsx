@@ -36,6 +36,7 @@ const ProjectsList = () => {
               deleterUrl={`/dashboard/projects/${v}`}
               key={v}
               title={row?.title}
+              hasPage
             />
           );
         },

@@ -34,37 +34,30 @@ import { useForm } from "react-hook-form";
 import { mutate } from "swr";
 
 type FormValues = {
-  id?: number;
-  title: string;
-  href: string;
-  icon?: string;
-  permissionId: string;
-  status: boolean;
-  parentId?: string;
+  id?: string;
+  href?: string;
+  title?: string;
+  icon?: string | null;
+  permissionId?: string;
+  status?: boolean;
+  createdAt?: Date;
+  updateAt?: Date;
+  parentId?: string | null;
 };
 
-const MenusFormPage = () => {
-  const { params, setActiveParam } = useParams<{
-    pageType?: string;
-    id?: string;
-  }>();
-  const { closeCurrentTab } = useTabular();
-  const id = params?.id;
-  const { data: formData, loading: formDataLoading } = useDataGetter({
-    url: `dashboard/menus/${id}`,
-    immediatelyFetch: Boolean(id),
-    onSuccess(data) {
-      if (data?.id) {
-        form.reset({
-          id: data?.id,
-          title: data?.title,
-          href: data?.href,
-          icon: data?.icon,
-          permissionId: data?.permissionId,
-          status: data?.status ?? true,
-          parentId: data?.parentId,
-        });
-      }
+interface Props {
+  initialData?: FormValues | null;
+}
+
+const MenusFormPage = ({ initialData }: Props) => {
+  const { closeCurrentTab, open } = useTabular();
+  const id = initialData?.id;
+
+  const form = useForm<FormValues>({
+    defaultValues: {
+      href: initialData?.href,
+      title: initialData?.title,
+      ...initialData,
     },
   });
 
@@ -79,12 +72,6 @@ const MenusFormPage = () => {
     immediatelyFetch: false,
     showError: true,
     showSuccessMessage: true,
-  });
-  const form = useForm<FormValues>({
-    defaultValues: {
-      href: formData?.href,
-      title: formData?.title,
-    },
   });
 
   const {
@@ -103,7 +90,8 @@ const MenusFormPage = () => {
     fetch?.({
       inputBody: data,
     }).then((data) => {
-      setActiveParam({
+      closeCurrentTab();
+      open("/menus/menusForm", "فرم ویرایش منو", {
         pageType: "EDIT",
         id: data?.id,
       });
@@ -125,7 +113,7 @@ const MenusFormPage = () => {
 
   return (
     <Card className="relative">
-      {formDataLoading && (
+      {submitLoading && (
         <div className="backdrop-brightness-75 z-50 w-full h-full flex justify-center items-center absolute -top-0 right-0 rounded">
           <Spinner />
         </div>
@@ -259,7 +247,11 @@ const MenusFormPage = () => {
                   <FormItem>
                     <FormLabel>آیکن</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="مثال: plus" />
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        placeholder="مثال: plus"
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -274,7 +266,7 @@ const MenusFormPage = () => {
                     <FormLabel>وضعیت</FormLabel>
                     <FormControl>
                       <SwitchRtl
-                        checked={field.value}
+                        checked={field.value ?? true}
                         onChange={field.onChange}
                       />
                     </FormControl>

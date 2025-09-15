@@ -1,3 +1,4 @@
+"use client";
 import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
@@ -57,6 +58,7 @@ const ProductsList = () => {
               id={v}
               deleterUrl={`/dashboard/product/${v}`}
               title={row.title}
+              hasPage
             />
           );
         },

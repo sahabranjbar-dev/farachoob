@@ -137,13 +137,6 @@ exports.Prisma.UserScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId',
-  expires: 'expires'
-};
-
 exports.Prisma.OTPScalarFieldEnum = {
   id: 'id',
   mobile: 'mobile',
@@ -407,7 +400,9 @@ exports.PermissionKey = exports.$Enums.PermissionKey = {
   view_projects: 'view_projects',
   create_projects: 'create_projects',
   edit_projects: 'edit_projects',
-  delete_projects: 'delete_projects'
+  delete_projects: 'delete_projects',
+  can_export: 'can_export',
+  can_import: 'can_import'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
@@ -421,7 +416,6 @@ exports.NotificationType = exports.$Enums.NotificationType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Session: 'Session',
   OTP: 'OTP',
   Role: 'Role',
   Permission: 'Permission',

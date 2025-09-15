@@ -90,6 +90,10 @@ export enum PermissionKey {
   CreateProjects = "create_projects",
   EditProjects = "edit_projects",
   DeleteProjects = "delete_projects",
+
+  //export and import
+  CanExport = "can_export",
+  CanImport = "can_import",
 }
 
 export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
