@@ -71,8 +71,6 @@ export const GET = async (requst: NextRequest) => {
 export const POST = async (requst: NextRequest) => {
   try {
     const session = await getServerSession(authOptions);
-    console.log({ session });
-
     if (!session) {
       return NextResponse.json({
         message: "دسترسی ندارید",
@@ -80,13 +78,11 @@ export const POST = async (requst: NextRequest) => {
     }
     const user = session?.user;
     const formData = await requst.formData();
-    console.log({ formData });
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const files = formData.getAll("images") as File[];
     const uploadedUrls: string[] = [];
-    console.log(files);
 
     for (const item of files) {
       if (

@@ -170,9 +170,6 @@ const Navbar = () => {
               <h4 className="text-sm font-medium text-gray-800 line-clamp-1">
                 {product.farsiTitle}
               </h4>
-              <p className="text-xs text-orange-600 mt-1">
-                {product.price.toLocaleString()} تومان
-              </p>
             </div>
           </motion.div>
         ))}

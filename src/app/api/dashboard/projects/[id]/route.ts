@@ -8,8 +8,6 @@ export const DELETE = async (
   context: { params: Promise<{ id: string }> }
 ) => {
   try {
-    console.log({ request });
-
     const session = await getServerSession(authOptions);
     if (!session)
       return NextResponse.json({ message: "دسترسی ندارید" }, { status: 403 });

@@ -86,7 +86,7 @@ const ProjectsForm = ({ initialData }: Props) => {
 
         const response = await axios({
           url: "/api/dashboard/projects",
-          method: !!id ? "PUT" : "POST",
+          method: "POST",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
