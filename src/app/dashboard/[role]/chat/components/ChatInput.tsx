@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import { ChatContext } from "../container/ChatContainer";
 import { useSocket } from "../container/SocketContainer";
 import { useSession } from "next-auth/react";
+import useDataGetter from "@/hooks/useDataGetter";
+import { Message } from "./ChatMessages";
 
 type FormValues = {
   message: string;
@@ -14,18 +16,43 @@ type FormValues = {
 const ChatInput = () => {
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<FormValues>();
-  const { conversationId } = useContext(ChatContext);
-  const { socket } = useSocket();
+  const { conversationId, setMessages } = useContext(ChatContext);
+  const socket = useSocket();
   const session = useSession();
 
   const senderId = session.data?.user.id;
-  const onSubmit = (data: FormValues) => {
-    if (!data.message.trim()) return;
 
-    socket.emit("send-message", {
-      senderId,
-      content: data.message,
-      conversationId,
+  const { fetch: postMessage } = useDataGetter<Message>({
+    url: `/dashboard/conversations/${conversationId}/messages`,
+    immediatelyFetch: false,
+    method: "POST",
+  });
+
+  const onSubmit = (data: FormValues) => {
+    if (!data.message.trim() || !conversationId) return;
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        content: data?.message,
+        loading: true,
+        senderId,
+        id: "temp-" + Date.now(),
+      },
+    ]);
+
+    postMessage?.({
+      inputBody: {
+        content: data.message,
+      },
+    }).then((data) => {
+      if (data.id)
+        socket?.emit("send-message", {
+          senderId,
+          content: data.content,
+          conversationId,
+          createdAt: data?.createdAt,
+        });
     });
 
     reset();

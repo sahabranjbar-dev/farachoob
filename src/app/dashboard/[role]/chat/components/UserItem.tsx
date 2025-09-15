@@ -1,9 +1,7 @@
 "use client";
-import React, { useContext } from "react";
-import { ChatContext } from "../container/ChatContainer";
-import { io } from "socket.io-client";
-import prisma from "@/lib/prisma";
 import useDataGetter from "@/hooks/useDataGetter";
+import { useContext } from "react";
+import { ChatContext } from "../container/ChatContainer";
 import { useSocket } from "../container/SocketContainer";
 
 export interface User {
@@ -43,7 +41,7 @@ const UserItem = ({ user }: Props) => {
   const { setUserInfo, setConversationId, setLoading } =
     useContext(ChatContext);
 
-  const { socket } = useSocket();
+  const socket = useSocket();
 
   const { fetch } = useDataGetter<Conversation>({
     url: "/dashboard/conversations",
@@ -58,7 +56,7 @@ const UserItem = ({ user }: Props) => {
     fetch?.({ inputBody: { participantId: user.id } })
       .then((data) => {
         if (data.id) {
-          socket.emit("join-conversation", { conversationId: data.id }); // مهم: مستقیم اینجا emit کنیم
+          socket?.emit("join-conversation", { conversationId: data.id }); // مهم: مستقیم اینجا emit کنیم
           setConversationId(data.id);
         }
       })

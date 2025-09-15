@@ -8,17 +8,17 @@ import { useSession } from "next-auth/react";
 import clsx from "clsx";
 
 export interface Message {
-  id: string;
-  conversationId: string;
-  senderId: string;
+  id?: string;
+  conversationId?: string;
+  senderId?: string;
   content: string;
-  metadata: any;
-  createdAt: string;
-  updatedAt: string;
-  delivered: boolean;
-  read: boolean;
-  deleted: boolean;
-  sender: Sender;
+  metadata?: any;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  delivered?: boolean;
+  read?: boolean;
+  deleted?: boolean;
+  sender?: Sender;
 }
 
 export interface Sender {
@@ -27,25 +27,14 @@ export interface Sender {
   image: any;
 }
 
-type MessageWithLoading = Message & { loading?: boolean };
-
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
 
-  const { conversationId } = useContext(ChatContext);
-  const { socket } = useSocket();
+  const { conversationId, messages, setMessages } = useContext(ChatContext);
+  const socket = useSocket();
   const session = useSession();
 
   const userId = session.data?.user.id;
-
-  const [messages, setMessages] = useState<MessageWithLoading[]>([]);
-
-  // send message API
-  const { fetch: postMessage } = useDataGetter<Message>({
-    url: `/dashboard/conversations/${conversationId}/messages`,
-    immediatelyFetch: false,
-    method: "POST",
-  });
 
   // get messages API
   const { loading: getMessageLoading } = useDataGetter<Message[]>({
@@ -55,30 +44,29 @@ const ChatMessages = () => {
     },
   });
 
-  // handle incoming socket messages
   useEffect(() => {
     const handleNewMessage = (data: Message) => {
-      // show temporary loading message
-      setMessages((prev) => [...prev, { ...data, loading: true }]);
+      setMessages((prev) => {
+        if (prev.length === 0) return [data];
 
-      // call API to persist
-      if (data.senderId !== userId) return;
+        const lastMessage = prev[prev.length - 1];
 
-      postMessage?.({
-        inputBody: { content: data.content },
-      }).then((saved) => {
-        setMessages((prev) => {
-          const resolvedMessage = prev.filter((item) => !item?.loading);
-          return [...resolvedMessage, saved];
-        });
+        // اگه آخرین پیام لودینگ بود و کانتنتش همون کانتنت جدیده
+        if (lastMessage.loading && lastMessage.content === data.content) {
+          // آخرین پیام رو حذف کن و پیام واقعی رو اضافه کن
+          return [...prev.slice(0, -1), data];
+        }
+
+        // در غیر این صورت فقط پیام جدید رو اضافه کن
+        return [...prev, data];
       });
     };
 
-    socket.on("new-message", handleNewMessage);
+    socket?.on("new-message", handleNewMessage);
     return () => {
-      socket.off("new-message", handleNewMessage);
+      socket?.off("new-message", handleNewMessage);
     };
-  }, [socket, postMessage]);
+  }, [socket]);
 
   // always scroll to last message when messages change
   useEffect(() => {
@@ -109,7 +97,7 @@ const ChatMessages = () => {
   return (
     <div className="flex flex-col gap-2 p-2 overflow-y-auto h-full mb-24">
       {messages.map((msg) => {
-        const date = new Date(msg.createdAt);
+        const date = new Date(msg?.createdAt ?? "");
         const time = `${date.getHours()}:${date
           .getMinutes()
           .toString()

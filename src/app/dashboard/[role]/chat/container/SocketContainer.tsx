@@ -6,26 +6,31 @@ import {
   useEffect,
   useState,
 } from "react";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
-export const SocketContext = createContext<{
-  socket: any;
-}>({
+type SocketContextType = {
+  socket: Socket | null;
+};
+
+export const SocketContext = createContext<SocketContextType>({
   socket: null,
 });
 
 export const useSocket = () => {
-  const socket = useContext(SocketContext);
-  if (!socket) {
-    throw new Error("use socket should between SocketContainer");
-  } else return socket;
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error("useSocket must be used within SocketContainer");
+  }
+  return context.socket;
 };
 
 const SocketContainer = ({ children }: { children: ReactNode }) => {
-  const [socket, setSocket] = useState<any>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newSocket = io();
+    const newSocket = io("http://localhost:3000", {
+      transports: ["websocket"],
+    });
 
     setSocket(newSocket);
 
@@ -33,6 +38,7 @@ const SocketContainer = ({ children }: { children: ReactNode }) => {
       newSocket.close();
     };
   }, []);
+
   return (
     <SocketContext.Provider value={{ socket }}>
       {children}

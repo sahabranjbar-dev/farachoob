@@ -31,13 +31,17 @@ app.prepare().then(() => {
     });
 
     // ارسال پیام
-    socket.on("send-message", ({ conversationId, senderId, content }) => {
-      io.to(conversationId).emit("new-message", {
-        conversationId,
-        senderId,
-        content,
-      });
-    });
+    socket.on(
+      "send-message",
+      ({ conversationId, senderId, content, createdAt }) => {
+        io.to(conversationId).emit("new-message", {
+          conversationId,
+          senderId,
+          content,
+          createdAt,
+        });
+      }
+    );
 
     // پیام read شد
     socket.on("mark-read", ({ conversationId, userId }) => {
