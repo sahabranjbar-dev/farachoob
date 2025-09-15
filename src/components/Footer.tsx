@@ -13,7 +13,7 @@ const Footer = () => {
   if (isAuthPage) return;
   return (
     <footer
-      className="bg-[#000000] text-white pt-16 pb-24 relative overflow-hidden"
+      className="bg-[#273F4F] text-white pt-16 pb-24 relative overflow-hidden"
       dir="rtl"
     >
       {/* بک‌گراند SVG با z-index مناسب */}
@@ -32,9 +32,9 @@ const Footer = () => {
               {[
                 { label: "درباره ما", href: "/about-use" },
                 { label: "تماس با ما", href: "/contact-us" },
-                { label: "سوالات متداول", href: "/faq" },
-                { label: "حریم خصوصی", href: "/privacy" },
-                { label: "شرایط و قوانین", href: "/terms" },
+                { label: "سوالات متداول", href: "/#" },
+                { label: "حریم خصوصی", href: "/#" },
+                { label: "شرایط و قوانین", href: "/#" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link
@@ -101,7 +101,9 @@ const Footer = () => {
 
             {/* شبکه‌های اجتماعی - حالا تمام عرض را می‌گیرد */}
             <div className="space-y-4">
-              <h4 className="text-lg font-bold text-white">ما را دنبال کنید</h4>
+              <h4 className="text-lg font-bold text-white">
+                ما را در شبکه های اجتماعی دنبال کنید
+              </h4>
               <div className="flex justify-start md:justify-end gap-4">
                 <Link
                   href="https://www.instagram.com/farachoob/"
@@ -139,14 +141,14 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-2">
             <Link
-              href="/privacy"
+              href="/#"
               className="text-gray-400 hover:text-white text-xs md:text-sm transition-colors duration-200"
             >
               حریم خصوصی
             </Link>
             <span className="text-gray-400">|</span>
             <Link
-              href="/terms"
+              href="/#"
               className="text-gray-400 hover:text-white text-xs md:text-sm transition-colors duration-200"
             >
               شرایط استفاده

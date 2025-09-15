@@ -101,14 +101,14 @@ function Table({
   ));
 
   return (
-    <div className="relative w-full overflow-x-auto border rounded-md shadow-sm">
+    <div className="relative w-full overflow-x-auto border rounded-md shadow-sm mb-32">
       <table className={cn("w-full text-sm caption-bottom ", className)}>
         <TableHeader>
           <TableRow className="bg-muted/30">
             {columns.map((column) => (
               <TableHead
                 key={column.field}
-                className="text-center px-2 py-3 whitespace-nowrap font-semibold text-gray-800"
+                className="text-center px-2 py-3 whitespace-nowrap font-semibold text-gray-800 overflow-hidden"
                 style={{
                   width: column.width || "50px",
                   maxWidth: column.width || "50px",

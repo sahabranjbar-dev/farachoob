@@ -7,7 +7,7 @@ interface Props {
 
 const ProjectCard = ({ project }: Props) => {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl h-[450px] min-h-[450px] max-h-[450px]">
       <div className="relative h-56 w-full">
         <Image
           src={project.images[0] || "/images/placeholder.png"}
@@ -22,11 +22,13 @@ const ProjectCard = ({ project }: Props) => {
         )}
       </div>
 
-      <div className="p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+      <div className="p-6 flex flex-col justify-between h-[220px] max-h-[220px] min-h-[220px]">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-1 ">
           {project.title}
         </h2>
-        <p className="text-gray-600 mb-4 line-clamp-2">{project.description}</p>
+        <p className="text-gray-600 mb-4 line-clamp-2 min-h-[50px] h-[50] max-h-50">
+          {project.description}
+        </p>
 
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-500">
@@ -34,7 +36,7 @@ const ProjectCard = ({ project }: Props) => {
           </span>
           <Link
             href={`/projects/${project.id}`}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
           >
             مشاهده جزئیات
           </Link>

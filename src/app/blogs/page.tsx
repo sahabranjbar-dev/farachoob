@@ -8,6 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import EmptyArticles from "./components/EmptyArticles";
 
 export interface BlogPost {
   id: string;
@@ -46,6 +47,8 @@ export default async function Blogs() {
     orderBy: { publishedAt: "desc" },
     include: { author: true, comments: true },
   });
+
+  if (!articles.length) return <EmptyArticles />;
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Hero Section - Elegant Design */}

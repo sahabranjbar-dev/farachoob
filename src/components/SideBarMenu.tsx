@@ -1,7 +1,14 @@
 "use client";
 
 import clsx from "clsx";
-import { Armchair, FileUser, Home, PhoneOutgoing } from "lucide-react";
+import {
+  Blocks,
+  FileUser,
+  House,
+  Newspaper,
+  PhoneOutgoing,
+  Sofa,
+} from "lucide-react";
 import LoginAndRegister from "./LoginAndRegister";
 import { ModeToggle } from "./ModeToggle";
 import { Separator } from "./ui/separator";
@@ -18,26 +25,17 @@ const SideBarMenu = ({ setOpen }: Props) => {
   const pathname = usePathname();
 
   const items = [
+    { id: "home", title: "خانه", url: "/", icon: House },
+    { id: "blogs", title: "مقالات", url: "/blogs", icon: Newspaper },
     {
-      title: "صفحه نخست",
-      url: "/",
-      icon: Home,
-    },
-    {
-      title: "محصولات",
-      url: "/products",
-      icon: Armchair,
-    },
-    {
-      title: "ارتباط با ما",
+      id: "contact",
+      title: "تماس با ما",
       url: "/contact-us",
       icon: PhoneOutgoing,
     },
-    {
-      title: "درباره ما",
-      url: "/about-us",
-      icon: FileUser,
-    },
+    { id: "about", title: "درباره ما", url: "/about-us", icon: FileUser },
+    { id: "products", title: "محصولات", url: "/products", icon: Sofa },
+    { id: "projects", title: "پروژه‌ها", url: "/projects", icon: Blocks },
   ];
 
   return (

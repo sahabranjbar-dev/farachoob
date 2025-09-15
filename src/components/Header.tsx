@@ -54,7 +54,7 @@ const Header = () => {
                 src="/logo.webp"
                 width={70}
                 height={70}
-                className="bg-orange-400 p-2 rounded-2xl dark:bg-transparent"
+                className="bg-orange-500 p-2 rounded-2xl dark:bg-transparent"
               />
             </motion.div>
           </Link>

@@ -42,7 +42,7 @@ const HeroSection = () => {
         ref={refs.text}
         className="w-full lg:w-1/2 text-right opacity-0 transition-all duration-700 -translate-y-10"
       >
-        <h1 className="text-3xl sm:text-5xl font-bold mt-2">
+        <h1 className="text-3xl sm:text-5xl font-bold mt-2 text-[#273F4F]">
           <span className="text-orange-500">فراچوب</span>، همراه شما در طراحی و
           تولید مبلمان اداری مدرن
         </h1>
