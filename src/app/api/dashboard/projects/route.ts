@@ -122,3 +122,52 @@ export const POST = async (requst: NextRequest) => {
     );
   }
 };
+
+// ویرایش پروژه موجود
+export const PUT = async (request: NextRequest) => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session)
+      return NextResponse.json({ message: "دسترسی ندارید" }, { status: 403 });
+
+    const user = session.user;
+    const formData = await request.formData();
+
+    const projectId = formData.get("id") as string;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const files = formData.getAll("images") as (File | string)[];
+    const uploadedUrls: string[] = [];
+
+    // آپلود فایل‌های جدید و حفظ URLهای قدیمی
+    for (const item of files) {
+      if (
+        item instanceof File &&
+        item.size > 0 &&
+        item.type.startsWith("image/")
+      ) {
+        const url = await uploadFile(item, "projects");
+        uploadedUrls.push(url);
+      } else if (typeof item === "string") {
+        uploadedUrls.push(item);
+      }
+    }
+
+    const updatedProject = await prisma.project.update({
+      where: { id: projectId },
+      data: {
+        title,
+        description,
+        images: uploadedUrls,
+        authorId: user.id,
+      },
+    });
+
+    return NextResponse.json(updatedProject, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "خطایی در سرور رخ داده است", error },
+      { status: 500 }
+    );
+  }
+};

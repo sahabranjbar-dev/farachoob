@@ -12,10 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Upload, X } from "lucide-react";
+import { Trash, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useTabular from "@/hooks/useTabular";
-import useDataGetter from "@/hooks/useDataGetter";
 import axios from "axios";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -24,62 +23,70 @@ interface Props {
   initialData?: {
     id?: string;
     images?: string[];
-    description?: string | null; // 👈 تغییر مهم
+    description?: string | null;
     title?: string;
-    createdAt?: Date;
-    updateAt?: Date;
-    active?: boolean;
-    userId?: string;
-    authorId?: string;
   } | null;
 }
 
 interface FormValues {
-  title?: string;
+  id?: string;
+  title: string;
   description?: string;
   images?: (File | string)[];
 }
 
 const ProjectsForm = ({ initialData }: Props) => {
-  console.log({ initialData });
-
   const id = initialData?.id;
 
-  const [projectLoading, setProjectLoading] = useState<boolean>(false);
+  const [projectLoading, setProjectLoading] = useState(false);
   const { closeCurrentTab, open } = useTabular();
+
+  // تصاویر لوکال برای مدیریت حذف/اضافه
+  const [images, setImages] = useState<(File | string)[]>(
+    initialData?.images ?? []
+  );
+
   const form = useForm<FormValues>({
     defaultValues: {
       ...initialData,
       title: initialData?.title ?? "",
       description: initialData?.description ?? "",
-      images: initialData?.images ?? [],
+      images: images,
     },
   });
+
+  // اضافه کردن عکس جدید
+  const handleAddImages = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setImages((prev) => [...prev, ...files]); // اضافه به لیست
+    }
+  };
+
+  // حذف عکس
+  const handleRemoveImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const onSubmit = useCallback(
     async (data: FormValues) => {
       try {
         setProjectLoading(true);
         const formData = new FormData();
-        formData.append("title", data.title ?? "");
+        formData.append("title", data.title);
         formData.append("description", data?.description ?? "");
-        console.log({ data });
-
-        if (data.images && data.images.length > 0) {
-          data.images.forEach((item) => {
-            if (item instanceof File) {
-              // فایل جدید
-              formData.append("images", item);
-            } else if (typeof item === "string") {
-              // URL قدیمی
-              formData.append("images", item);
-            }
-          });
-        }
+        formData.append("id", data?.id ?? "");
+        images.forEach((item) => {
+          if (item instanceof File) {
+            formData.append("images", item);
+          } else {
+            formData.append("images", item); // URL قبلی
+          }
+        });
 
         const response = await axios({
           url: "/api/dashboard/projects",
-          method: "POST",
+          method: !!id ? "PUT" : "POST",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
@@ -102,7 +109,7 @@ const ProjectsForm = ({ initialData }: Props) => {
         setProjectLoading(false);
       }
     },
-    [fetch]
+    [images]
   );
 
   return (
@@ -149,57 +156,55 @@ const ProjectsForm = ({ initialData }: Props) => {
               />
 
               {/* آپلود عکس */}
-              <FormField
-                name="images"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem className="col-span-1 md:col-span-3">
-                    <FormLabel>تصویر پروژه</FormLabel>
-                    <FormControl>
-                      <div className="flex justify-center items-center gap-4">
-                        <label
-                          htmlFor="images"
-                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <Upload className="w-8 h-8 mb-2 text-gray-500" />
-                            <p className="text-sm text-gray-500">
-                              تصویر را اینجا رها کنید یا کلیک کنید
-                            </p>
-                          </div>
-                          <Input
-                            id="images"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            multiple
-                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                              const files = e.target.files
-                                ? Array.from(e.target.files)
-                                : [];
-                              field.onChange(files.length > 0 ? files : null);
-                            }}
-                          />
-                        </label>
+              <FormItem className="col-span-1 md:col-span-3">
+                <FormLabel>تصویر پروژه</FormLabel>
+                <FormControl>
+                  <div className="flex justify-center items-center gap-4">
+                    <label
+                      htmlFor="images"
+                      className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="w-8 h-8 mb-2 text-gray-500" />
+                        <p className="text-sm text-gray-500">
+                          تصویر را اینجا رها کنید یا کلیک کنید
+                        </p>
                       </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <Input
+                        id="images"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        multiple
+                        onChange={handleAddImages}
+                      />
+                    </label>
+                  </div>
+                </FormControl>
+              </FormItem>
 
-              <div className="flex justify-start items-center flex-wrap">
-                {!!initialData?.images?.length &&
-                  initialData.images.map((item, index) => (
+              {/* نمایش و حذف تصاویر */}
+              <div className="grid grid-cols-4 col-span-3 gap-4">
+                {images.map((item, index) => (
+                  <div key={index} className="relative group">
                     <Image
                       alt={`image-${index}`}
-                      src={item}
-                      key={index}
-                      width={500}
-                      height={500}
-                      className="border rounded inline"
+                      src={
+                        item instanceof File ? URL.createObjectURL(item) : item
+                      }
+                      width={200}
+                      height={200}
+                      className="border rounded object-cover w-full h-40"
                     />
-                  ))}
+                    <button
+                      type="button"
+                      className="cursor-pointer absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      <Trash2 className="w-6 h-6" />
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
 

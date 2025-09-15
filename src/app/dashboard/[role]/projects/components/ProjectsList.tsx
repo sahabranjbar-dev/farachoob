@@ -31,7 +31,12 @@ const ProjectsList = () => {
         title: "عملیات",
         render(v, row, meta) {
           return (
-            <RowFormButtons id={v} deleterUrl="" key={v} formPath="" title="" />
+            <RowFormButtons
+              id={v}
+              deleterUrl={`/dashboard/projects/${v}`}
+              key={v}
+              title={row?.title}
+            />
           );
         },
       },
