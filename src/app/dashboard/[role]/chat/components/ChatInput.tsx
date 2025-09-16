@@ -48,10 +48,12 @@ const ChatInput = () => {
     }).then((data) => {
       if (data.id)
         socket?.emit("send-message", {
+          ...data,
           senderId,
           content: data.content,
           conversationId,
           createdAt: data?.createdAt,
+          read: false,
         });
     });
 

@@ -78,3 +78,64 @@ export async function POST(
     );
   }
 }
+
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.redirect("/login");
+    }
+    const resolvedParams = await params;
+
+    const conversationId = resolvedParams.id;
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Message id is required" },
+        { status: 400 }
+      );
+    }
+    const targetMessage = await prisma.message.findUnique({
+      where: { id },
+    });
+
+    if (!targetMessage) {
+      return NextResponse.json({ error: "Message not found" }, { status: 404 });
+    }
+
+    await prisma.$transaction([
+      // 1. پیام فعلی
+      prisma.message.update({
+        where: { id },
+        data: { read: true },
+      }),
+      // 2. پیام‌های قبلی
+      prisma.message.updateMany({
+        where: {
+          conversationId,
+          createdAt: { lt: targetMessage.createdAt },
+          read: false,
+        },
+        data: { read: true },
+      }),
+    ]);
+
+    return NextResponse.json(
+      {
+        message: "ویرایش با موفقیت انجام شد",
+        ok: true,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error updating message:", error);
+    return NextResponse.json(
+      { error: "Failed to update message" },
+      { status: 500 }
+    );
+  }
+}

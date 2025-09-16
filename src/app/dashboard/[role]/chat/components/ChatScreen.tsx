@@ -46,7 +46,7 @@ const ChatScreen = () => {
   return (
     <div className="flex flex-col flex-1 w-full relative">
       <ChatContentHeader />
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto mb-24">
         <ChatMessages />
       </div>
       <ChatInput />
