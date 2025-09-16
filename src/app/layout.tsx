@@ -8,6 +8,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import "./globals.css";
 import localFont from "next/font/local";
+import { StickyChat } from "@/components/StickyChat";
 
 const myFont = localFont({
   src: [
@@ -109,6 +110,7 @@ export default async function LocaleLayout({
               <StickyNav />
               <Toaster />
               <Footer />
+              <StickyChat />
             </>
           </ThemeProvider>
         </SessionProviderWrapper>

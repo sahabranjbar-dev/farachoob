@@ -32,3 +32,14 @@ export const setLocalData = (key: string, value: any) => {
     return false;
   }
 };
+
+export function normalizePhoneNumber(phone: string) {
+  if (!phone) return phone;
+  const persianNumbers = "۰۱۲۳۴۵۶۷۸۹";
+  const englishNumbers = "0123456789";
+
+  return phone.replace(
+    /[۰-۹]/g,
+    (d) => englishNumbers[persianNumbers.indexOf(d)]
+  );
+}

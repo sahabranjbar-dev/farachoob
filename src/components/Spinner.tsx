@@ -1,9 +1,19 @@
+import clsx from "clsx";
 import React from "react";
 
-const Spinner = () => {
+interface Props {
+  className?: string;
+}
+
+const Spinner = ({ className }: Props) => {
   return (
     <>
-      <div className="absolute top-0 right-0 flex justify-center items-center h-full w-full">
+      <div
+        className={clsx(
+          "absolute top-0 right-0 flex justify-center items-center h-full w-full",
+          className
+        )}
+      >
         <div role="status">
           <svg
             aria-hidden="true"

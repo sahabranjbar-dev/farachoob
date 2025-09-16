@@ -70,7 +70,7 @@ const AboutUs = () => {
       ref={containerRef}
       className="relative max-w-7xl mx-auto px-4 py-16 space-y-24"
     >
-      {sections.map((section) => (
+      {sections?.map((section) => (
         <div
           key={section.id}
           className={`about-section flex flex-col md:flex-row items-center gap-8 opacity-0 relative ${

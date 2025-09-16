@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { normalizePhoneNumber } from "@/lib/utils";
 
 export async function GET(request: Request) {
   try {
@@ -98,7 +99,6 @@ export async function GET(request: Request) {
     );
   }
 }
-
 export async function POST(request: Request) {
   try {
     const {
@@ -122,6 +122,40 @@ export async function POST(request: Request) {
       );
     }
 
+    // بررسی یکتایی فیلدها
+    if (email) {
+      const existingEmail = await prisma.user.findUnique({ where: { email } });
+      if (existingEmail)
+        return NextResponse.json(
+          { message: "ایمیل قبلاً ثبت شده است." },
+          { status: 400 }
+        );
+    }
+
+    const normalizedMobile = mobile ? normalizePhoneNumber(mobile) : null;
+
+    if (normalizedMobile) {
+      const existingMobile = await prisma.user.findUnique({
+        where: { mobile: normalizedMobile },
+      });
+      if (existingMobile)
+        return NextResponse.json(
+          { message: "شماره موبایل قبلاً ثبت شده است." },
+          { status: 400 }
+        );
+    }
+
+    if (nationalId) {
+      const existingNationalId = await prisma.user.findUnique({
+        where: { nationalId },
+      });
+      if (existingNationalId)
+        return NextResponse.json(
+          { message: "کد ملی قبلاً ثبت شده است." },
+          { status: 400 }
+        );
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
       data: {
@@ -132,17 +166,16 @@ export async function POST(request: Request) {
         birthDate,
         isActive,
         isVerified,
-        mobile,
+        mobile: normalizedMobile,
         image,
         nationalId,
-        role: {
-          connect: { id: roleId },
-        },
+        role: { connect: { id: roleId } },
       },
     });
 
     return NextResponse.json(newUser);
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { message: "خطا در ساخت کاربر." },
       { status: 500 }
@@ -173,6 +206,41 @@ export async function PUT(request: Request) {
       );
     }
 
+    // بررسی یکتایی فیلدها قبل از آپدیت (به جز کاربر فعلی)
+    if (email) {
+      const existingEmail = await prisma.user.findFirst({
+        where: { email, NOT: { id } },
+      });
+      if (existingEmail)
+        return NextResponse.json(
+          { message: "ایمیل قبلاً ثبت شده است." },
+          { status: 400 }
+        );
+    }
+    const normalizedMobile = mobile ? normalizePhoneNumber(mobile) : null;
+
+    if (normalizedMobile) {
+      const existingMobile = await prisma.user.findUnique({
+        where: { mobile: normalizedMobile },
+      });
+      if (existingMobile)
+        return NextResponse.json(
+          { message: "شماره موبایل قبلاً ثبت شده است." },
+          { status: 400 }
+        );
+    }
+
+    if (nationalId) {
+      const existingNationalId = await prisma.user.findFirst({
+        where: { nationalId, NOT: { id } },
+      });
+      if (existingNationalId)
+        return NextResponse.json(
+          { message: "کد ملی قبلاً ثبت شده است." },
+          { status: 400 }
+        );
+    }
+
     await prisma.user.update({
       where: { id },
       data: {
@@ -182,12 +250,10 @@ export async function PUT(request: Request) {
         birthDate,
         isActive,
         isVerified,
-        mobile,
+        mobile: normalizedMobile,
         image,
         nationalId,
-        role: {
-          connect: { id: roleId },
-        },
+        role: { connect: { id: roleId } },
       },
     });
 

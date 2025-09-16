@@ -22,6 +22,8 @@ export enum AppMenu {
   Roles = "roles",
   Users = "users",
   Setting = "setting",
+  Chat = "chat",
+  Projects = "projects",
 }
 
 export enum PermissionKey {
@@ -94,6 +96,12 @@ export enum PermissionKey {
   //export and import
   CanExport = "can_export",
   CanImport = "can_import",
+
+  //chat
+  ViewChat = "view_chat",
+  CreateChat = "create_chat",
+  EditChat = "edit_chat",
+  DeleteChat = "delete_chat",
 }
 
 export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
@@ -205,6 +213,28 @@ export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
       create: PermissionKey.CreateSetting,
       edit: PermissionKey.EditSetting,
       delete: PermissionKey.DeleteSetting,
+    },
+  },
+  [AppMenu.Chat]: {
+    href: "/chat",
+    title: "گفت و گو آنلاین",
+    icon: "MessagesSquare",
+    permissions: {
+      view: PermissionKey.ViewChat,
+      create: PermissionKey.CreateChat,
+      edit: PermissionKey.EditChat,
+      delete: PermissionKey.DeleteChat,
+    },
+  },
+  [AppMenu.Projects]: {
+    href: "/projects",
+    title: "پروژه‌ها",
+    icon: "Factory",
+    permissions: {
+      view: PermissionKey.ViewProjects,
+      create: PermissionKey.CreateProjects,
+      edit: PermissionKey.EditProjects,
+      delete: PermissionKey.DeleteProjects,
     },
   },
 };

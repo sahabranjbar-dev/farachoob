@@ -5,7 +5,7 @@ import PermissionProvider from "@/container/PermissionProvider/PermissionProvide
 
 export default function UsersPage() {
   return (
-    <PermissionProvider moduleName="settings">
+    <PermissionProvider moduleName="users">
       <ListContainer url="/dashboard/users">
         <UsersHeader />
         <UsersList />

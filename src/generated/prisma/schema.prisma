@@ -314,6 +314,12 @@ enum PermissionKey {
   //export and import
   can_export
   can_import
+
+  //chat
+  view_chat
+  create_chat
+  edit_chat
+  delete_chat
 }
 
 model Conversation {

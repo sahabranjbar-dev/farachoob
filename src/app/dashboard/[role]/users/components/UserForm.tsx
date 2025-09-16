@@ -32,6 +32,7 @@ import useTabular from "@/hooks/useTabular";
 import useDataGetter from "@/hooks/useDataGetter";
 import { toast } from "sonner";
 import { X } from "lucide-react";
+import { AxiosError } from "axios";
 
 interface IUserForm {
   initialData?: any;
@@ -78,9 +79,9 @@ const UserForm = ({ initialData, roles = [] }: IUserForm) => {
           toast.success("کاربر با موفقیت ویرایش شد.");
         }
       })
-      .catch((err) => {
+      .catch((err: AxiosError<{ message: string }>) => {
         console.error("Error updating user:", err);
-        toast.error("خطا در ویرایش کاربر.");
+        toast.error(err.response?.data.message);
       });
   };
 

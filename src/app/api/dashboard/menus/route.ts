@@ -53,7 +53,7 @@ export async function GET(request: Request) {
       include: { permission: true },
     });
 
-    const menuData = menus.map((menu, index) => ({
+    const menuData = menus?.map((menu, index) => ({
       rowNumber: (page - 1) * pageSize + index + 1,
       id: menu.id,
       title: menu.title,

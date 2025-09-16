@@ -402,7 +402,11 @@ exports.PermissionKey = exports.$Enums.PermissionKey = {
   edit_projects: 'edit_projects',
   delete_projects: 'delete_projects',
   can_export: 'can_export',
-  can_import: 'can_import'
+  can_import: 'can_import',
+  view_chat: 'view_chat',
+  create_chat: 'create_chat',
+  edit_chat: 'edit_chat',
+  delete_chat: 'delete_chat'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
