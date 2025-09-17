@@ -1,83 +1,77 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useContext, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { ChatContext } from "../container/ChatContainer";
-import { useSocket } from "../container/SocketContainer";
-import { useSession } from "next-auth/react";
 import useDataGetter from "@/hooks/useDataGetter";
-import { Message } from "./ChatMessages";
+import { useSession } from "next-auth/react";
+import { KeyboardEventHandler, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { useChat } from "../../../../../../stores";
+import { Message } from "@/types/common";
 
 type FormValues = {
   message: string;
 };
 
 const ChatInput = () => {
-  const { register, handleSubmit, reset, watch, setValue } =
-    useForm<FormValues>();
-  const { conversationId, setMessages } = useContext(ChatContext);
-  const socket = useSocket();
+  const { register, handleSubmit, reset, watch } = useForm<FormValues>();
   const session = useSession();
 
   const senderId = session.data?.user.id;
+  const { conversation, setMessages, socket, messages, postMessage } =
+    useChat();
+  const conversationId = conversation?.id;
 
-  const { fetch: postMessage } = useDataGetter<Message>({
-    url: `/dashboard/conversations/${conversationId}/messages`,
-    immediatelyFetch: false,
-    method: "POST",
-  });
+  // Merge saved message into current messages
+  const mergeMessages = (savedMessage: Message) => {
+    console.log({ savedMessage });
 
-  const onSubmit = (data: FormValues) => {
-    if (!data.message.trim() || !conversationId) return;
+    if (!messages.length) return [savedMessage];
+    console.log({ messages });
 
-    setMessages((prev) => [
-      ...prev,
-      {
-        content: data?.message,
-        loading: true,
-        senderId,
-        id: "temp-" + Date.now(),
-      },
-    ]);
-
-    postMessage?.({
-      inputBody: {
-        content: data.message,
-      },
-    }).then((data) => {
-      if (data.id)
-        socket?.emit("send-message", {
-          ...data,
-          senderId,
-          content: data.content,
-          conversationId,
-          createdAt: data?.createdAt,
-          read: false,
-        });
-    });
-
-    reset();
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.loading && lastMessage.content === savedMessage.content) {
+      return [...messages.slice(0, -1), { ...savedMessage, loading: false }];
+    }
+    return [...messages, savedMessage];
   };
 
-  // Handle Enter key (Enter = send, Shift+Enter = newline)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleSubmit(onSubmit)();
-      }
+  const onSubmit = (data: FormValues) => {
+    const tempMessage: Message = {
+      id: "temp-" + Date.now(),
+      content: data.message,
+      senderId,
     };
 
-    const textarea = document.querySelector<HTMLTextAreaElement>(
-      "textarea[name='message']"
-    );
-    textarea?.addEventListener("keydown", handleKeyDown);
+    if (!data.message.trim() || !conversationId) return;
 
-    return () => {
-      textarea?.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleSubmit, onSubmit]);
+    setMessages([...messages, { ...tempMessage, loading: true }]);
+    reset();
+
+    postMessage?.({ content: data.message })
+      .then((savedMessage) => {
+        console.log({ savedMessage }, "postmessage on submit");
+        if (!savedMessage?.id) return;
+
+        // Send to socket
+        socket?.emit("send-message", {
+          ...savedMessage,
+          senderId,
+          content: savedMessage.content,
+          conversationId,
+          createdAt: savedMessage.createdAt ?? new Date().toISOString(),
+          read: false,
+          recipients: savedMessage.recipients,
+          loading: false,
+        });
+        console.log(mergeMessages(savedMessage), "mergeMessages(savedMessage)");
+
+        setMessages(mergeMessages(savedMessage));
+      })
+      .catch((err) => {
+        console.error("Failed to send message:", err);
+        setMessages([...messages, { ...tempMessage, failed: true }]);
+      });
+  };
 
   return (
     <div className="absolute bottom-0 left-0 right-0 max-w-full bg-white">
@@ -90,7 +84,14 @@ const ChatInput = () => {
           className="w-full resize-none rounded border p-2 break-words whitespace-pre-wrap"
           {...register("message", { required: true })}
           wrap="soft"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSubmit(onSubmit)();
+            }
+          }}
         />
+
         <Button
           disabled={!watch("message")}
           type="submit"

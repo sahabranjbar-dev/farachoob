@@ -1,39 +1,27 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { ChatContext } from "../container/ChatContainer";
 import useDataGetter from "@/hooks/useDataGetter";
-import { useSocket } from "../container/SocketContainer";
-import { Check, CheckCheck, Clock } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { Message } from "@/types/common";
 import clsx from "clsx";
-
-export interface Message {
-  id?: string;
-  conversationId?: string;
-  senderId?: string;
-  content: string;
-  metadata?: any;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
-  delivered?: boolean;
-  read?: boolean;
-  deleted?: boolean;
-  sender?: Sender;
-  loading?: boolean;
-}
-
-export interface Sender {
-  id: string;
-  email: string;
-  image: any;
-}
+import {
+  Check,
+  CheckCheck,
+  Clock,
+  MessageCircleWarning,
+  RotateCcw,
+} from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useEffect, useMemo, useRef } from "react";
+import { useChat } from "../../../../../../stores";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const messageRef = useRef<HTMLLIElement | null>(null);
-  const { conversationId, messages, setMessages } = useContext(ChatContext);
-  const socket = useSocket();
   const session = useSession();
+
+  const { conversation, setMessages, socket, messages, postMessage } =
+    useChat();
+
+  const conversationId = conversation?.id;
 
   const userId = session.data?.user.id;
 
@@ -51,18 +39,21 @@ const ChatMessages = () => {
     immediatelyFetch: false,
   });
 
+  const getMessages = (data: Message) => {
+    if (messages.length === 0) return [data];
+
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage.loading && lastMessage.content === data.content) {
+      return [...messages.slice(0, -1), { ...data, loading: false }];
+    }
+    return [...messages, data];
+  };
   // Handle incoming new messages
   useEffect(() => {
     const handleNewMessage = (data: Message) => {
-      setMessages((prev) => {
-        if (prev.length === 0) return [data];
+      const messages = getMessages(data);
 
-        const lastMessage = prev[prev.length - 1];
-        if (lastMessage.loading && lastMessage.content === data.content) {
-          return [...prev.slice(0, -1), data];
-        }
-        return [...prev, data];
-      });
+      setMessages(messages);
     };
 
     socket?.on("new-message", handleNewMessage);
@@ -88,12 +79,10 @@ const ChatMessages = () => {
     [isUnReadMessages]
   );
 
-  // Always scroll to last message
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Observe last unread message
   useEffect(() => {
     if (!messageRef.current || !lastIdOfUnReadMessages) return;
 
@@ -101,7 +90,7 @@ const ChatMessages = () => {
       (entries) => {
         if (entries[0].isIntersecting) {
           socket?.emit("mark-read", {
-            conversationId,
+            conversationId: conversationId,
             userId,
             messageId: lastIdOfUnReadMessages,
           });
@@ -115,6 +104,27 @@ const ChatMessages = () => {
   }, [socket, conversationId, userId, lastIdOfUnReadMessages]);
 
   // Handle message read from socket
+  const getNewMessages = (messageId: string) => {
+    return messages.map((msg) =>
+      msg.id === messageId ? { ...msg, read: true } : msg
+    );
+  };
+  const renderStatus = (message: Message) => {
+    const isOwnMessage = message.senderId === userId;
+
+    if (message.failed) return <MessageCircleWarning />;
+    if (message.loading) {
+      if (!isOwnMessage) return null;
+      return <Clock size={20} className="opacity-70" />;
+    }
+
+    if (message.read) {
+      if (!isOwnMessage) return null;
+      return <CheckCheck size={20} className="opacity-70" />;
+    }
+
+    return <Check size={20} className="opacity-70" />;
+  };
   useEffect(() => {
     const handleMessageRead = ({
       conversationId: convId,
@@ -131,11 +141,8 @@ const ChatMessages = () => {
         inputBody: { id: messageId, read: true },
       }).then((data) => {
         if (data.ok) {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === messageId ? { ...msg, read: true } : msg
-            )
-          );
+          const newMessages = getNewMessages(messageId);
+          setMessages(newMessages);
         }
       });
     };
@@ -190,10 +197,13 @@ const ChatMessages = () => {
             }
             key={msg.id || `${msg.content}-${index}`}
             className={clsx(
-              "rounded-2xl w-fit p-3 m-1",
+              "rounded-2xl w-fit p-3 m-1 relative",
               isOwnMessage
-                ? "bg-indigo-500 ml-auto text-white"
-                : "bg-gray-200 mr-auto text-black"
+                ? msg.failed
+                  ? "bg-red-500 text-white"
+                  : "bg-indigo-500 ml-auto text-white"
+                : "bg-gray-200 mr-auto text-black",
+              {}
             )}
           >
             <div
@@ -207,19 +217,22 @@ const ChatMessages = () => {
               <span className="opacity-75 text-sm">
                 {msg.loading ? undefined : time}
               </span>
-              <span>
-                {msg.loading ? (
-                  isOwnMessage ? (
-                    <Clock size={20} className="opacity-70" />
-                  ) : null
-                ) : isOwnMessage ? (
-                  msg.read ? (
-                    <CheckCheck size={20} className="opacity-70" />
-                  ) : (
-                    <Check size={20} className="opacity-70" />
-                  )
-                ) : null}
-              </span>
+              <span>{renderStatus(msg)}</span>
+            </div>
+            <div
+              className="absolute -left-8 top-[50%] cursor-pointer"
+              onClick={() => {
+                postMessage({
+                  content: msg.content,
+                });
+              }}
+            >
+              {msg.failed && isOwnMessage && (
+                <RotateCcw
+                  color="gray"
+                  className="hover:-rotate-180 transition-transform duration-200"
+                />
+              )}
             </div>
           </li>
         );

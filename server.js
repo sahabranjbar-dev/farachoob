@@ -17,40 +17,50 @@ app.prepare().then(() => {
     handle(req, res);
   });
 
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*", // یا آدرس فرانت
+      methods: ["GET", "POST"],
+    },
+  });
 
-  // وقتی یک کلاینت وصل شد
   io.on("connection", (socket) => {
-    console.log("🔗 User connected:", socket?.id);
+    console.log("🔗 User connected:", socket.id);
 
+    // وقتی کاربر آنلاین شد
     socket.on("user-online", (userId) => {
-      // ذخیره اطلاعات کاربر آنلاین
       onlineUsers.set(userId, {
         socketId: socket.id,
-        userId: userId,
+        userId,
         lastSeen: new Date(),
       });
 
-      // اطلاع به همه کاربران درباره آنلاین بودن این کاربر
+      // join به room اختصاصی خودش برای نوتیفیکیشن
+      socket.join(`user_${userId}`);
+
+      // اطلاع به بقیه کاربران
       socket.broadcast.emit("user-online", userId);
       console.log(`👤 User ${userId} is now online`);
     });
 
+    // join به کانورسیشن
     socket.on("join-conversation", ({ conversationId }) => {
-      const rooms = Object.keys(socket.rooms);
-      rooms.forEach((room) => {
-        if (room !== socket.id) {
-          socket.leave(room);
-        }
-      });
+      // leave همه room ها به جز socket.id
+      for (let room of socket.rooms) {
+        if (room !== socket.id) socket.leave(room);
+      }
       socket.join(conversationId);
     });
 
     // ارسال پیام
     socket.on(
       "send-message",
-      ({ conversationId, senderId, content, createdAt, ...res }) => {
-        io.to(conversationId).emit("new-message", {
+      ({ conversationId, senderId, content, recipients = [], ...res }) => {
+        const createdAt = new Date();
+        console.log({ recipients });
+
+        // emit به کل conversation به جز sender
+        socket.to(conversationId).emit("new-message", {
           conversationId,
           senderId,
           content,
@@ -58,15 +68,34 @@ app.prepare().then(() => {
           read: false,
           ...res,
         });
+
+        // emit به sender خودش
+        socket.emit("has-new-message", {
+          conversationId,
+          senderId,
+          content,
+          createdAt,
+          read: false,
+          ...res,
+        });
+
+        // نوتیفیکیشن به گیرنده‌ها (user room)
+        recipients.forEach((userId) => {
+          if (userId !== senderId) {
+            io.to(`user_${userId}`).emit("notification", {
+              conversationId,
+              senderId,
+              content,
+              createdAt,
+              ...res,
+            });
+          }
+        });
       }
     );
 
     // پیام read شد
-    // پیام read شد
     socket.on("mark-read", ({ conversationId, userId, messageId }) => {
-      console.log({ conversationId, userId, messageId });
-
-      // به همه کاربران در این مکالمه اطلاع دهید که پیام خوانده شده
       io.to(conversationId).emit("message-read", {
         conversationId,
         userId,
@@ -75,36 +104,32 @@ app.prepare().then(() => {
     });
 
     // پیام ویرایش
-    socket.on("edit-message", ({ messageId, newContent }) => {
-      io.to(updated.conversationId).emit("message-edited", {
+    socket.on("edit-message", ({ messageId, newContent, conversationId }) => {
+      io.to(conversationId).emit("message-edited", {
         messageId,
         newContent,
-        updated,
       });
     });
 
     // پیام حذف
-    socket.on("delete-message", ({ messageId }) => {
-      io.to(updated.conversationId).emit("message-deleted", {
+    socket.on("delete-message", ({ messageId, conversationId }) => {
+      io.to(conversationId).emit("message-deleted", {
         messageId,
-        updated: updated.id,
       });
     });
 
-    // درخواست لیست کاربران آنلاین
+    // لیست کاربران آنلاین
     socket.on("get-online-users", () => {
-      const users = Array.from(onlineUsers.values()).map((user) => user.userId);
+      const users = Array.from(onlineUsers.values()).map((u) => u.userId);
       socket.emit("online-users-list", users);
     });
 
     socket.on("disconnect", () => {
       console.log("❌ User disconnected:", socket.id);
 
-      // پیدا کردن کاربر مربوط به این socket و حذف آن
       for (let [userId, userInfo] of onlineUsers.entries()) {
         if (userInfo.socketId === socket.id) {
           onlineUsers.delete(userId);
-          // اطلاع به همه کاربران درباره آفلاین شدن این کاربر
           socket.broadcast.emit("user-offline", userId);
           console.log(`👤 User ${userId} is now offline`);
           break;

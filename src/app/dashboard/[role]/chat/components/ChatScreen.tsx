@@ -1,14 +1,12 @@
 "use client";
-import Spinner from "@/components/Spinner";
-import { useContext } from "react";
-import { ChatContext } from "../container/ChatContainer";
+
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import ChatContentHeader from "./ChatContentHeader";
+import { useChat } from "../../../../../../stores";
 
 const ChatScreen = () => {
-  const { conversationId, userInfo, loading } = useContext(ChatContext);
-
+  const { userInfo, getConversatioLoading } = useChat();
   if (!userInfo) {
     return (
       <div className="flex-1 flex items-center justify-center text-gray-500">
@@ -17,7 +15,7 @@ const ChatScreen = () => {
     );
   }
 
-  if (loading) {
+  if (getConversatioLoading) {
     return (
       <div className="flex justify-center items-center mx-auto">
         <div role="status">

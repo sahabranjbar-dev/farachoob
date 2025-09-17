@@ -1,11 +1,10 @@
 "use client";
-import React, { useContext } from "react";
-import { ChatContext } from "../container/ChatContainer";
 import { XIcon } from "lucide-react";
 import Image from "next/image";
+import { useChat } from "../../../../../../stores";
 
 const ChatContentHeader = () => {
-  const { userInfo, setUserInfo } = useContext(ChatContext);
+  const { setUserInfo, userInfo } = useChat();
   return (
     <div className="flex items-center justify-between p-2 border-b bg-indigo-500 text-white">
       <div>

@@ -49,12 +49,12 @@ const StickyChat = () => {
     };
   }, [showChat, setShowChat]);
 
-  if (pathname.includes("dashboard")) return;
+  if (pathname.includes("dashboard") || pathname.includes("login")) return;
 
   return (
     <div
       ref={chatRef}
-      className="fixed z-555 bottom-24 right-2 md:bottom-5 md:right-5 bg-blue-400 w-20 h-20 rounded-full flex justify-center items-center "
+      className="fixed z-[50] bottom-24 right-2 md:bottom-5 md:right-5 bg-blue-400 w-20 h-20 rounded-full flex justify-center items-center "
     >
       <div
         onClick={() => setShowChat(!showChat)}

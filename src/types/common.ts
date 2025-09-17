@@ -43,3 +43,40 @@ export interface Likes {
   userId: string;
   createdAt: Date | string;
 }
+
+export interface Conversation {
+  id: string;
+  title: any;
+  isGroup: boolean;
+  createdAt: string;
+  updatedAt: string;
+  participants: Participant[];
+}
+
+export interface Participant {
+  userId: string;
+}
+
+export interface Message {
+  id?: string;
+  conversationId?: string;
+  senderId?: string;
+  content: string;
+  metadata?: any;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  delivered?: boolean;
+  read?: boolean;
+  deleted?: boolean;
+  sender?: Sender;
+  loading?: boolean;
+  participants?: any;
+  recipients?: any;
+  failed?: boolean;
+}
+
+export interface Sender {
+  id: string;
+  email: string;
+  image: any;
+}

@@ -18,14 +18,14 @@ const StickyChatContainer = forwardRef<HTMLDivElement>(({}, ref) => {
           : "opacity-0 scale-95 translate-y-4 pointer-events-none"
       )}
     >
-      <div className="p-2 relative md:hidden">
+      <div className="relative md:hidden">
         <span
-          className=" absolute top-3 right-2"
+          className=" absolute top-4 right-2"
           onClick={() => {
             setShowChat(false);
           }}
         >
-          <X />
+          <X color="white" />
         </span>
       </div>
       {conversationData?.id ? (

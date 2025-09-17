@@ -33,19 +33,16 @@ export async function GET(
   }
 }
 
-// ارسال پیام جدید
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.redirect("/auth/login");
   }
 
-  const resolvedParams = await params;
-
-  const conversationId = resolvedParams.id;
+  const { id: conversationId } = await params;
   const { content } = await req.json();
 
   if (!content || typeof content !== "string") {
@@ -56,6 +53,20 @@ export async function POST(
   }
 
   try {
+    // بررسی اینکه کانورسیشن وجود دارد
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: { participants: { select: { userId: true } } },
+    });
+
+    if (!conversation) {
+      return NextResponse.json(
+        { error: "Conversation not found" },
+        { status: 404 }
+      );
+    }
+
+    // ایجاد پیام جدید
     const message = await prisma.message.create({
       data: {
         content,
@@ -69,7 +80,15 @@ export async function POST(
       },
     });
 
-    return NextResponse.json(message, { status: 201 });
+    // آرایه گیرنده‌ها (به جز sender)
+    const recipients = conversation.participants
+      .map((p) => p.userId)
+      .filter((id) => id !== session.user.id);
+
+    console.log({ recipients });
+
+    // برگرداندن پیام + recipients برای socket
+    return NextResponse.json({ ...message, recipients }, { status: 201 });
   } catch (error) {
     console.error("Error sending message:", error);
     return NextResponse.json(
