@@ -14,7 +14,7 @@ const UsersList = () => {
         title: "ردیف",
       },
       {
-        field: "name",
+        field: "fullName",
         title: "نام کاربر",
       },
       {
@@ -22,7 +22,7 @@ const UsersList = () => {
         title: "ایمیل",
       },
       {
-        field: "role",
+        field: "roleFarsiTitle",
         title: "نقش",
       },
       {

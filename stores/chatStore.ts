@@ -35,9 +35,7 @@ export const useChat = create<IChatState>((set, get) => ({
   setOnlineUsers(onlineUsers) {
     set({ onlineUsers });
   },
-  setOpenSidebar(openSidebar) {
-    set({ openSidebar });
-  },
+  setOpenSidebar: (val: boolean) => set({ openSidebar: val }),
   setConversations(conversations) {
     set({ conversations });
   },

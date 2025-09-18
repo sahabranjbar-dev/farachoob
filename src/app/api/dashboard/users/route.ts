@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    // فیلترها
+    // گرفتن فیلترها
     const name = searchParams.get("name") || undefined;
     const email = searchParams.get("email") || undefined;
     const role = searchParams.get("role") || undefined;
@@ -23,12 +23,19 @@ export async function GET(request: Request) {
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") === "asc" ? "asc" : "desc";
 
-    // فیلترها
-    const filters = {
+    // ساختن فیلترها
+    const filters: any = {
       AND: [
-        name ? { name: { contains: name } } : {},
+        name
+          ? {
+              OR: [
+                { firstName: { contains: name } },
+                { lastName: { contains: name } },
+              ],
+            }
+          : {},
         email ? { email: { contains: email } } : {},
-        role ? { roles: { some: { id: Number(role) } } } : {},
+        role ? { roleId: Number(role) } : {}, // ✅ چون هر کاربر یه role داره
         from ? { createdAt: { gte: new Date(from) } } : {},
         to ? { createdAt: { lte: new Date(to) } } : {},
       ],
@@ -37,7 +44,7 @@ export async function GET(request: Request) {
     // گرفتن تعداد کل
     const totalItems = await prisma.user.count({ where: filters });
 
-    // گرفتن دیتا با پجینیشن و سورت
+    // گرفتن دیتا
     const users = await prisma.user.findMany({
       where: filters,
       skip: (page - 1) * pageSize,
@@ -71,15 +78,19 @@ export async function GET(request: Request) {
         },
       },
     });
+
     const usersData = users.map((user, index) => ({
       rowNumber: (page - 1) * pageSize + index + 1,
-      id: user.id,
-      name: [user.firstName, user.lastName].filter(Boolean).join(" "),
+      id: user?.id,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      fullName: [user.firstName, user.lastName].filter(Boolean).join(" "),
       email: user.email,
       createdAt: user.createdAt,
       mobile: user.mobile,
       image: user.image,
-      role: user.role ? user.role.farsiTitle : null,
+      role: user?.role,
+      roleFarsiTitle: user.role ? user.role.farsiTitle : null,
       permissions: user.role
         ? user.role.permissions.map((item) => item.permission.title)
         : [],
@@ -93,12 +104,14 @@ export async function GET(request: Request) {
       totalPages: Math.ceil(totalItems / pageSize),
     });
   } catch (error) {
+    console.error("❌ Error in GET /dashboard/user:", error);
     return NextResponse.json(
       { message: "خطا در دریافت کاربران." },
       { status: 500 }
     );
   }
 }
+
 export async function POST(request: Request) {
   try {
     const {

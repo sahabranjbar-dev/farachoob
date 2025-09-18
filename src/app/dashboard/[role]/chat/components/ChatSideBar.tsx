@@ -1,32 +1,33 @@
 "use client";
 
-import clsx from "clsx";
-import { ArrowRightFromLine, RefreshCcw, UserRoundSearch } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { cloneElement, ReactElement, useEffect, useState } from "react";
 import useDataGetter from "@/hooks/useDataGetter";
 import { Conversation } from "@/types/common";
-import { useChat } from "../../../../../../stores";
-import { IChatList } from "./ChatList";
+import clsx from "clsx";
+import { ArrowRightFromLine, RefreshCw } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { cloneElement, ReactElement, useEffect } from "react";
 import { toast } from "sonner";
+import { useChat } from "../../../../../../stores";
 import { fetchConvs } from "../meta/utils";
+import { IChatList } from "./ChatList";
+import SearchUserChat from "./SearchUserChat";
 
 interface Props {
   children: ReactElement<IChatList>;
 }
 
 const ChatSideBar = ({ children }: Props) => {
-  const {
-    socket,
-    setOnlineUsers,
-    onlineUsers,
-    setConversation,
-    openSidebar,
-    setOpenSidebar,
-    setUserInfo,
-    setConversations,
-    conversations: conversationsData,
-  } = useChat();
+  const setOpenSidebar = useChat((state) => state.setOpenSidebar);
+  const socket = useChat((state) => state.socket);
+  const setOnlineUsers = useChat((state) => state.setOnlineUsers);
+  const onlineUsers = useChat((state) => state.onlineUsers);
+  const openSidebar = useChat((state) => state.openSidebar);
+  const setUserInfo = useChat((state) => state.setUserInfo);
+  const setConversations = useChat((state) => state.setConversations);
+  const conversations = useChat((state) => state.conversations);
+
+  const conversationsData = conversations;
+
   const session = useSession();
   const userId = session.data?.user.id;
 
@@ -81,6 +82,19 @@ const ChatSideBar = ({ children }: Props) => {
     };
   }, [socket, isAdmin, setConversations]);
 
+  useEffect(() => {
+    const updateSidebar = () => {
+      setOpenSidebar((window.visualViewport?.width ?? 500) > 800);
+    };
+
+    updateSidebar(); // بار اول چک کن
+    window.visualViewport?.addEventListener("resize", updateSidebar);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", updateSidebar);
+    };
+  }, [setOpenSidebar]);
+
   return (
     <div
       className={clsx(
@@ -117,9 +131,9 @@ const ChatSideBar = ({ children }: Props) => {
                 }
               }}
             >
-              <RefreshCcw
+              <RefreshCw
                 className={clsx("transition-transform duration-200", {
-                  "animate-spin text-gray-400": getConversatioLoading,
+                  "animate-spin text-gray-400 spin-in": getConversatioLoading,
                 })}
               />
             </span>
@@ -129,7 +143,7 @@ const ChatSideBar = ({ children }: Props) => {
         {/* Search */}
         {openSidebar && (
           <span>
-            <UserRoundSearch className="cursor-pointer hover:scale-110 transition-transform" />
+            <SearchUserChat />
           </span>
         )}
       </div>

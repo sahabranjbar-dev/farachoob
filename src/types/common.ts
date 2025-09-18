@@ -11,7 +11,9 @@ export interface User {
   image?: string | null;
   roleId?: string | null;
   createdAt?: Date | string;
-  role: Role;
+  role?: Role;
+  roleFarsiTitle?: string;
+  fullName?: string;
 }
 
 export interface Comment {

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { API } from "../configs/API";
 import {
   IFetchData,
-  useDataGetterInputs,
+  UseDataGetterInputs,
   useDataGetterOuput,
 } from "../types/useDataGetter";
 import { toast } from "sonner";
@@ -27,7 +27,9 @@ export default function useDataGetter<T = any>({
   showSuccessMessage = false,
   responseType,
   headers,
-}: useDataGetterInputs): useDataGetterOuput<T> {
+  signal,
+  ...axiosConfigs
+}: UseDataGetterInputs): useDataGetterOuput<T> {
   const [state, setState] = useState<State<T>>({
     data: null,
     loading: false,
@@ -39,18 +41,27 @@ export default function useDataGetter<T = any>({
     inputParams,
     inputUrl,
   }: IFetchData) => Promise<T> = useCallback(
-    ({ inputUrl, inputBody, inputParams }: IFetchData) => {
+    ({
+      inputUrl,
+      inputBody,
+      inputParams,
+      signal: inputSignal,
+      ...res
+    }: IFetchData) => {
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
       return new Promise(async (resolve, reject) => {
         try {
           const response = await API({
+            ...axiosConfigs,
+            ...res,
             url: inputUrl || url,
             method,
             headers,
             params: { ...params, ...inputParams },
             data: JSON.stringify({ ...body, ...inputBody }),
             responseType,
+            signal: signal || inputSignal,
           });
 
           const result: T = response.data;

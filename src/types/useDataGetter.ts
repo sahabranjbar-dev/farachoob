@@ -1,20 +1,22 @@
-import { Method, RawAxiosRequestHeaders, ResponseType } from "axios";
+import { Method } from "axios";
+import { AxiosRequestConfig } from "axios";
 
-export interface useDataGetterInputs<Body = any, Params = any> {
+export interface UseDataGetterInputs<Body = any, Params = any>
+  extends AxiosRequestConfig<Body> {
   url?: string;
   method?: Method;
   params?: Params;
   body?: Body;
+
   immediatelyFetch?: boolean;
   onSuccess?: (data?: any) => void;
   onFailure?: (error?: any) => void;
   showError?: boolean;
-  responseType?: ResponseType;
-  headers?: any;
   showSuccessMessage?: boolean;
 }
 
-export interface IFetchData<InputBody = any, InputParams = any> {
+export interface IFetchData<InputBody = any, InputParams = any>
+  extends AxiosRequestConfig {
   inputUrl?: string;
   inputBody?: InputBody;
   inputParams?: InputParams;
