@@ -23,19 +23,6 @@ const ChatSideBar = ({ children }: PropsWithChildren<Props>) => {
     }
     return onlineUsers;
   };
-  useEffect(() => {
-    if (!socket) return;
-
-    const hasNewMessage = (data: Notification) => {
-      console.log({ data });
-    };
-
-    socket.on("notification", hasNewMessage);
-
-    return () => {
-      socket.off("notification", hasNewMessage);
-    };
-  }, []);
 
   useEffect(() => {
     if (!socket || !userId) return;

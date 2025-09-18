@@ -1,45 +1,44 @@
 "use client";
-import useDataGetter from "@/hooks/useDataGetter";
-import { User } from "@/types/common";
+import { Conversation, Message, User } from "@/types/common";
 import { useChat } from "../../../../../../stores";
-import { PostConverSationData } from "../meta/types";
+import useDataGetter from "@/hooks/useDataGetter";
 
 interface Props {
   user: User;
+  unReadMessage?: number;
+  messages: Message[];
+  conversation: Conversation;
+  getConversatioMessages: () => Promise<any> | undefined;
 }
 
-const UserItem = ({ user }: Props) => {
+const UserItem = ({
+  user,
+  unReadMessage,
+  conversation,
+  getConversatioMessages,
+}: Props) => {
   const {
-    setUserInfo,
     socket,
-    setConversation,
-    setMessages,
+    setUserInfo,
+    setConversatioMessageLoading,
     onlineUsers,
-    setGetConversationLoading,
+    setConversation,
   } = useChat();
 
-  const { fetch: postConverSation } = useDataGetter<PostConverSationData>({
-    url: "/dashboard/conversations",
-    method: "POST",
-    immediatelyFetch: false,
-  });
-
   const handleClick = () => {
+    if (!socket) return;
+
     setUserInfo(user);
-    setGetConversationLoading(true);
 
-    postConverSation?.({ inputBody: { participantId: user.id } })
-      .then((data) => {
-        if (data.id) {
-          socket?.emit("join-conversation", { conversationId: data.id }); // مهم: مستقیم اینجا emit کنیم
-          setConversation(data);
-          const messages = data?.messages;
-          setMessages(messages);
-        }
-      })
-      .finally(() => setGetConversationLoading(false));
+    setConversatioMessageLoading(true);
+
+    getConversatioMessages?.()?.then(() => {
+      setConversatioMessageLoading(false);
+    });
+
+    socket.emit("join-conversation", { conversationId: conversation.id });
+    setConversation(conversation);
   };
-
   return (
     <div
       onClick={handleClick}
@@ -51,6 +50,11 @@ const UserItem = ({ user }: Props) => {
       <span className="line-clamp-1 overflow-ellipsis w-[70%]">
         {user.firstName || user.email}
       </span>
+      {!!unReadMessage && (
+        <div className="p-2 bg-blue-500 text-white rounded-full h-8 w-8 flex justify-center items-center">
+          <span>{unReadMessage}</span>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,6 @@
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -11,11 +13,13 @@ interface POSTBody {
   content: string;
   conversationId: string;
   senderId: string;
+  tempId: string;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { content, conversationId, senderId }: POSTBody =
+    const session = await getServerSession(authOptions);
+    const { content, conversationId, senderId, tempId }: POSTBody =
       await request.json();
 
     if (!content) {
@@ -36,6 +40,7 @@ export async function POST(request: NextRequest) {
         content,
         conversationId,
         senderId,
+        tempId,
       },
       include: {
         sender: {
@@ -43,7 +48,16 @@ export async function POST(request: NextRequest) {
         },
       },
     });
-    return NextResponse.json(message, { status: 201 });
+    const conversation = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: { participants: { select: { userId: true } } },
+    });
+
+    const recipients = conversation?.participants
+      .map((p) => p.userId)
+      .filter((id) => id !== session?.user.id);
+
+    return NextResponse.json({ ...message, recipients }, { status: 201 });
   } catch (error) {
     console.error("Error sending message:", error);
     return NextResponse.json({ error: "خطای سمت سرور" }, { status: 500 });

@@ -1,80 +1,71 @@
-import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
+"use client";
+
+import useDataGetter from "@/hooks/useDataGetter";
+import { Conversation } from "@/types/common";
+import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useChat } from "../../../../../../stores";
 import UserItem from "./UserItem";
 
-const ChatList = async () => {
-  try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id;
+const ChatList = () => {
+  const { data: session } = useSession();
+  const { setConversation, setDashboardChatMessage } = useChat();
+  const userId = session?.user?.id;
 
-    if (!userId) {
-      return <p className="text-gray-500 p-4">لطفا وارد حساب کاربری شوید</p>;
-    }
+  const { fetch: getConversatioMessages } = useDataGetter({
+    immediatelyFetch: false,
+    onSuccess(data) {
+      setDashboardChatMessage(data);
+    },
+  });
 
-    // گرفتن نقش کاربر فعلی
-    const currentUser = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { role: true },
-    });
+  const { data, loading: getConversatioLoading } = useDataGetter<{
+    conversations: Conversation[];
+  }>({
+    url: "/dashboard/conversations",
+    onSuccess(data) {
+      setConversation(data?.conversations);
+    },
+  });
 
-    if (!currentUser) {
-      return <p className="text-gray-500 p-4">کاربر پیدا نشد.</p>;
-    }
-
-    const isAdminOrManager = ["admin", "manager"].includes(
-      currentUser.role?.englishTitle ?? "customer"
-    );
-
-    // همه کانورسیشن‌هایی که کاربر در آنها شرکت کرده
-    let conversations = await prisma.conversation.findMany({
-      where: {
-        participants: { some: { userId } }, // خود کاربر جزو کانورسیشن باشد
-      },
-      include: {
-        participants: { include: { user: { include: { role: true } } } },
-      },
-      orderBy: { updatedAt: "desc" }, // مرتب‌سازی بر اساس آخرین پیام
-    });
-
-    // اگر کاربر معمولی است، فقط کانورسیشن با ادمین/مدیر نگه داشته شود
-    if (!isAdminOrManager) {
-      conversations = conversations.filter((conv) =>
-        conv.participants.some(
-          (p) =>
-            p.userId !== userId &&
-            ["admin", "manager"].includes(p.user.role?.englishTitle ?? "")
-        )
-      );
-    }
-
-    if (!conversations || conversations.length === 0) {
-      return (
-        <p className="text-gray-500 p-4">
-          هیچ کاربری برای شروع گفتگو پیدا نشد.
-        </p>
-      );
-    }
-
+  if (getConversatioLoading) {
     return (
-      <div className="h-full overflow-y-auto">
-        {conversations.map((conv) => {
-          // پیدا کردن کاربر مقابل
-          const otherUser = conv.participants.find(
-            (p) => p.userId !== userId
-          )?.user;
-          return otherUser ? (
-            <UserItem key={otherUser.id} user={otherUser} />
-          ) : null;
-        })}
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="animate-spin" />
       </div>
     );
-  } catch (error) {
-    console.error("ChatList error:", error);
+  }
+
+  if (!data?.conversations?.length) {
     return (
-      <p className="text-red-500 p-4">خطایی در بارگذاری لیست کاربران رخ داد.</p>
+      <p className="text-gray-500 p-4">هیچ کاربری برای شروع گفتگو پیدا نشد.</p>
     );
   }
+
+  return (
+    <div className="h-full overflow-y-auto">
+      {data?.conversations?.map((conv) => {
+        const otherUser = conv?.participants?.find(
+          (p) => p.userId !== userId
+        )?.user;
+        return otherUser ? (
+          <UserItem
+            key={otherUser.id}
+            user={otherUser}
+            unReadMessage={conv._count?.messages}
+            messages={conv.messages ?? []}
+            conversation={conv}
+            getConversatioMessages={() =>
+              getConversatioMessages?.({
+                inputUrl: "/dashboard/conversations/messages",
+                inputParams: { conversationId: conv.id },
+              })
+            }
+          />
+        ) : null;
+      })}
+    </div>
+  );
 };
 
 export default ChatList;

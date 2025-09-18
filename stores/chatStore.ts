@@ -11,11 +11,19 @@ export const useChat = create<IChatState>((set, get) => ({
   messages: [],
   userInfo: null,
   onlineUsers: [],
-  getConversatioLoading: false,
+  conversations: [],
+  getConversatioMessageLoading: false,
 
-  //ACTIONS
-  setMessages(messages) {
-    set({ messages });
+  // ACTIONS
+  setConversatioMessageLoading(value) {
+    set({ getConversatioMessageLoading: value });
+  },
+  setDashboardChatMessage(updater) {
+    if (typeof updater === "function") {
+      set((state) => ({ messages: updater(state.messages) }));
+    } else {
+      set({ messages: updater });
+    }
   },
   setUserInfo(userInfo) {
     set({ userInfo });
@@ -25,17 +33,5 @@ export const useChat = create<IChatState>((set, get) => ({
   },
   setOnlineUsers(onlineUsers) {
     set({ onlineUsers });
-  },
-  postMessage: async (body) => {
-    const conversationId = get().conversation?.id;
-    const response = await API.post(
-      `/dashboard/conversations/${conversationId}/messages`,
-      body
-    );
-
-    return response.data;
-  },
-  setGetConversationLoading(loading) {
-    set({ getConversatioLoading: loading });
   },
 }));

@@ -17,13 +17,20 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import Spinner from "../Spinner";
+import { useChat } from "../../../stores";
+import { normalizePhoneNumber } from "@/lib/utils";
 
-// اعتبارسنجی با zod
 const schema = z.object({
   fullName: z.string().min(2, "نام حداقل ۲ حرف باشد"),
-  phone: z
-    .string()
-    .regex(/^09\d{9}$/, "شماره موبایل معتبر نیست (باید با 09 شروع شود)"),
+  phone: z.string().superRefine((val, ctx) => {
+    const normalized = normalizePhoneNumber(val);
+    if (!/^09\d{9}$/.test(normalized)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "شماره موبایل معتبر نیست (باید با 09 شروع شود)",
+      });
+    }
+  }),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -33,6 +40,7 @@ const PrePareForChatForm = () => {
   const userId = session.data?.user.id;
 
   const { setConversationData, setMessages } = useStickyChat();
+  const { socket } = useChat();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -71,6 +79,9 @@ const PrePareForChatForm = () => {
           setConversationData(data.conversation);
           const newMessage = data?.conversation?.messages;
           setMessages(newMessage);
+          socket.emit("join-conversation", {
+            conversationId: data?.conversation?.id,
+          });
         }
       })
       .catch((err: AxiosError<{ reason: string; message: string }>) => {

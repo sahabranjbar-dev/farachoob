@@ -45,6 +45,8 @@ app.prepare().then(() => {
 
     // join به کانورسیشن
     socket.on("join-conversation", ({ conversationId }) => {
+      console.log("user join the conversation: ", conversationId);
+
       // leave همه room ها به جز socket.id
       for (let room of socket.rooms) {
         if (room !== socket.id) socket.leave(room);
@@ -57,20 +59,7 @@ app.prepare().then(() => {
       "send-message",
       ({ conversationId, senderId, content, recipients = [], ...res }) => {
         const createdAt = new Date();
-        console.log({ recipients });
-
-        // emit به کل conversation به جز sender
         socket.to(conversationId).emit("new-message", {
-          conversationId,
-          senderId,
-          content,
-          createdAt,
-          read: false,
-          ...res,
-        });
-
-        // emit به sender خودش
-        socket.emit("has-new-message", {
           conversationId,
           senderId,
           content,
@@ -83,39 +72,31 @@ app.prepare().then(() => {
         recipients.forEach((userId) => {
           if (userId !== senderId) {
             io.to(`user_${userId}`).emit("notification", {
+              ...res,
               conversationId,
               senderId,
               content,
               createdAt,
-              ...res,
             });
           }
         });
       }
     );
 
-    // پیام read شد
-    socket.on("mark-read", ({ conversationId, userId, messageId }) => {
-      io.to(conversationId).emit("message-read", {
-        conversationId,
-        userId,
-        messageId,
-      });
+    socket.on("send-message-to-admin", (data) => {
+      socket.to(data?.conversationId).emit("new-message-to-admin", data);
     });
 
-    // پیام ویرایش
-    socket.on("edit-message", ({ messageId, newContent, conversationId }) => {
-      io.to(conversationId).emit("message-edited", {
-        messageId,
-        newContent,
-      });
+    socket.on("send-message-to-sticky", (data) => {
+      socket.to(data?.conversationId).emit("new-message-to-sticky", data);
     });
 
-    // پیام حذف
-    socket.on("delete-message", ({ messageId, conversationId }) => {
-      io.to(conversationId).emit("message-deleted", {
-        messageId,
-      });
+    socket.on("sticky-mark-read", (data) => {
+      socket.to(data?.conversationId).emit("admin-read-message", data);
+    });
+
+    socket.on("admin-message-read", (data) => {
+      socket.to(data?.conversationId).emit("sticky-read-message", data);
     });
 
     // لیست کاربران آنلاین

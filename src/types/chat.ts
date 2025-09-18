@@ -7,12 +7,14 @@ export interface IChatState {
   conversation: Conversation | null;
   messages: Message[];
   onlineUsers: string[];
-  getConversatioLoading: boolean;
+  conversations: Conversation[];
+  getConversatioMessageLoading: boolean;
 
+  setConversatioMessageLoading: (value: boolean) => void;
   setOnlineUsers: (onlineUsers: string[]) => void;
-  setMessages: (messages: Message[]) => void;
+  setDashboardChatMessage: (
+    messages: Message[] | ((previousMessages: Message[]) => Message[])
+  ) => void;
   setConversation: (conversation: Conversation) => void;
   setUserInfo: (userInfo: User | null) => void;
-  postMessage: (body: Message) => Promise<Message>;
-  setGetConversationLoading: (loading: boolean) => void;
 }

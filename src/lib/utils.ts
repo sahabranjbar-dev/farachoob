@@ -1,9 +1,7 @@
-import { API } from "@/configs/API";
-import { Notifications } from "@/types/notifications";
+import { Message } from "@/types/common";
 import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { useNotifications } from "../../stores";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -45,4 +43,18 @@ export function normalizePhoneNumber(phone: string) {
     /[۰-۹]/g,
     (d) => englishNumbers[persianNumbers.indexOf(d)]
   );
+}
+
+export function markMessagesRead(messages: Message[], messageId: string) {
+  // پیدا کردن اندیس پیام
+  const readMessageIndex = messages.findIndex((item) => item.id === messageId);
+  if (readMessageIndex === -1) return messages; // اگر پیدا نشد، همون آرایه برگرده
+
+  // پیام‌ها رو map می‌کنیم و read = true می‌کنیم
+  return messages.map((msg, index) => {
+    if (index <= readMessageIndex) {
+      return { ...msg, read: true };
+    }
+    return msg;
+  });
 }

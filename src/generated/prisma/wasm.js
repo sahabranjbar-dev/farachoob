@@ -5,13 +5,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 const {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientRustPanicError,
+  PrismaClientInitializationError,
+  PrismaClientValidationError,
+  getPrismaClient,
+  sqltag,
+  empty,
+  join,
+  raw,
+  skip,
   Decimal,
+  Debug,
   objectEnumValues,
   makeStrictEnum,
+  Extensions,
+  warnOnce,
+  defineDmmfProperty,
   Public,
   getRuntime,
-  skip
-} = require('./runtime/index-browser.js')
+  createParam,
+} = require('./runtime/wasm-engine-edge.js')
 
 
 const Prisma = {}
@@ -20,79 +35,35 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.15.0
- * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+ * Prisma Client JS version: 6.16.2
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.15.0",
-  engine: "85179d7826409ee107a6ba334b5e305ae3fba9fb"
+  client: "6.16.2",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
-Prisma.PrismaClientKnownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientKnownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)};
-Prisma.PrismaClientUnknownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientUnknownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientRustPanicError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientRustPanicError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientInitializationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientInitializationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientValidationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientValidationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
+Prisma.PrismaClientUnknownRequestError = PrismaClientUnknownRequestError
+Prisma.PrismaClientRustPanicError = PrismaClientRustPanicError
+Prisma.PrismaClientInitializationError = PrismaClientInitializationError
+Prisma.PrismaClientValidationError = PrismaClientValidationError
 Prisma.Decimal = Decimal
 
 /**
  * Re-export of sql-template-tag
  */
-Prisma.sql = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`sqltag is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.empty = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`empty is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.join = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`join is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.raw = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`raw is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.sql = sqltag
+Prisma.empty = empty
+Prisma.join = join
+Prisma.raw = raw
 Prisma.validator = Public.validator
 
 /**
 * Extensions
 */
-Prisma.getExtensionContext = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.getExtensionContext is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.defineExtension = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.defineExtension is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.getExtensionContext = Extensions.getExtensionContext
+Prisma.defineExtension = Extensions.defineExtension
 
 /**
  * Shorthand utilities for JSON filtering
@@ -109,10 +80,11 @@ Prisma.NullTypes = {
 
 
 
+
+
 /**
  * Enums
  */
-
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
@@ -301,6 +273,7 @@ exports.Prisma.ConversationParticipantScalarFieldEnum = {
 
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
+  tempId: 'tempId',
   conversationId: 'conversationId',
   senderId: 'senderId',
   content: 'content',
@@ -356,6 +329,15 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.NotificationType = exports.$Enums.NotificationType = {
+  INFO: 'INFO',
+  SUCCESS: 'SUCCESS',
+  WARNING: 'WARNING',
+  ERROR: 'ERROR',
+  MESSAGE: 'MESSAGE',
+  ORDER: 'ORDER'
+};
+
 exports.PermissionKey = exports.$Enums.PermissionKey = {
   view_blogs: 'view_blogs',
   create_blogs: 'create_blogs',
@@ -409,15 +391,6 @@ exports.PermissionKey = exports.$Enums.PermissionKey = {
   delete_chat: 'delete_chat'
 };
 
-exports.NotificationType = exports.$Enums.NotificationType = {
-  INFO: 'INFO',
-  SUCCESS: 'SUCCESS',
-  WARNING: 'WARNING',
-  ERROR: 'ERROR',
-  MESSAGE: 'MESSAGE',
-  ORDER: 'ORDER'
-};
-
 exports.Prisma.ModelName = {
   User: 'User',
   OTP: 'OTP',
@@ -442,34 +415,82 @@ exports.Prisma.ModelName = {
   MessageHistory: 'MessageHistory',
   Project: 'Project'
 };
-
 /**
- * This is a stub Prisma Client that will error at runtime if called.
+ * Create the Client
  */
-class PrismaClient {
-  constructor() {
-    return new Proxy(this, {
-      get(target, prop) {
-        let message
-        const runtime = getRuntime()
-        if (runtime.isEdge) {
-          message = `PrismaClient is not configured to run in ${runtime.prettyName}. In order to run Prisma Client on edge runtime, either:
-- Use Prisma Accelerate: https://pris.ly/d/accelerate
-- Use Driver Adapters: https://pris.ly/d/driver-adapters
-`;
-        } else {
-          message = 'PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `' + runtime.prettyName + '`).'
-        }
-
-        message += `
-If this is unexpected, please open an issue: https://pris.ly/prisma-prisma-bug-report`
-
-        throw new Error(message)
+const config = {
+  "generator": {
+    "name": "client",
+    "provider": {
+      "fromEnvVar": null,
+      "value": "prisma-client-js"
+    },
+    "output": {
+      "value": "/Users/sahab/Documents/project/farachoob/src/generated/prisma",
+      "fromEnvVar": null
+    },
+    "config": {
+      "engineType": "library"
+    },
+    "binaryTargets": [
+      {
+        "fromEnvVar": null,
+        "value": "darwin-arm64",
+        "native": true
       }
-    })
+    ],
+    "previewFeatures": [],
+    "sourceFilePath": "/Users/sahab/Documents/project/farachoob/prisma/schema.prisma",
+    "isCustomOutput": true
+  },
+  "relativeEnvPaths": {
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../.env"
+  },
+  "relativePath": "../../../prisma",
+  "clientVersion": "6.16.2",
+  "engineVersion": "1c57fdcd7e44b29b9313256c76699e91c3ac3c43",
+  "datasourceNames": [
+    "db"
+  ],
+  "activeProvider": "postgresql",
+  "inlineDatasources": {
+    "db": {
+      "url": {
+        "fromEnvVar": "DATABASE_URL",
+        "value": null
+      }
+    }
+  },
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n\nmodel User {\n  id           String                    @id @default(uuid())\n  email        String?                   @unique\n  password     String?\n  firstName    String?\n  lastName     String?\n  nationalId   String?                   @unique\n  birthDate    DateTime?\n  mobile       String?                   @unique\n  isActive     Boolean                   @default(true)\n  isVerified   Boolean                   @default(false)\n  image        String?\n  sessionToken String?                   @unique // اضافه کردن این فیلد\n  roleId       String\n  role         Role                      @relation(fields: [roleId], references: [id])\n  createdAt    DateTime                  @default(now())\n  comments     Comment[]\n  commentLikes CommentLike[]\n  CartItem     CartItem[]\n  articles     Article[]                 @relation(\"UserArticles\")\n  messages     Message[]\n  participants ConversationParticipant[]\n\n  Projects Project[] @relation(\"UserProject\")\n  Project  Project[]\n}\n\nmodel OTP {\n  id        String   @id @default(cuid())\n  mobile    String\n  code      String\n  expiresAt DateTime\n  verified  Boolean  @default(false)\n  createdAt DateTime @default(now())\n}\n\nmodel Role {\n  id           String           @id @default(uuid())\n  farsiTitle   String?          @unique\n  englishTitle String?          @unique\n  description  String?\n  status       Boolean?         @default(true)\n  permissions  RolePermission[]\n  users        User[]\n  createdAt    DateTime         @default(now())\n  updateAt     DateTime         @updatedAt\n}\n\nmodel Permission {\n  id            String           @id @default(uuid())\n  permissionKey PermissionKey    @unique\n  title         String\n  menus         Menu[]\n  roles         RolePermission[]\n  createdAt     DateTime         @default(now())\n  updateAt      DateTime         @updatedAt\n}\n\nmodel RolePermission {\n  id           String @id @default(uuid())\n  roleId       String\n  permissionId String\n\n  role       Role       @relation(fields: [roleId], references: [id])\n  permission Permission @relation(fields: [permissionId], references: [id])\n\n  @@unique([roleId, permissionId])\n}\n\nmodel Menu {\n  id           String     @id @default(uuid())\n  title        String\n  href         String     @unique\n  icon         String?\n  permissionId String\n  permission   Permission @relation(fields: [permissionId], references: [id])\n  status       Boolean    @default(true)\n  createdAt    DateTime   @default(now())\n  updateAt     DateTime   @updatedAt\n\n  parentId String?\n  parent   Menu?   @relation(\"SubMenuRelation\", fields: [parentId], references: [id])\n  subMenus Menu[]  @relation(\"SubMenuRelation\")\n}\n\n// schema.prisma\nmodel Product {\n  id           String    @id @default(cuid())\n  farsiTitle   String\n  englishTitle String\n  price        Float?\n  stock        Int?\n  createdAt    DateTime  @default(now())\n  updateAt     DateTime? @updatedAt\n  description  String?\n  comments     String[]\n  brandId      String?\n  categoryId   String?\n\n  brand      Brand?      @relation(fields: [brandId], references: [id])\n  category   Category?   @relation(fields: [categoryId], references: [id])\n  cartItems  CartItem[]\n  variations Variation[]\n}\n\nmodel Variation {\n  id        String  @id @default(cuid())\n  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)\n  productId String\n\n  colorName String?\n  colorCode String?\n  price     Float\n  stock     Int\n\n  images VariationImage[]\n}\n\nmodel VariationImage {\n  id          String    @id @default(cuid())\n  url         String\n  variation   Variation @relation(fields: [variationId], references: [id], onDelete: Cascade)\n  variationId String\n}\n\nmodel Brand {\n  id           String    @id @default(cuid())\n  farsiTitle   String\n  englishTitle String\n  createdAt    DateTime? @default(now())\n  updateAt     DateTime? @updatedAt\n\n  products Product[]\n}\n\nmodel Category {\n  id           String    @id @default(cuid())\n  farsiTitle   String\n  englishTitle String\n  createdAt    DateTime? @default(now())\n  updateAt     DateTime? @updatedAt\n\n  products Product[]\n}\n\nmodel CartItem {\n  id        String   @id @default(cuid())\n  userId    String\n  productId String\n  quantity  Int      @default(1)\n  color     String?\n  createdAt DateTime @default(now())\n\n  user    User    @relation(fields: [userId], references: [id])\n  product Product @relation(fields: [productId], references: [id])\n\n  @@unique([userId, productId, color])\n}\n\nmodel Article {\n  id          String    @id @default(cuid())\n  title       String\n  content     String\n  coverImage  String?\n  published   Boolean   @default(false)\n  publishedAt DateTime?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n  authorId    String\n  author      User      @relation(\"UserArticles\", fields: [authorId], references: [id])\n\n  comments Comment[]\n}\n\nmodel Comment {\n  id        String   @id @default(cuid())\n  content   String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  articleId String\n  article   Article @relation(fields: [articleId], references: [id])\n\n  projectId String\n  project   Project @relation(fields: [projectId], references: [id])\n\n  parentId String?\n  parent   Comment?  @relation(\"CommentReplies\", fields: [parentId], references: [id])\n  replies  Comment[] @relation(\"CommentReplies\")\n\n  likes CommentLike[]\n}\n\nmodel CommentLike {\n  id        String  @id @default(cuid())\n  commentId String\n  comment   Comment @relation(fields: [commentId], references: [id])\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  createdAt DateTime @default(now())\n\n  @@unique([commentId, userId])\n}\n\nmodel ContactMessage {\n  id        String   @id @default(cuid())\n  name      String\n  email     String\n  message   String\n  createdAt DateTime @default(now())\n}\n\nmodel Notification {\n  id        String           @id @default(cuid())\n  title     String\n  message   String\n  type      NotificationType @default(INFO)\n  isRead    Boolean          @default(false)\n  readAt    DateTime?\n  createdAt DateTime         @default(now())\n}\n\nenum NotificationType {\n  INFO\n  SUCCESS\n  WARNING\n  ERROR\n  MESSAGE\n  ORDER\n}\n\nenum PermissionKey {\n  // Blogs\n  view_blogs\n  create_blogs\n  edit_blogs\n  delete_blogs\n\n  // Brands\n  view_brands\n  create_brands\n  edit_brands\n  delete_brands\n\n  // Categories\n  view_categories\n  create_categories\n  edit_categories\n  delete_categories\n\n  // Comments\n  view_comments\n  create_comments\n  edit_comments\n  delete_comments\n\n  // Menus\n  view_menus\n  create_menus\n  edit_menus\n  delete_menus\n\n  // Permissions\n  view_permissions\n  create_permissions\n  edit_permissions\n  delete_permissions\n\n  // Products\n  view_products\n  create_products\n  edit_products\n  delete_products\n\n  // Roles\n  view_roles\n  create_roles\n  edit_roles\n  delete_roles\n\n  // Users\n  view_users\n  create_users\n  edit_users\n  delete_users\n\n  //Setting\n  view_setting\n  create_setting\n  edit_setting\n  delete_setting\n\n  //Projects\n  view_projects\n  create_projects\n  edit_projects\n  delete_projects\n\n  //export and import\n  can_export\n  can_import\n\n  //chat\n  view_chat\n  create_chat\n  edit_chat\n  delete_chat\n}\n\nmodel Conversation {\n  id           String                    @id @default(cuid())\n  title        String?\n  isGroup      Boolean                   @default(false)\n  participants ConversationParticipant[]\n  messages     Message[]\n  createdAt    DateTime                  @default(now())\n  updatedAt    DateTime                  @updatedAt\n}\n\nmodel ConversationParticipant {\n  id             String       @id @default(cuid())\n  conversation   Conversation @relation(fields: [conversationId], references: [id])\n  conversationId String\n  user           User         @relation(fields: [userId], references: [id])\n  userId         String\n  lastReadAt     DateTime?\n}\n\nmodel Message {\n  id             String           @id @default(cuid())\n  tempId         String?\n  conversation   Conversation     @relation(fields: [conversationId], references: [id])\n  conversationId String\n  sender         User             @relation(fields: [senderId], references: [id])\n  senderId       String\n  content        String?\n  metadata       Json?\n  createdAt      DateTime         @default(now())\n  updatedAt      DateTime         @updatedAt\n  delivered      Boolean          @default(false)\n  read           Boolean          @default(false)\n  deleted        Boolean          @default(false)\n  histories      MessageHistory[]\n}\n\nmodel MessageHistory {\n  id         String   @id @default(cuid())\n  messageId  String\n  oldContent String\n  editedAt   DateTime @default(now())\n\n  message Message @relation(fields: [messageId], references: [id])\n}\n\nmodel Project {\n  id          String   @id @default(cuid())\n  description String?\n  images      String[]\n  title       String\n  createdAt   DateTime @default(now())\n  updateAt    DateTime @updatedAt\n  active      Boolean  @default(true)\n\n  userId String\n  user   User   @relation(fields: [userId], references: [id])\n\n  Comment Comment[]\n\n  authorId String\n  author   User   @relation(\"UserProject\", fields: [authorId], references: [id])\n}\n",
+  "inlineSchemaHash": "f9a4d69d09281f82e348ea74f83808e83e17c8ecb6713340b89d15372524b250",
+  "copyEngine": true
+}
+config.dirname = '/'
+
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nationalId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"birthDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"mobile\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isActive\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"object\",\"type\":\"Role\",\"relationName\":\"RoleToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"comments\",\"kind\":\"object\",\"type\":\"Comment\",\"relationName\":\"CommentToUser\"},{\"name\":\"commentLikes\",\"kind\":\"object\",\"type\":\"CommentLike\",\"relationName\":\"CommentLikeToUser\"},{\"name\":\"CartItem\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToUser\"},{\"name\":\"articles\",\"kind\":\"object\",\"type\":\"Article\",\"relationName\":\"UserArticles\"},{\"name\":\"messages\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"MessageToUser\"},{\"name\":\"participants\",\"kind\":\"object\",\"type\":\"ConversationParticipant\",\"relationName\":\"ConversationParticipantToUser\"},{\"name\":\"Projects\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"UserProject\"},{\"name\":\"Project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"ProjectToUser\"}],\"dbName\":null},\"OTP\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mobile\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiresAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"verified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Role\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"farsiTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"englishTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"permissions\",\"kind\":\"object\",\"type\":\"RolePermission\",\"relationName\":\"RoleToRolePermission\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RoleToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Permission\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permissionKey\",\"kind\":\"enum\",\"type\":\"PermissionKey\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"menus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"MenuToPermission\"},{\"name\":\"roles\",\"kind\":\"object\",\"type\":\"RolePermission\",\"relationName\":\"PermissionToRolePermission\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"RolePermission\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"roleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permissionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"object\",\"type\":\"Role\",\"relationName\":\"RoleToRolePermission\"},{\"name\":\"permission\",\"kind\":\"object\",\"type\":\"Permission\",\"relationName\":\"PermissionToRolePermission\"}],\"dbName\":null},\"Menu\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"href\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"icon\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permissionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"permission\",\"kind\":\"object\",\"type\":\"Permission\",\"relationName\":\"MenuToPermission\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"parentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parent\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"SubMenuRelation\"},{\"name\":\"subMenus\",\"kind\":\"object\",\"type\":\"Menu\",\"relationName\":\"SubMenuRelation\"}],\"dbName\":null},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"farsiTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"englishTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"stock\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"comments\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"brandId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"categoryId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"brand\",\"kind\":\"object\",\"type\":\"Brand\",\"relationName\":\"BrandToProduct\"},{\"name\":\"category\",\"kind\":\"object\",\"type\":\"Category\",\"relationName\":\"CategoryToProduct\"},{\"name\":\"cartItems\",\"kind\":\"object\",\"type\":\"CartItem\",\"relationName\":\"CartItemToProduct\"},{\"name\":\"variations\",\"kind\":\"object\",\"type\":\"Variation\",\"relationName\":\"ProductToVariation\"}],\"dbName\":null},\"Variation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"ProductToVariation\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"colorName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"colorCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"stock\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"images\",\"kind\":\"object\",\"type\":\"VariationImage\",\"relationName\":\"VariationToVariationImage\"}],\"dbName\":null},\"VariationImage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"variation\",\"kind\":\"object\",\"type\":\"Variation\",\"relationName\":\"VariationToVariationImage\"},{\"name\":\"variationId\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Brand\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"farsiTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"englishTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"BrandToProduct\"}],\"dbName\":null},\"Category\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"farsiTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"englishTitle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"products\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CategoryToProduct\"}],\"dbName\":null},\"CartItem\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"productId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"quantity\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"color\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CartItemToUser\"},{\"name\":\"product\",\"kind\":\"object\",\"type\":\"Product\",\"relationName\":\"CartItemToProduct\"}],\"dbName\":null},\"Article\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"coverImage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"published\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"publishedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"authorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"author\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserArticles\"},{\"name\":\"comments\",\"kind\":\"object\",\"type\":\"Comment\",\"relationName\":\"ArticleToComment\"}],\"dbName\":null},\"Comment\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CommentToUser\"},{\"name\":\"articleId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"article\",\"kind\":\"object\",\"type\":\"Article\",\"relationName\":\"ArticleToComment\"},{\"name\":\"projectId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"CommentToProject\"},{\"name\":\"parentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parent\",\"kind\":\"object\",\"type\":\"Comment\",\"relationName\":\"CommentReplies\"},{\"name\":\"replies\",\"kind\":\"object\",\"type\":\"Comment\",\"relationName\":\"CommentReplies\"},{\"name\":\"likes\",\"kind\":\"object\",\"type\":\"CommentLike\",\"relationName\":\"CommentToCommentLike\"}],\"dbName\":null},\"CommentLike\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commentId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"comment\",\"kind\":\"object\",\"type\":\"Comment\",\"relationName\":\"CommentToCommentLike\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"CommentLikeToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ContactMessage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Notification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"NotificationType\"},{\"name\":\"isRead\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"readAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Conversation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isGroup\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"participants\",\"kind\":\"object\",\"type\":\"ConversationParticipant\",\"relationName\":\"ConversationToConversationParticipant\"},{\"name\":\"messages\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"ConversationToMessage\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"ConversationParticipant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversation\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToConversationParticipant\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ConversationParticipantToUser\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastReadAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Message\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tempId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"conversation\",\"kind\":\"object\",\"type\":\"Conversation\",\"relationName\":\"ConversationToMessage\"},{\"name\":\"conversationId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sender\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"MessageToUser\"},{\"name\":\"senderId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"delivered\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"read\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"deleted\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"histories\",\"kind\":\"object\",\"type\":\"MessageHistory\",\"relationName\":\"MessageToMessageHistory\"}],\"dbName\":null},\"MessageHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"messageId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"oldContent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"editedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"message\",\"kind\":\"object\",\"type\":\"Message\",\"relationName\":\"MessageToMessageHistory\"}],\"dbName\":null},\"Project\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"images\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updateAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ProjectToUser\"},{\"name\":\"Comment\",\"kind\":\"object\",\"type\":\"Comment\",\"relationName\":\"CommentToProject\"},{\"name\":\"authorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"author\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserProject\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
+config.engineWasm = {
+  getRuntime: async () => require('./query_engine_bg.js'),
+  getQueryEngineWasmModule: async () => {
+    const loader = (await import('#wasm-engine-loader')).default
+    const engine = (await loader).default
+    return engine
   }
 }
+config.compilerWasm = undefined
 
+config.injectableEdgeEnv = () => ({
+  parsed: {
+    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+  }
+})
+
+if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {
+  Debug.enable(typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined)
+}
+
+const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
-
 Object.assign(exports, Prisma)
+

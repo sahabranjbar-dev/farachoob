@@ -41,7 +41,7 @@ const MenuItem = ({ item, isActive, open, index, IconComponent }: Props) => {
         className={cn(
           "w-[96%] overflow-hidden relative flex items-center justify-between gap-3 p-4 m-2 rounded-lg text-sm transition-colors",
           isActive
-            ? "bg-orange-500 text-white hover:bg-orange-600"
+            ? "bg-orange-500 text-white hover:bg-orange-600 hover:text-white"
             : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
         )}
       >

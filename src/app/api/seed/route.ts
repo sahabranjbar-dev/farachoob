@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     prisma?.role.upsert({
       where: { englishTitle: "admin" },
       update: {},
-      create: { englishTitle: "admin", farsiTitle: "مدیر کل" },
+      create: { englishTitle: "admin", farsiTitle: "ادمین" },
     }),
     prisma?.role.upsert({
       where: { englishTitle: "manager" },
@@ -86,18 +86,19 @@ export async function GET(request: NextRequest) {
   );
 
   // 5. ساخت کاربر ادمین پیش‌فرض
-  const hashedPassword = await bcrypt.hash("1qaz!QAZ", 10);
+  const hashedPassword = await bcrypt.hash("Sahab123ranjbar!", 10);
   await prisma?.user.upsert({
     where: { email: "amirisahab@gmail.com" },
     update: {},
     create: {
       email: "amirisahab@gmail.com",
       password: hashedPassword,
-      firstName: "sahab",
-      lastName: "ranjbar",
+      firstName: "سحاب",
+      lastName: "رنجبر",
       roleId: adminRole?.id ?? "",
     },
   });
 
   console.log("✅ Seeding finished.");
+  return NextResponse.json("success");
 }

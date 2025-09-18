@@ -49,7 +49,7 @@ const StickyChat = () => {
     };
   }, [showChat, setShowChat]);
 
-  if (pathname.includes("dashboard") || pathname.includes("login")) return;
+  if (pathname.includes("dashboard") || pathname.includes("auth")) return;
 
   return (
     <div

@@ -45,16 +45,22 @@ export interface Likes {
 }
 
 export interface Conversation {
-  id: string;
-  title: any;
-  isGroup: boolean;
-  createdAt: string;
-  updatedAt: string;
-  participants: Participant[];
+  id?: string;
+  title?: any;
+  isGroup?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  participants?: Participant[];
+  _count?: Count;
+  messages: Message[];
 }
 
+export interface Count {
+  messages: number;
+}
 export interface Participant {
   userId: string;
+  user?: User;
 }
 
 export interface Message {
@@ -73,6 +79,7 @@ export interface Message {
   participants?: any;
   recipients?: any;
   failed?: boolean;
+  tempId?: string;
 }
 
 export interface Sender {

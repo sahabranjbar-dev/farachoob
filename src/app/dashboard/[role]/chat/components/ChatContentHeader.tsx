@@ -4,15 +4,21 @@ import Image from "next/image";
 import { useChat } from "../../../../../../stores";
 
 const ChatContentHeader = () => {
-  const { setUserInfo, userInfo } = useChat();
+  const { setUserInfo, userInfo, setDashboardChatMessage } = useChat();
+
   return (
     <div className="flex items-center justify-between p-2 border-b bg-indigo-500 text-white">
       <div>
-        <XIcon onClick={() => setUserInfo(null)} />
+        <XIcon
+          onClick={() => {
+            setUserInfo(null);
+            setDashboardChatMessage([]);
+          }}
+        />
       </div>
 
       <div>
-        <span>{userInfo?.email}</span>
+        <span>{userInfo?.email || userInfo?.firstName || "کاربر میهمان"}</span>
       </div>
 
       <div className="rounded-full w-15 h-15 overflow-hidden border">

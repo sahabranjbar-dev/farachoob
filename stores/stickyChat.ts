@@ -1,7 +1,5 @@
-import { Message } from "@/app/dashboard/[role]/chat/components/ChatMessages";
+import { Message } from "@/types/common";
 import { create } from "zustand";
-
-type NewMessage = Message & { loading?: boolean };
 
 export interface ConverSation {
   id?: string;
@@ -42,7 +40,9 @@ interface IuseStickyChat {
   conversationData: ConverSation | null;
   setConversationData: (value: ConverSation | null) => void;
   messages: Message[];
-  setMessages: (newMessage: Message[]) => void;
+  setMessages: (
+    messages: Message[] | ((previousMessages: Message[]) => Message[])
+  ) => void;
 }
 
 export interface Role {
@@ -66,7 +66,11 @@ export const useStickyChat = create<IuseStickyChat>((set, get) => ({
   setConversationData(value) {
     set({ conversationData: value, messages: [] });
   },
-  setMessages(newMessage) {
-    set({ messages: newMessage });
+  setMessages(updater) {
+    if (typeof updater === "function") {
+      set((state) => ({ messages: updater(state.messages) }));
+    } else {
+      set({ messages: updater });
+    }
   },
 }));

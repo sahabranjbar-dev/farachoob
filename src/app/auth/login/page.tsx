@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Spinner from "@/components/Spinner";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type LoginFormData = {
   email: string; // بهتره با ایمیل لاگین کنیم چون شما تو authOptions ایمیل رو چک میکنی
@@ -52,7 +53,8 @@ const LoginPage = () => {
         text: "نام کاربری یا رمز عبور اشتباه است. لطفاً دوباره تلاش کنید.",
       });
     } else {
-      setMessage({ type: "success", text: "ورود موفقیت‌آمیز بود." });
+      setMessage({ type: "success", text: "با موفقیت وارد شدید" });
+      toast.success("با موفقیت وارد شدید");
       router.push(callbackUrl);
     }
   };

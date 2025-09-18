@@ -600,8 +600,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.15.0
-   * Query Engine version: 85179d7826409ee107a6ba334b5e305ae3fba9fb
+   * Prisma Client JS version: 6.16.2
+   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
    */
   export type PrismaVersion = {
     client: string
@@ -2729,6 +2729,10 @@ export namespace Prisma {
       timeout?: number
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
+    /**
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     */
+    adapter?: runtime.SqlDriverAdapterFactory | null
     /**
      * Global configuration for omitting model fields by default.
      * 
@@ -24464,6 +24468,7 @@ export namespace Prisma {
 
   export type MessageMinAggregateOutputType = {
     id: string | null
+    tempId: string | null
     conversationId: string | null
     senderId: string | null
     content: string | null
@@ -24476,6 +24481,7 @@ export namespace Prisma {
 
   export type MessageMaxAggregateOutputType = {
     id: string | null
+    tempId: string | null
     conversationId: string | null
     senderId: string | null
     content: string | null
@@ -24488,6 +24494,7 @@ export namespace Prisma {
 
   export type MessageCountAggregateOutputType = {
     id: number
+    tempId: number
     conversationId: number
     senderId: number
     content: number
@@ -24503,6 +24510,7 @@ export namespace Prisma {
 
   export type MessageMinAggregateInputType = {
     id?: true
+    tempId?: true
     conversationId?: true
     senderId?: true
     content?: true
@@ -24515,6 +24523,7 @@ export namespace Prisma {
 
   export type MessageMaxAggregateInputType = {
     id?: true
+    tempId?: true
     conversationId?: true
     senderId?: true
     content?: true
@@ -24527,6 +24536,7 @@ export namespace Prisma {
 
   export type MessageCountAggregateInputType = {
     id?: true
+    tempId?: true
     conversationId?: true
     senderId?: true
     content?: true
@@ -24613,6 +24623,7 @@ export namespace Prisma {
 
   export type MessageGroupByOutputType = {
     id: string
+    tempId: string | null
     conversationId: string
     senderId: string
     content: string | null
@@ -24643,6 +24654,7 @@ export namespace Prisma {
 
   export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    tempId?: boolean
     conversationId?: boolean
     senderId?: boolean
     content?: boolean
@@ -24660,6 +24672,7 @@ export namespace Prisma {
 
   export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    tempId?: boolean
     conversationId?: boolean
     senderId?: boolean
     content?: boolean
@@ -24675,6 +24688,7 @@ export namespace Prisma {
 
   export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    tempId?: boolean
     conversationId?: boolean
     senderId?: boolean
     content?: boolean
@@ -24690,6 +24704,7 @@ export namespace Prisma {
 
   export type MessageSelectScalar = {
     id?: boolean
+    tempId?: boolean
     conversationId?: boolean
     senderId?: boolean
     content?: boolean
@@ -24701,7 +24716,7 @@ export namespace Prisma {
     deleted?: boolean
   }
 
-  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "conversationId" | "senderId" | "content" | "metadata" | "createdAt" | "updatedAt" | "delivered" | "read" | "deleted", ExtArgs["result"]["message"]>
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tempId" | "conversationId" | "senderId" | "content" | "metadata" | "createdAt" | "updatedAt" | "delivered" | "read" | "deleted", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     conversation?: boolean | ConversationDefaultArgs<ExtArgs>
     sender?: boolean | UserDefaultArgs<ExtArgs>
@@ -24726,6 +24741,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      tempId: string | null
       conversationId: string
       senderId: string
       content: string | null
@@ -25162,6 +25178,7 @@ export namespace Prisma {
    */
   interface MessageFieldRefs {
     readonly id: FieldRef<"Message", 'String'>
+    readonly tempId: FieldRef<"Message", 'String'>
     readonly conversationId: FieldRef<"Message", 'String'>
     readonly senderId: FieldRef<"Message", 'String'>
     readonly content: FieldRef<"Message", 'String'>
@@ -28050,6 +28067,7 @@ export namespace Prisma {
 
   export const MessageScalarFieldEnum: {
     id: 'id',
+    tempId: 'tempId',
     conversationId: 'conversationId',
     senderId: 'senderId',
     content: 'content',
@@ -29509,6 +29527,7 @@ export namespace Prisma {
     OR?: MessageWhereInput[]
     NOT?: MessageWhereInput | MessageWhereInput[]
     id?: StringFilter<"Message"> | string
+    tempId?: StringNullableFilter<"Message"> | string | null
     conversationId?: StringFilter<"Message"> | string
     senderId?: StringFilter<"Message"> | string
     content?: StringNullableFilter<"Message"> | string | null
@@ -29525,6 +29544,7 @@ export namespace Prisma {
 
   export type MessageOrderByWithRelationInput = {
     id?: SortOrder
+    tempId?: SortOrderInput | SortOrder
     conversationId?: SortOrder
     senderId?: SortOrder
     content?: SortOrderInput | SortOrder
@@ -29544,6 +29564,7 @@ export namespace Prisma {
     AND?: MessageWhereInput | MessageWhereInput[]
     OR?: MessageWhereInput[]
     NOT?: MessageWhereInput | MessageWhereInput[]
+    tempId?: StringNullableFilter<"Message"> | string | null
     conversationId?: StringFilter<"Message"> | string
     senderId?: StringFilter<"Message"> | string
     content?: StringNullableFilter<"Message"> | string | null
@@ -29560,6 +29581,7 @@ export namespace Prisma {
 
   export type MessageOrderByWithAggregationInput = {
     id?: SortOrder
+    tempId?: SortOrderInput | SortOrder
     conversationId?: SortOrder
     senderId?: SortOrder
     content?: SortOrderInput | SortOrder
@@ -29579,6 +29601,7 @@ export namespace Prisma {
     OR?: MessageScalarWhereWithAggregatesInput[]
     NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Message"> | string
+    tempId?: StringNullableWithAggregatesFilter<"Message"> | string | null
     conversationId?: StringWithAggregatesFilter<"Message"> | string
     senderId?: StringWithAggregatesFilter<"Message"> | string
     content?: StringNullableWithAggregatesFilter<"Message"> | string | null
@@ -31048,6 +31071,7 @@ export namespace Prisma {
 
   export type MessageCreateInput = {
     id?: string
+    tempId?: string | null
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -31062,6 +31086,7 @@ export namespace Prisma {
 
   export type MessageUncheckedCreateInput = {
     id?: string
+    tempId?: string | null
     conversationId: string
     senderId: string
     content?: string | null
@@ -31076,6 +31101,7 @@ export namespace Prisma {
 
   export type MessageUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31090,6 +31116,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     conversationId?: StringFieldUpdateOperationsInput | string
     senderId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31104,6 +31131,7 @@ export namespace Prisma {
 
   export type MessageCreateManyInput = {
     id?: string
+    tempId?: string | null
     conversationId: string
     senderId: string
     content?: string | null
@@ -31117,6 +31145,7 @@ export namespace Prisma {
 
   export type MessageUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31128,6 +31157,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     conversationId?: StringFieldUpdateOperationsInput | string
     senderId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32379,6 +32409,7 @@ export namespace Prisma {
 
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
+    tempId?: SortOrder
     conversationId?: SortOrder
     senderId?: SortOrder
     content?: SortOrder
@@ -32392,6 +32423,7 @@ export namespace Prisma {
 
   export type MessageMaxOrderByAggregateInput = {
     id?: SortOrder
+    tempId?: SortOrder
     conversationId?: SortOrder
     senderId?: SortOrder
     content?: SortOrder
@@ -32404,6 +32436,7 @@ export namespace Prisma {
 
   export type MessageMinOrderByAggregateInput = {
     id?: SortOrder
+    tempId?: SortOrder
     conversationId?: SortOrder
     senderId?: SortOrder
     content?: SortOrder
@@ -34438,6 +34471,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutSenderInput = {
     id?: string
+    tempId?: string | null
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -34451,6 +34485,7 @@ export namespace Prisma {
 
   export type MessageUncheckedCreateWithoutSenderInput = {
     id?: string
+    tempId?: string | null
     conversationId: string
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -34731,6 +34766,7 @@ export namespace Prisma {
     OR?: MessageScalarWhereInput[]
     NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
     id?: StringFilter<"Message"> | string
+    tempId?: StringNullableFilter<"Message"> | string | null
     conversationId?: StringFilter<"Message"> | string
     senderId?: StringFilter<"Message"> | string
     content?: StringNullableFilter<"Message"> | string | null
@@ -36771,6 +36807,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutConversationInput = {
     id?: string
+    tempId?: string | null
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -36784,6 +36821,7 @@ export namespace Prisma {
 
   export type MessageUncheckedCreateWithoutConversationInput = {
     id?: string
+    tempId?: string | null
     senderId: string
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -37215,6 +37253,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutHistoriesInput = {
     id?: string
+    tempId?: string | null
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -37228,6 +37267,7 @@ export namespace Prisma {
 
   export type MessageUncheckedCreateWithoutHistoriesInput = {
     id?: string
+    tempId?: string | null
     conversationId: string
     senderId: string
     content?: string | null
@@ -37257,6 +37297,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutHistoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37270,6 +37311,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateWithoutHistoriesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     conversationId?: StringFieldUpdateOperationsInput | string
     senderId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
@@ -37592,6 +37634,7 @@ export namespace Prisma {
 
   export type MessageCreateManySenderInput = {
     id?: string
+    tempId?: string | null
     conversationId: string
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -37743,6 +37786,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutSenderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37756,6 +37800,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateWithoutSenderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     conversationId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -37769,6 +37814,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateManyWithoutSenderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     conversationId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -38397,6 +38443,7 @@ export namespace Prisma {
 
   export type MessageCreateManyConversationInput = {
     id?: string
+    tempId?: string | null
     senderId: string
     content?: string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -38427,6 +38474,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38440,6 +38488,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     senderId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue
@@ -38453,6 +38502,7 @@ export namespace Prisma {
 
   export type MessageUncheckedUpdateManyWithoutConversationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tempId?: NullableStringFieldUpdateOperationsInput | string | null
     senderId?: StringFieldUpdateOperationsInput | string
     content?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: NullableJsonNullValueInput | InputJsonValue

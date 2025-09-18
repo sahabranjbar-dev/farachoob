@@ -5,65 +5,101 @@ import clsx from "clsx";
 import {
   Check,
   CheckCheck,
-  Clock,
+  Loader,
   MessageCircleWarning,
   RotateCcw,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useChat } from "../../../../../../stores";
+import { markMessagesRead } from "@/lib/utils";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
-  const messageRef = useRef<HTMLLIElement | null>(null);
   const session = useSession();
 
-  const { conversation, setMessages, socket, messages, postMessage } =
-    useChat();
+  const {
+    conversation,
+    socket,
+    messages,
+    setDashboardChatMessage,
+    getConversatioMessageLoading,
+  } = useChat();
 
   const conversationId = conversation?.id;
-
   const userId = session.data?.user.id;
 
-  const { loading: getMessageLoading } = useDataGetter<Message[]>({
-    url: `/dashboard/conversations/${conversationId}/messages`,
-    method: "GET",
-    onSuccess(data) {
-      setMessages(data);
-    },
+  const { fetch: postMessage } = useDataGetter({
+    url: "/dashboard/conversations/messages",
+    method: "POST",
+    immediatelyFetch: false,
+    params: { conversationId },
   });
 
   const { fetch: updateMessage } = useDataGetter({
-    url: `/dashboard/conversations/${conversationId}/messages`,
+    url: "/dashboard/conversations/messages/read",
     method: "PUT",
     immediatelyFetch: false,
+    params: { conversationId },
   });
 
-  const getMessages = (data: Message) => {
-    if (messages.length === 0) return [data];
-
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage.loading && lastMessage.content === data.content) {
-      return [...messages.slice(0, -1), { ...data, loading: false }];
-    }
-    return [...messages, data];
-  };
-  // Handle incoming new messages
+  // دریافت پیام‌های جدید از socket
   useEffect(() => {
+    if (!socket) return;
+
     const handleNewMessage = (data: Message) => {
-      const messages = getMessages(data);
-
-      setMessages(messages);
+      setDashboardChatMessage((prev) => [...prev, data]);
     };
 
-    socket?.on("new-message", handleNewMessage);
+    socket.on("new-message-to-admin", handleNewMessage);
     return () => {
-      socket?.off("new-message", handleNewMessage);
+      socket.off("new-message-to-admin", handleNewMessage);
     };
-  }, [socket]);
+  }, [socket, setDashboardChatMessage]);
 
-  // Compute unread messages
-  const isUnReadMessages = useMemo(
+  useEffect(() => {
+    if (!socket) return;
+
+    if (!socket) return;
+    const handleNewMessage = (data: {
+      conversationId: string;
+      messageId: string;
+      userId: string;
+    }) => {
+      const messageId = data?.messageId;
+      setDashboardChatMessage((prev) => {
+        const resolvedMessage = markMessagesRead(prev, messageId);
+        return resolvedMessage;
+      });
+    };
+
+    socket.on("sticky-read-message", handleNewMessage);
+    return () => {
+      socket.off("sticky-read-message", handleNewMessage);
+    };
+  }, [socket, setDashboardChatMessage]);
+
+  // scroll خودکار به آخر چت
+  useEffect(() => {
+    const chatContainer = lastMessageRef.current?.parentElement;
+    if (!chatContainer) return;
+
+    const atBottom =
+      chatContainer.scrollHeight - chatContainer.scrollTop <=
+      chatContainer.clientHeight + 50;
+
+    if (atBottom) {
+      requestAnimationFrame(() => {
+        lastMessageRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      });
+    }
+  }, [messages]);
+
+  // پیام‌های unread
+  const unreadMessages = useMemo(
     () =>
       messages.filter(
         (msg) => !msg.read && msg.senderId !== userId && !msg.loading
@@ -71,89 +107,87 @@ const ChatMessages = () => {
     [messages, userId]
   );
 
-  const lastIdOfUnReadMessages = useMemo(
-    () =>
-      isUnReadMessages.length > 0
-        ? isUnReadMessages[isUnReadMessages.length - 1]?.id
-        : isUnReadMessages[0]?.id,
-    [isUnReadMessages]
-  );
+  const lastUnreadId = unreadMessages.length
+    ? unreadMessages[unreadMessages.length - 1]?.id
+    : null;
+
+  const unreadRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
+  const readMessages = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (!lastUnreadId) return;
+    if (readMessages.current.has(lastUnreadId)) return;
 
-  useEffect(() => {
-    if (!messageRef.current || !lastIdOfUnReadMessages) return;
+    const el = unreadRefs.current[lastUnreadId];
+    if (!el) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          socket?.emit("mark-read", {
-            conversationId: conversationId,
-            userId,
-            messageId: lastIdOfUnReadMessages,
+          updateMessage?.({
+            inputBody: { id: lastUnreadId },
+          }).then(() => {
+            socket?.emit("sticky-mark-read", {
+              conversationId,
+              userId,
+              messageId: lastUnreadId,
+            });
+
+            readMessages.current.add(lastUnreadId);
+
+            observer.disconnect();
           });
         }
       },
       { threshold: 0.5 }
     );
 
-    observer.observe(messageRef.current);
+    observer.observe(el);
+
     return () => observer.disconnect();
-  }, [socket, conversationId, userId, lastIdOfUnReadMessages]);
+  }, [socket, conversationId, userId, lastUnreadId]);
 
-  // Handle message read from socket
-  const getNewMessages = (messageId: string) => {
-    return messages.map((msg) =>
-      msg.id === messageId ? { ...msg, read: true } : msg
-    );
-  };
-  const renderStatus = (message: Message) => {
-    const isOwnMessage = message.senderId === userId;
-
-    if (message.failed) return <MessageCircleWarning />;
-    if (message.loading) {
-      if (!isOwnMessage) return null;
-      return <Clock size={20} className="opacity-70" />;
-    }
-
-    if (message.read) {
-      if (!isOwnMessage) return null;
+  // render وضعیت پیام
+  const renderStatus = (msg: Message) => {
+    const isOwn = msg.senderId === userId;
+    if (msg.failed) return <MessageCircleWarning />;
+    if (msg.loading && isOwn)
+      return <Loader size={20} className="animate-spin" />;
+    if (msg.read && isOwn)
       return <CheckCheck size={20} className="opacity-70" />;
-    }
-
-    return <Check size={20} className="opacity-70" />;
+    if (isOwn) return <Check size={20} className="opacity-70" />;
+    return null;
   };
-  useEffect(() => {
-    const handleMessageRead = ({
-      conversationId: convId,
-      userId: readerId,
-      messageId,
-    }: {
-      conversationId: string;
-      userId: string;
-      messageId: string;
-    }) => {
-      if (convId !== conversationId || !readerId || !messageId) return;
 
-      updateMessage?.({
-        inputBody: { id: messageId, read: true },
-      }).then((data) => {
-        if (data.ok) {
-          const newMessages = getNewMessages(messageId);
-          setMessages(newMessages);
-        }
+  // ارسال مجدد پیام failed
+  const handleRetry = async (msg: Message) => {
+    try {
+      setDashboardChatMessage((prev) =>
+        prev.map((m) =>
+          m.tempId === msg.tempId ? { ...m, loading: true, failed: false } : m
+        )
+      );
+
+      await postMessage?.({
+        inputBody: { content: msg.content },
       });
-    };
 
-    socket?.on("message-read", handleMessageRead);
-    return () => {
-      socket?.off("message-read", handleMessageRead);
-    };
-  }, [socket, conversationId, updateMessage]);
+      setDashboardChatMessage((prev) =>
+        prev.map((m) =>
+          m.tempId === msg.tempId ? { ...m, loading: false } : m
+        )
+      );
+    } catch (err) {
+      console.error("Failed to resend message:", err);
+      setDashboardChatMessage((prev) =>
+        prev.map((m) =>
+          m.tempId === msg.tempId ? { ...m, failed: true, loading: false } : m
+        )
+      );
+    }
+  };
 
-  if (getMessageLoading) {
+  if (getConversatioMessageLoading) {
     return (
       <div className="flex justify-center gap-1 items-center h-full">
         در حال دریافت پیام‌ها
@@ -173,37 +207,29 @@ const ChatMessages = () => {
   }
 
   return (
-    <ul className="p-4">
+    <ul className="p-4 overflow-y-auto max-h-[500px]">
       {messages.map((msg, index) => {
         const date = new Date(msg?.createdAt ?? "");
         const time = `${date.getHours()}:${date
           .getMinutes()
           .toString()
           .padStart(2, "0")}`;
-        const isOwnMessage = msg.senderId === userId;
+        const isOwn = msg.senderId === userId;
 
-        const lasMessageRead =
-          msg.id === lastIdOfUnReadMessages &&
-          !msg.read &&
-          msg.senderId !== userId;
         return (
           <li
-            ref={
-              msg.id === lastIdOfUnReadMessages &&
-              !msg.read &&
-              msg.senderId !== userId
-                ? messageRef
-                : undefined
-            }
-            key={msg.id || `${msg.content}-${index}`}
+            key={msg.id || msg.tempId || `${msg.content}-${index}`}
+            ref={(el) => {
+              if (msg.id === lastUnreadId)
+                unreadRefs.current[msg.id ?? ""] = el;
+            }}
             className={clsx(
               "rounded-2xl w-fit p-3 m-1 relative",
-              isOwnMessage
+              isOwn
                 ? msg.failed
                   ? "bg-red-500 text-white"
                   : "bg-indigo-500 ml-auto text-white"
-                : "bg-gray-200 mr-auto text-black",
-              {}
+                : "bg-gray-200 mr-auto text-black"
             )}
           >
             <div
@@ -214,26 +240,23 @@ const ChatMessages = () => {
             </div>
 
             <div className="flex justify-end items-center gap-2">
-              <span className="opacity-75 text-sm">
-                {msg.loading ? undefined : time}
-              </span>
+              {!msg.loading && (
+                <span className="opacity-75 text-sm">{time}</span>
+              )}
               <span>{renderStatus(msg)}</span>
             </div>
-            <div
-              className="absolute -left-8 top-[50%] cursor-pointer"
-              onClick={() => {
-                postMessage({
-                  content: msg.content,
-                });
-              }}
-            >
-              {msg.failed && isOwnMessage && (
+
+            {msg.failed && isOwn && (
+              <div
+                className="absolute -left-8 top-[50%] cursor-pointer"
+                onClick={() => handleRetry(msg)}
+              >
                 <RotateCcw
                   color="gray"
                   className="hover:-rotate-180 transition-transform duration-200"
                 />
-              )}
-            </div>
+              </div>
+            )}
           </li>
         );
       })}

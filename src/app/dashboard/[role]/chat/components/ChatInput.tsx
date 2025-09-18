@@ -1,59 +1,54 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import useDataGetter from "@/hooks/useDataGetter";
+import { Message } from "@/types/common";
 import { useSession } from "next-auth/react";
-import { KeyboardEventHandler, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useChat } from "../../../../../../stores";
-import { Message } from "@/types/common";
+import useDataGetter from "@/hooks/useDataGetter";
+import { memo } from "react";
+import { v4 as uuid } from "uuid";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormValues = {
   message: string;
 };
 
-const ChatInput = () => {
+const ChatInput = memo(() => {
   const { register, handleSubmit, reset, watch } = useForm<FormValues>();
   const session = useSession();
-
   const senderId = session.data?.user.id;
-  const { conversation, setMessages, socket, messages, postMessage } =
-    useChat();
+  const { conversation, setDashboardChatMessage, socket, messages } = useChat();
   const conversationId = conversation?.id;
 
-  // Merge saved message into current messages
-  const mergeMessages = (savedMessage: Message) => {
-    console.log({ savedMessage });
-
-    if (!messages.length) return [savedMessage];
-    console.log({ messages });
-
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage.loading && lastMessage.content === savedMessage.content) {
-      return [...messages.slice(0, -1), { ...savedMessage, loading: false }];
-    }
-    return [...messages, savedMessage];
-  };
+  const { fetch: postMessage } = useDataGetter({
+    url: `/dashboard/conversations/messages`,
+    params: { conversationId },
+    method: "POST",
+    immediatelyFetch: false,
+  });
 
   const onSubmit = (data: FormValues) => {
-    const tempMessage: Message = {
-      id: "temp-" + Date.now(),
-      content: data.message,
-      senderId,
-    };
-
     if (!data.message.trim() || !conversationId) return;
 
-    setMessages([...messages, { ...tempMessage, loading: true }]);
+    const randomId = uuid();
+    const tempId = "temp-" + randomId;
+    const tempMessage: Message = {
+      content: data.message,
+      senderId,
+      tempId,
+    };
+
+    setDashboardChatMessage([...messages, { ...tempMessage, loading: true }]);
     reset();
 
-    postMessage?.({ content: data.message })
+    postMessage?.({
+      inputBody: { content: data.message },
+    })
       .then((savedMessage) => {
-        console.log({ savedMessage }, "postmessage on submit");
         if (!savedMessage?.id) return;
 
-        // Send to socket
-        socket?.emit("send-message", {
+        socket?.emit("send-message-to-sticky", {
           ...savedMessage,
           senderId,
           content: savedMessage.content,
@@ -63,13 +58,23 @@ const ChatInput = () => {
           recipients: savedMessage.recipients,
           loading: false,
         });
-        console.log(mergeMessages(savedMessage), "mergeMessages(savedMessage)");
+        setDashboardChatMessage((prev) => {
+          const resolvedMessage = prev.filter((item) => item.tempId !== tempId);
 
-        setMessages(mergeMessages(savedMessage));
+          return [...resolvedMessage, savedMessage];
+        });
       })
       .catch((err) => {
         console.error("Failed to send message:", err);
-        setMessages([...messages, { ...tempMessage, failed: true }]);
+
+        setDashboardChatMessage((prev) =>
+          prev.map(
+            (item) =>
+              item.tempId === tempId
+                ? { ...item, failed: true } // پیام failed میشه
+                : item // بقیه پیام‌ها همونطور بمونن
+          )
+        );
       });
   };
 
@@ -79,7 +84,7 @@ const ChatInput = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex items-center justify-between gap-2 border-t p-4"
       >
-        <textarea
+        <Textarea
           placeholder="پیام خود را اینجا بنویسید..."
           className="w-full resize-none rounded border p-2 break-words whitespace-pre-wrap"
           {...register("message", { required: true })}
@@ -93,8 +98,11 @@ const ChatInput = () => {
         />
 
         <Button
-          disabled={!watch("message")}
+          disabled={!watch("message").trim()}
           type="submit"
+          tooltip={
+            conversationId ? undefined : "دوباره بر روی این گفت کلیک کنید"
+          }
           className="rounded-2xl bg-indigo-500 text-white hover:bg-indigo-600 disabled:cursor-not-allowed"
         >
           ارسال
@@ -102,6 +110,6 @@ const ChatInput = () => {
       </form>
     </div>
   );
-};
+});
 
 export default ChatInput;
