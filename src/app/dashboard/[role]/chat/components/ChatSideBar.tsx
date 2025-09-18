@@ -1,47 +1,57 @@
 "use client";
 
 import clsx from "clsx";
-import { UsersRound } from "lucide-react";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { useChat } from "../../../../../../stores";
+import { ArrowRightFromLine, RefreshCcw, UserRoundSearch } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { cloneElement, ReactElement, useEffect, useState } from "react";
+import useDataGetter from "@/hooks/useDataGetter";
+import { Conversation } from "@/types/common";
+import { useChat } from "../../../../../../stores";
+import { IChatList } from "./ChatList";
+import { toast } from "sonner";
+import { fetchConvs } from "../meta/utils";
 
-interface Props {}
+interface Props {
+  children: ReactElement<IChatList>;
+}
 
-const ChatSideBar = ({ children }: PropsWithChildren<Props>) => {
-  const [open, setOpen] = useState<boolean>(true);
-
-  const { socket, setOnlineUsers, onlineUsers } = useChat();
-
+const ChatSideBar = ({ children }: Props) => {
+  const {
+    socket,
+    setOnlineUsers,
+    onlineUsers,
+    setConversation,
+    openSidebar,
+    setOpenSidebar,
+    setUserInfo,
+    setConversations,
+    conversations: conversationsData,
+  } = useChat();
   const session = useSession();
-
   const userId = session.data?.user.id;
 
-  const getOnlineUsers = (newUserId: string) => {
-    if (!onlineUsers.includes(newUserId)) {
-      return [...onlineUsers, newUserId];
-    }
-    return onlineUsers;
-  };
+  const isAdmin = session.data?.user.role?.englishTitle === "admin";
+
+  const { loading: getConversatioLoading, fetch: getConverSations } =
+    useDataGetter<{ conversations: Conversation[] }>({
+      url: "/dashboard/conversations",
+      onSuccess(data) {
+        setConversations(data?.conversations);
+      },
+    });
 
   useEffect(() => {
     if (!socket || !userId) return;
-
-    // اطلاع به سرور درباره آنلاین بودن کاربر
-    socket.emit("user-online", userId);
-
-    // دریافت لیست کاربران آنلاین
     socket.emit("get-online-users");
 
-    // گوش دادن به رویدادهای کاربران آنلاین
     socket.on("user-online", (newUserId: string) => {
-      const newOnlineUsers = getOnlineUsers(newUserId);
-      setOnlineUsers(newOnlineUsers);
+      if (!onlineUsers.includes(newUserId)) {
+        setOnlineUsers([...onlineUsers, newUserId]);
+      }
     });
 
     socket.on("user-offline", (offlineUserId: string) => {
-      const newOnlineUsers = onlineUsers.filter((id) => id !== offlineUserId);
-      setOnlineUsers(newOnlineUsers);
+      setOnlineUsers(onlineUsers.filter((id) => id !== offlineUserId));
     });
 
     socket.on("online-users-list", (users: string[]) => {
@@ -53,23 +63,85 @@ const ChatSideBar = ({ children }: PropsWithChildren<Props>) => {
       socket.off("user-offline");
       socket.off("online-users-list");
     };
-  }, [socket, userId]);
+  }, [socket, userId, onlineUsers]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("admin-recieve-new-message", async (data) => {
+      if (isAdmin) {
+        fetchConvs().then((data) => {
+          toast.info("شما پیام جدید دریافت کردید");
+        });
+      }
+    });
+
+    return () => {
+      socket.off("admin-recieve-new-message");
+    };
+  }, [socket, isAdmin, setConversations]);
+
   return (
     <div
       className={clsx(
-        "h-full border-l transition-all duration-300 flex flex-col",
-        open ? "w-1/4" : "w-12"
+        "h-full border-r transition-all duration-300 flex flex-col bg-gray-50",
+        openSidebar ? "w-72" : "w-16"
       )}
     >
-      <UsersRound
-        onClick={() => setOpen(!open)}
-        className="m-2 cursor-pointer"
-      />
-      {open && (
-        <div className="flex-1 h-[calc(100%-40px)] overflow-y-auto">
-          {children}
+      {/* Header */}
+      <div className="flex items-center justify-between px-2 py-3 border-b bg-blue-100">
+        <div className="flex gap-1">
+          {/* Toggle button */}
+          <span
+            className="p-2 cursor-pointer rounded-lg hover:bg-gray-100"
+            onClick={() => setOpenSidebar(!openSidebar)}
+          >
+            <ArrowRightFromLine
+              className={clsx(
+                "cursor-pointer hover:scale-110 transition-transform",
+                {
+                  "rotate-180": !openSidebar,
+                }
+              )}
+            />
+          </span>
+
+          {/* Refresh button */}
+          {openSidebar && (
+            <span
+              className="p-2 cursor-pointer rounded-lg hover:bg-gray-100"
+              onClick={() => {
+                if (!getConversatioLoading) {
+                  setUserInfo(null);
+                  getConverSations?.({});
+                }
+              }}
+            >
+              <RefreshCcw
+                className={clsx("transition-transform duration-200", {
+                  "animate-spin text-gray-400": getConversatioLoading,
+                })}
+              />
+            </span>
+          )}
         </div>
-      )}
+
+        {/* Search */}
+        {openSidebar && (
+          <span>
+            <UserRoundSearch className="cursor-pointer hover:scale-110 transition-transform" />
+          </span>
+        )}
+      </div>
+
+      {/* Chat List */}
+
+      <div className="flex-1 overflow-y-auto">
+        {cloneElement(children, {
+          getConversatioLoading,
+          conversationsData,
+        })}
+      </div>
     </div>
   );
 };

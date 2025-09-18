@@ -9,12 +9,15 @@ export interface IChatState {
   onlineUsers: string[];
   conversations: Conversation[];
   getConversatioMessageLoading: boolean;
+  openSidebar: boolean;
 
+  setOpenSidebar: (openSidebar: boolean) => void;
   setConversatioMessageLoading: (value: boolean) => void;
   setOnlineUsers: (onlineUsers: string[]) => void;
   setDashboardChatMessage: (
     messages: Message[] | ((previousMessages: Message[]) => Message[])
   ) => void;
-  setConversation: (conversation: Conversation) => void;
+  setConversation: (conversation: Conversation | null) => void;
   setUserInfo: (userInfo: User | null) => void;
+  setConversations: (conversations: Conversation[]) => void;
 }

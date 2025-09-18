@@ -8,7 +8,7 @@ export async function PUT(req: NextRequest) {
     const url = new URL(req.url);
     const conversationId = url.searchParams.get("conversationId") as string;
 
-    const { id } = await req.json();
+    const { id, senderId } = await req.json();
 
     if (!id) {
       return NextResponse.json(
@@ -17,7 +17,7 @@ export async function PUT(req: NextRequest) {
       );
     }
     const targetMessage = await prisma.message.findUnique({
-      where: { id },
+      where: { id, NOT: { senderId } },
     });
 
     if (!targetMessage) {

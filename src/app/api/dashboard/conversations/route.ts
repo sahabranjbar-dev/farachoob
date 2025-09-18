@@ -1,7 +1,7 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import prisma from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const userId = session?.user?.id;
 
     if (!userId) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return Response.redirect("/auth/login");
     }
 
     let body;
@@ -28,36 +28,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // بررسی نقش کاربر جاری
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: { select: { englishTitle: true } } },
+    });
+
+    const isManager = ["admin", "manager"].includes(
+      currentUser?.role?.englishTitle ?? ""
+    );
+
     // بررسی وجود کانورسیشن قبلی
     let conversation = await prisma.conversation.findFirst({
       where: {
         isGroup: false,
-        participants: {
-          some: { userId: userId },
-        },
-        AND: {
-          participants: {
-            some: { userId: participantId },
-          },
-        },
+        participants: { some: { userId } },
+        AND: { participants: { some: { userId: participantId } } },
       },
       include: {
         participants: { select: { userId: true } },
-        messages: {
-          orderBy: {
-            createdAt: "asc", // ✅ پیام‌های قدیمی اول، جدیدترین آخر
-          },
-        },
+        messages: { orderBy: { createdAt: "asc" as const } },
       },
     });
 
     if (!conversation) {
+      const participantsData = [{ userId: participantId }];
+      if (!isManager) {
+        participantsData.push({ userId }); // فقط اگر مدیر نیست، خودش اضافه کن
+      }
+
       conversation = await prisma.conversation.create({
         data: {
           isGroup: false,
-          participants: {
-            create: [{ userId }, { userId: participantId }],
-          },
+          participants: { create: participantsData },
         },
         include: {
           participants: { select: { userId: true } },
@@ -69,7 +72,6 @@ export async function POST(req: NextRequest) {
     return Response.json(conversation, { status: 200 });
   } catch (error) {
     console.error("POST /api/conversation error:", error);
-
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
@@ -97,6 +99,7 @@ const baseConversationInclude = {
     },
   },
   messages: {
+    orderBy: { createdAt: "desc" as const }, // حتما "desc" یا "asc" از نوع SortOrder باشه
     select: {
       id: true,
       tempId: true,
@@ -111,40 +114,45 @@ const baseConversationInclude = {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.redirect("/auth/login");
     }
-
-    const userId = session.user.id;
 
     // بررسی نقش کاربر
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        role: { select: { englishTitle: true } },
-      },
+      select: { role: { select: { englishTitle: true } } },
     });
 
-    if (
-      !user ||
-      !["admin", "manager"].includes(user.role.englishTitle ?? "admin")
-    ) {
+    if (!user || !["admin", "manager"].includes(user.role.englishTitle ?? "")) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    // گرفتن همه کانورسیشن‌هایی که کاربر جزو participants هست
     const conversations = await prisma.conversation.findMany({
       where: {
         participants: { some: { userId } },
       },
-      include: baseConversationInclude,
-      orderBy: { createdAt: "desc" },
+      include: {
+        ...baseConversationInclude,
+        _count: {
+          select: {
+            messages: {
+              where: {
+                read: false,
+                senderId: { not: userId }, // اگر میخوای فقط پیام‌های دیگران که نخوانده‌اند
+              },
+            },
+          },
+        },
+      },
+      orderBy: { updatedAt: "desc" },
     });
 
     return NextResponse.json({ conversations }, { status: 200 });
   } catch (error: any) {
+    console.error("GET /conversations error:", error);
     return NextResponse.json(
       { message: error.message || "خطای سرور" },
       { status: 500 }

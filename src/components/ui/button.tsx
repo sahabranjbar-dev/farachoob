@@ -65,11 +65,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
 
     const LeftIcon = React.useMemo(() => {
+      if (left) return left;
       if (type === "submit") {
         return <CheckIcon />;
       } else if (type === "reset") {
         return <X />;
-      } else return left;
+      }
     }, [type, left]);
 
     const buttonElement = (

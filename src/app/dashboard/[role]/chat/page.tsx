@@ -4,13 +4,12 @@ import ChatSideBar from "./components/ChatSideBar";
 
 const ChatPage = () => {
   return (
-    <div className="p-2 mb-20">
-      <section className="border mt-4">
-        <div className="flex min-h-96 h-[70vh]">
+    <div className="p-4">
+      <section className="border rounded-2xl shadow-md bg-white">
+        <div className="flex h-[80vh]">
           <ChatSideBar>
             <ChatList />
           </ChatSideBar>
-
           <ChatScreen />
         </div>
       </section>

@@ -99,14 +99,13 @@ const ConversationContainer = () => {
   const readMessages = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!messages?.length) return;
-    if (!socket) return;
+    if (!messages?.length || !socket) return;
 
     const observers: IntersectionObserver[] = [];
 
     messages.forEach((msg: Message) => {
-      // اگر قبلاً mark شده، ردش کن
-      if (readMessages.current.has(msg.id ?? "")) return;
+      if (readMessages.current.has(msg.id ?? "") || msg.senderId === senderId)
+        return;
 
       const el = unreadRefs.current[msg.id ?? ""];
       if (!el) return;
@@ -114,17 +113,19 @@ const ConversationContainer = () => {
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
-            updateMessage?.({ inputBody: { id: msg.id } }).then(() => {
-              socket?.emit("admin-message-read", {
-                conversationId: conversationData?.id,
-                userId,
-                messageId: msg.id,
-              });
+            updateMessage?.({ inputBody: { id: msg.id, senderId } }).then(
+              () => {
+                socket?.emit("admin-message-read", {
+                  conversationId: conversationData?.id,
+                  userId,
+                  messageId: msg.id,
+                });
 
-              readMessages.current.add(msg.id ?? "");
+                readMessages.current.add(msg.id ?? "");
 
-              observer.disconnect();
-            });
+                observer.disconnect();
+              }
+            );
           }
         },
         { threshold: 0.5 }

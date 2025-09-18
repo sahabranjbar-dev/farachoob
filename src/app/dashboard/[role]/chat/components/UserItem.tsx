@@ -1,60 +1,81 @@
 "use client";
+
 import { Conversation, Message, User } from "@/types/common";
 import { useChat } from "../../../../../../stores";
-import useDataGetter from "@/hooks/useDataGetter";
+import clsx from "clsx";
+import Image from "next/image";
 
 interface Props {
   user: User;
   unReadMessage?: number;
   messages: Message[];
-  conversation: Conversation;
-  getConversatioMessages: () => Promise<any> | undefined;
+  getConversatioMessages: () => void;
 }
 
 const UserItem = ({
   user,
   unReadMessage,
-  conversation,
+  messages,
   getConversatioMessages,
 }: Props) => {
-  const {
-    socket,
-    setUserInfo,
-    setConversatioMessageLoading,
-    onlineUsers,
-    setConversation,
-  } = useChat();
+  const lastMessage = messages[0]?.content ?? "بدون پیام";
+  const { openSidebar, userInfo } = useChat();
 
-  const handleClick = () => {
-    if (!socket) return;
-
-    setUserInfo(user);
-
-    setConversatioMessageLoading(true);
-
-    getConversatioMessages?.()?.then(() => {
-      setConversatioMessageLoading(false);
-    });
-
-    socket.emit("join-conversation", { conversationId: conversation.id });
-    setConversation(conversation);
-  };
   return (
     <div
-      onClick={handleClick}
-      className="p-2 border-b cursor-pointer hover:bg-gray-100 flex justify-start items-center gap-2"
+      onClick={getConversatioMessages}
+      className={clsx(
+        "flex items-center relative cursor-pointer hover:bg-gray-100 transition-colors",
+        openSidebar ? "gap-3 px-4 py-3" : "justify-center py-2",
+        { "bg-indigo-200": userInfo?.id === user.id }
+      )}
     >
-      {onlineUsers.includes(user.id) && (
-        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-      )}
-      <span className="line-clamp-1 overflow-ellipsis w-[70%]">
-        {user.firstName || user.email}
-      </span>
-      {!!unReadMessage && (
-        <div className="p-2 bg-blue-500 text-white rounded-full h-8 w-8 flex justify-center items-center">
-          <span>{unReadMessage}</span>
-        </div>
-      )}
+      {/* Avatar */}
+      <div
+        className={clsx(
+          "flex items-center justify-center rounded-full font-bold overflow-hidden bg-gradient-to-tr from-indigo-400 to-purple-400 text-white",
+          openSidebar ? "w-10 h-10 text-base" : "w-8 h-8 text-sm"
+        )}
+      >
+        {user.image ? (
+          <Image
+            alt="user image"
+            src={user.image}
+            width={openSidebar ? 40 : 32}
+            height={openSidebar ? 40 : 32}
+            className="rounded-full object-cover"
+          />
+        ) : (
+          user.firstName?.[0] ?? "?"
+        )}
+      </div>
+
+      {/* Info */}
+      <div
+        className={clsx(
+          "flex-1 transition-all duration-300 overflow-hidden",
+          openSidebar
+            ? "opacity-100 max-w-[200px]"
+            : "opacity-0 max-w-0 pointer-events-none"
+        )}
+      >
+        <p className="font-medium whitespace-nowrap">
+          {user.firstName} {user.lastName}
+        </p>
+        <p className="text-sm text-gray-500 truncate">{lastMessage}</p>
+      </div>
+
+      {/* Unread Badge */}
+      {unReadMessage ? (
+        <span
+          className={clsx(
+            "bg-indigo-500 text-white text-xs rounded-full",
+            openSidebar ? "px-2 py-1" : "absolute -top-1 -right-1 px-1.5 py-0.5"
+          )}
+        >
+          {unReadMessage}
+        </span>
+      ) : null}
     </div>
   );
 };

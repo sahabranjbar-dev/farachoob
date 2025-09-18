@@ -1,11 +1,14 @@
 "use client";
 import useDataGetter from "@/hooks/useDataGetter";
+import { normalizePhoneNumber } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useChat } from "../../../stores";
 import { useStickyChat } from "../../../stores/stickyChat";
+import Spinner from "../Spinner";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -16,9 +19,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import Spinner from "../Spinner";
-import { useChat } from "../../../stores";
-import { normalizePhoneNumber } from "@/lib/utils";
 
 const schema = z.object({
   fullName: z.string().min(2, "نام حداقل ۲ حرف باشد"),

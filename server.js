@@ -45,8 +45,6 @@ app.prepare().then(() => {
 
     // join به کانورسیشن
     socket.on("join-conversation", ({ conversationId }) => {
-      console.log("user join the conversation: ", conversationId);
-
       // leave همه room ها به جز socket.id
       for (let room of socket.rooms) {
         if (room !== socket.id) socket.leave(room);
@@ -85,6 +83,8 @@ app.prepare().then(() => {
 
     socket.on("send-message-to-admin", (data) => {
       socket.to(data?.conversationId).emit("new-message-to-admin", data);
+
+      io.emit("admin-recieve-new-message", data);
     });
 
     socket.on("send-message-to-sticky", (data) => {

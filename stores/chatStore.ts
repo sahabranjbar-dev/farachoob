@@ -13,6 +13,7 @@ export const useChat = create<IChatState>((set, get) => ({
   onlineUsers: [],
   conversations: [],
   getConversatioMessageLoading: false,
+  openSidebar: true,
 
   // ACTIONS
   setConversatioMessageLoading(value) {
@@ -33,5 +34,11 @@ export const useChat = create<IChatState>((set, get) => ({
   },
   setOnlineUsers(onlineUsers) {
     set({ onlineUsers });
+  },
+  setOpenSidebar(openSidebar) {
+    set({ openSidebar });
+  },
+  setConversations(conversations) {
+    set({ conversations });
   },
 }));

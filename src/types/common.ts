@@ -1,3 +1,5 @@
+import { Role } from "./dashboard";
+
 export interface User {
   id: string;
   email?: string | null;
@@ -9,6 +11,7 @@ export interface User {
   image?: string | null;
   roleId?: string | null;
   createdAt?: Date | string;
+  role: Role;
 }
 
 export interface Comment {

@@ -9,6 +9,7 @@ import useDataGetter from "@/hooks/useDataGetter";
 import { memo } from "react";
 import { v4 as uuid } from "uuid";
 import { Textarea } from "@/components/ui/textarea";
+import { Send } from "lucide-react";
 
 type FormValues = {
   message: string;
@@ -79,16 +80,15 @@ const ChatInput = memo(() => {
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 max-w-full bg-white">
+    <div className="absolute bottom-0 left-0 right-0 max-w-full bg-white border-t">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex items-center justify-between gap-2 border-t p-4"
+        className="flex items-center gap-2 p-3"
       >
         <Textarea
-          placeholder="پیام خود را اینجا بنویسید..."
-          className="w-full resize-none rounded border p-2 break-words whitespace-pre-wrap"
+          placeholder="پیام خود را بنویسید..."
+          className="flex-1 resize-none rounded-xl border px-3 py-2 shadow-inner focus:ring-2 focus:ring-indigo-400 transition"
           {...register("message", { required: true })}
-          wrap="soft"
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -98,12 +98,10 @@ const ChatInput = memo(() => {
         />
 
         <Button
-          disabled={!watch("message").trim()}
+          disabled={!watch("message")?.trim()}
           type="submit"
-          tooltip={
-            conversationId ? undefined : "دوباره بر روی این گفت کلیک کنید"
-          }
-          className="rounded-2xl bg-indigo-500 text-white hover:bg-indigo-600 disabled:cursor-not-allowed"
+          className="rounded-full px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:opacity-90 disabled:opacity-50"
+          left={<Send />}
         >
           ارسال
         </Button>

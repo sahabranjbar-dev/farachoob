@@ -7,60 +7,69 @@ import { useSession } from "next-auth/react";
 import { useChat } from "../../../../../../stores";
 import UserItem from "./UserItem";
 
-const ChatList = () => {
+export interface IChatList {
+  getConversatioLoading?: boolean;
+  conversationsData?: Conversation[];
+}
+
+const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
   const { data: session } = useSession();
-  const { setConversation, setDashboardChatMessage } = useChat();
+  const {
+    setDashboardChatMessage,
+    setUserInfo,
+    setConversatioMessageLoading,
+    setConversation,
+    socket,
+  } = useChat();
   const userId = session?.user?.id;
 
   const { fetch: getConversatioMessages } = useDataGetter({
     immediatelyFetch: false,
-    onSuccess(data) {
-      setDashboardChatMessage(data);
-    },
-  });
-
-  const { data, loading: getConversatioLoading } = useDataGetter<{
-    conversations: Conversation[];
-  }>({
-    url: "/dashboard/conversations",
-    onSuccess(data) {
-      setConversation(data?.conversations);
-    },
   });
 
   if (getConversatioLoading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <Loader2 className="animate-spin" />
+        <Loader2 className="animate-spin text-gray-400" />
       </div>
     );
   }
 
-  if (!data?.conversations?.length) {
+  if (!conversationsData?.length) {
     return (
-      <p className="text-gray-500 p-4">هیچ کاربری برای شروع گفتگو پیدا نشد.</p>
+      <p className="text-gray-500 p-6 text-center">
+        هیچ کاربری برای شروع گفتگو پیدا نشد.
+      </p>
     );
   }
 
   return (
-    <div className="h-full overflow-y-auto">
-      {data?.conversations?.map((conv) => {
+    <div className="divide-y">
+      {conversationsData?.map((conv) => {
         const otherUser = conv?.participants?.find(
           (p) => p.userId !== userId
         )?.user;
+
         return otherUser ? (
           <UserItem
-            key={otherUser.id}
+            key={conv.id}
             user={otherUser}
             unReadMessage={conv._count?.messages}
             messages={conv.messages ?? []}
-            conversation={conv}
-            getConversatioMessages={() =>
+            getConversatioMessages={() => {
+              setConversatioMessageLoading(true);
+              setUserInfo(null);
               getConversatioMessages?.({
                 inputUrl: "/dashboard/conversations/messages",
                 inputParams: { conversationId: conv.id },
-              })
-            }
+              }).then((data) => {
+                setDashboardChatMessage(data);
+                setUserInfo(otherUser);
+                setConversatioMessageLoading(false);
+                setConversation(conv);
+                socket.emit("join-conversation", { conversationId: conv.id });
+              });
+            }}
           />
         ) : null;
       })}

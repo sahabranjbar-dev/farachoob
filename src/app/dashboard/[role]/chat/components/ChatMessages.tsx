@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useRef, useMemo } from "react";
 import { useChat } from "../../../../../../stores";
 import { markMessagesRead } from "@/lib/utils";
+import { fetchConvs } from "../meta/utils";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
@@ -55,7 +56,7 @@ const ChatMessages = () => {
     return () => {
       socket.off("new-message-to-admin", handleNewMessage);
     };
-  }, [socket, setDashboardChatMessage]);
+  }, []);
 
   useEffect(() => {
     if (!socket) return;
@@ -126,12 +127,13 @@ const ChatMessages = () => {
         if (entries[0].isIntersecting) {
           updateMessage?.({
             inputBody: { id: lastUnreadId },
-          }).then(() => {
+          }).then((data) => {
             socket?.emit("sticky-mark-read", {
               conversationId,
               userId,
               messageId: lastUnreadId,
             });
+            fetchConvs();
 
             readMessages.current.add(lastUnreadId);
 
