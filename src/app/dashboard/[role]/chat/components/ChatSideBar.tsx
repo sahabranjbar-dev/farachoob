@@ -71,23 +71,7 @@ const ChatSideBar = ({ children }: Props) => {
       socket.off("user-offline");
       socket.off("online-users-list");
     };
-  }, [socket, userId, onlineUsers]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("admin-recieve-new-message", async (data) => {
-      if (isAdmin) {
-        fetchConvs().then((data) => {
-          toast.info("شما پیام جدید دریافت کردید");
-        });
-      }
-    });
-
-    return () => {
-      socket.off("admin-recieve-new-message");
-    };
-  }, [socket, isAdmin, setConversations]);
+  }, []);
 
   useEffect(() => {
     const updateSidebar = () => {
@@ -108,14 +92,35 @@ const ChatSideBar = ({ children }: Props) => {
     socket.on("notification", (data) => {
       if (data.senderId !== userId)
         toast.info(
-          `شما یک پیام جدید از ${data?.sender?.firstName} ${data?.sender?.lastName} دریافت کردید`
+          `شما یک پیام جدید از ${data?.sender?.firstName ?? "کاربر"} ${
+            data?.sender?.lastName ?? "میهمان"
+          } دریافت کردید`
         );
+      if (!getConversatioLoading) {
+        fetchConvs();
+      }
     });
 
     return () => {
       socket.off("notification");
     };
   }, [socket]);
+
+  useEffect(() => {
+    if (!socket || !isAdmin) return;
+
+    socket.emit("admin-connected");
+
+    const handler = ({ conversationId }: any) => {
+      socket.emit("admin-join-conversation", { conversationId });
+    };
+
+    socket.on("admin-join-request", handler);
+
+    return () => {
+      socket.on("admin-join-request", handler);
+    };
+  }, [isAdmin, socket]);
 
   return (
     <div

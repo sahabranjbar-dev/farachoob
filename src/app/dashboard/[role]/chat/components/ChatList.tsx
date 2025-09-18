@@ -14,13 +14,14 @@ export interface IChatList {
 
 const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
   const { data: session } = useSession();
-  const {
-    setDashboardChatMessage,
-    setUserInfo,
-    setConversatioMessageLoading,
-    setConversation,
-    socket,
-  } = useChat();
+  const setDashboardChatMessage = useChat((s) => s.setDashboardChatMessage);
+  const setUserInfo = useChat((s) => s.setUserInfo);
+  const setConversatioMessageLoading = useChat(
+    (s) => s.setConversatioMessageLoading
+  );
+  const setConversation = useChat((s) => s.setConversation);
+  const socket = useChat((s) => s.socket);
+
   const userId = session?.user?.id;
 
   const { fetch: getConversatioMessages } = useDataGetter({
@@ -58,15 +59,21 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
             messages={conv.messages ?? []}
             getConversatioMessages={() => {
               setConversatioMessageLoading(true);
+
               setUserInfo(null);
+
               getConversatioMessages?.({
                 inputUrl: "/dashboard/conversations/messages",
                 inputParams: { conversationId: conv.id },
               }).then((data) => {
                 setDashboardChatMessage(data);
+
                 setUserInfo(otherUser);
+
                 setConversatioMessageLoading(false);
+
                 setConversation(conv);
+
                 socket.emit("join-conversation", { conversationId: conv.id });
               });
             }}

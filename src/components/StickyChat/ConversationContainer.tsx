@@ -50,93 +50,11 @@ const ConversationContainer = () => {
       setMessages((prev) => [...(prev ?? []), data]);
     };
 
-    socket?.on("new-message-to-sticky", handleNewMessage);
+    socket?.on("new-message", handleNewMessage);
     return () => {
-      socket?.off("new-message-to-sticky", handleNewMessage);
+      socket?.off("new-message", handleNewMessage);
     };
   }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-    const handleNewMessage = (data: {
-      conversationId: string;
-      messageId: string;
-      userId: string;
-    }) => {
-      const messageId = data?.messageId;
-      setMessages((prev) => {
-        const resolvedMessage = markMessagesRead(prev, messageId);
-        return resolvedMessage;
-      });
-    };
-
-    socket?.on("admin-read-message", handleNewMessage);
-    return () => {
-      socket?.off("admin-read-message", handleNewMessage);
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    const chatContainer = lastMessageRef.current?.parentElement;
-    if (!chatContainer) return;
-
-    const atBottom =
-      chatContainer.scrollHeight - chatContainer.scrollTop <=
-      chatContainer.clientHeight + 50;
-
-    if (atBottom) {
-      requestAnimationFrame(() => {
-        lastMessageRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
-      });
-    }
-  }, [messages]);
-
-  // پیام‌های unread
-  const unreadRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
-  const readMessages = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (!messages?.length || !socket) return;
-
-    const observers: IntersectionObserver[] = [];
-
-    messages.forEach((msg: Message) => {
-      if (readMessages.current.has(msg.id ?? "") || msg.senderId === senderId)
-        return;
-
-      const el = unreadRefs.current[msg.id ?? ""];
-      if (!el) return;
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            updateMessage?.({ inputBody: { id: msg.id, senderId } }).then(
-              () => {
-                socket?.emit("admin-message-read", {
-                  conversationId: conversationData?.id,
-                  userId,
-                  messageId: msg.id,
-                });
-
-                readMessages.current.add(msg.id ?? "");
-
-                observer.disconnect();
-              }
-            );
-          }
-        },
-        { threshold: 0.5 }
-      );
-
-      observer.observe(el);
-      observers.push(observer);
-    });
-
-    return () => observers.forEach((obs) => obs.disconnect());
-  }, [socket, conversationData?.id, userId, messages]);
 
   return (
     <div className="flex flex-col h-full relative">
@@ -160,15 +78,6 @@ const ConversationContainer = () => {
                     message.tempId ||
                     `${message.content}-${index}`
                   }
-                  ref={(el) => {
-                    if (message.id) {
-                      if (el) {
-                        unreadRefs.current[message.id] = el; // اضافه کردن
-                      } else {
-                        delete unreadRefs.current[message.id]; // پاک کردن هنگام unmount
-                      }
-                    }
-                  }}
                 >
                   <div
                     className={clsx(

@@ -53,31 +53,18 @@ const ChatInput = memo(() => {
     })
       .then((savedMessage) => {
         if (!savedMessage?.id) return;
-        if (conversation?.isSecure) {
-          socket?.emit("send-message", {
-            ...savedMessage,
-            senderId,
-            content: savedMessage.content,
-            conversationId,
-            createdAt: savedMessage.createdAt ?? new Date().toISOString(),
-            read: false,
-            recipients: savedMessage.recipients,
-            loading: false,
-            isSticky: false,
-          });
-        } else {
-          socket?.emit("send-message-to-sticky", {
-            ...savedMessage,
-            senderId,
-            content: savedMessage.content,
-            conversationId,
-            createdAt: savedMessage.createdAt ?? new Date().toISOString(),
-            read: false,
-            recipients: savedMessage.recipients,
-            loading: false,
-            isSticky: false,
-          });
-        }
+
+        socket?.emit("send-message", {
+          ...savedMessage,
+          senderId,
+          content: savedMessage.content,
+          conversationId,
+          createdAt: savedMessage.createdAt ?? new Date().toISOString(),
+          read: false,
+          recipients: savedMessage.recipients,
+          loading: false,
+          isSticky: false,
+        });
 
         setDashboardChatMessage((prev) => {
           const resolvedMessage = prev.filter((item) => item.tempId !== tempId);

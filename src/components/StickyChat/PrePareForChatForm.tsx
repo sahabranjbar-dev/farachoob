@@ -38,9 +38,11 @@ type FormValues = z.infer<typeof schema>;
 const PrePareForChatForm = () => {
   const session = useSession();
   const userId = session.data?.user.id;
+  const setConversationData = useStickyChat((s) => s.setConversationData);
+  const setMessages = useStickyChat((s) => s.setMessages);
 
-  const { setConversationData, setMessages } = useStickyChat();
-  const { socket } = useChat();
+  const socket = useChat((s) => s.socket);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -60,12 +62,14 @@ const PrePareForChatForm = () => {
     onCreateChat({
       fullName: values?.fullName,
       phone: values.phone,
+      isFromSticky: true,
     });
   };
 
   const onCreateChat = async (inputBody?: {
     fullName: string;
     phone: string;
+    isFromSticky: boolean;
   }): Promise<any> => {
     return await fetch?.(
       inputBody

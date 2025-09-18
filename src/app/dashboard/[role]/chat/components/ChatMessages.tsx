@@ -10,22 +10,20 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import { useChat } from "../../../../../../stores";
-import { markMessagesRead } from "@/lib/utils";
-import { fetchConvs } from "../meta/utils";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const session = useSession();
 
-  const {
-    conversation,
-    socket,
-    messages,
-    setDashboardChatMessage,
-    getConversatioMessageLoading,
-  } = useChat();
+  const conversation = useChat((s) => s.conversation);
+  const socket = useChat((s) => s.socket);
+  const messages = useChat((s) => s.messages);
+  const setDashboardChatMessage = useChat((s) => s.setDashboardChatMessage);
+  const getConversatioMessageLoading = useChat(
+    (s) => s.getConversatioMessageLoading
+  );
 
   const conversationId = conversation?.id;
   const userId = session.data?.user.id;
@@ -44,20 +42,6 @@ const ChatMessages = () => {
     params: { conversationId },
   });
 
-  // دریافت پیام‌های جدید از socket
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleNewMessage = (data: Message) => {
-      setDashboardChatMessage((prev) => [...prev, data]);
-    };
-
-    socket.on("new-message-to-admin", handleNewMessage);
-    return () => {
-      socket.off("new-message-to-admin", handleNewMessage);
-    };
-  }, [socket]);
-
   useEffect(() => {
     if (!socket) return;
 
@@ -70,97 +54,6 @@ const ChatMessages = () => {
       socket.off("new-message", handleNewMessage);
     };
   }, [socket]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    if (!socket) return;
-    const handleNewMessage = (data: {
-      conversationId: string;
-      messageId: string;
-      userId: string;
-    }) => {
-      const messageId = data?.messageId;
-      setDashboardChatMessage((prev) => {
-        const resolvedMessage = markMessagesRead(prev, messageId);
-        return resolvedMessage;
-      });
-    };
-
-    socket.on("sticky-read-message", handleNewMessage);
-    return () => {
-      socket.off("sticky-read-message", handleNewMessage);
-    };
-  }, [socket, setDashboardChatMessage]);
-
-  // scroll خودکار به آخر چت
-  useEffect(() => {
-    const chatContainer = lastMessageRef.current?.parentElement;
-    if (!chatContainer) return;
-
-    const atBottom =
-      chatContainer.scrollHeight - chatContainer.scrollTop <=
-      chatContainer.clientHeight + 50;
-
-    if (atBottom) {
-      requestAnimationFrame(() => {
-        lastMessageRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
-      });
-    }
-  }, [messages]);
-
-  // پیام‌های unread
-  const unreadMessages = useMemo(
-    () =>
-      messages?.filter(
-        (msg) => !msg?.read && msg?.senderId !== userId && !msg?.loading
-      ),
-    [messages, userId]
-  );
-
-  const lastUnreadId = unreadMessages?.length
-    ? unreadMessages[unreadMessages?.length - 1]?.id
-    : null;
-
-  const unreadRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
-  const readMessages = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    if (!lastUnreadId) return;
-    if (readMessages.current.has(lastUnreadId)) return;
-
-    const el = unreadRefs.current[lastUnreadId];
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          updateMessage?.({
-            inputBody: { id: lastUnreadId },
-          }).then((data) => {
-            socket?.emit("sticky-mark-read", {
-              conversationId,
-              userId,
-              messageId: lastUnreadId,
-            });
-            fetchConvs();
-
-            readMessages.current.add(lastUnreadId);
-
-            observer.disconnect();
-          });
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(el);
-
-    return () => observer.disconnect();
-  }, [socket, conversationId, userId, lastUnreadId]);
 
   // render وضعیت پیام
   const renderStatus = (msg: Message) => {
@@ -234,10 +127,6 @@ const ChatMessages = () => {
         return (
           <li
             key={msg.id || msg.tempId || `${msg.content}-${index}`}
-            ref={(el) => {
-              if (msg.id === lastUnreadId)
-                unreadRefs.current[msg.id ?? ""] = el;
-            }}
             className={clsx(
               "rounded-2xl w-fit p-3 m-1 relative",
               isOwn

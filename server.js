@@ -50,6 +50,18 @@ app.prepare().then(() => {
       //   if (room !== socket.id) socket.leave(room);
       // }
       socket.join(conversationId);
+
+      io.to("admins").emit("admin-join-request", { conversationId });
+    });
+
+    socket.on("admin-connected", () => {
+      socket.join("admins");
+      console.log(`Admin ${socket.id} joined admins room`);
+    });
+
+    socket.on("admin-join-conversation", ({ conversationId }) => {
+      socket.join(conversationId);
+      console.log(`Admin ${socket.id} joined conversation ${conversationId}`);
     });
 
     // ارسال پیام
@@ -80,24 +92,6 @@ app.prepare().then(() => {
         });
       }
     );
-
-    socket.on("send-message-to-admin", (data) => {
-      socket.to(data?.conversationId).emit("new-message-to-admin", data);
-
-      io.emit("admin-recieve-new-message", data);
-    });
-
-    socket.on("send-message-to-sticky", (data) => {
-      socket.to(data?.conversationId).emit("new-message-to-sticky", data);
-    });
-
-    socket.on("sticky-mark-read", (data) => {
-      socket.to(data?.conversationId).emit("admin-read-message", data);
-    });
-
-    socket.on("admin-message-read", (data) => {
-      socket.to(data?.conversationId).emit("sticky-read-message", data);
-    });
 
     // لیست کاربران آنلاین
     socket.on("get-online-users", () => {

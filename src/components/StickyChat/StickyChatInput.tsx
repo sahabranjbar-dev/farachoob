@@ -70,7 +70,7 @@ const StickyChatInput = memo(() => {
     })
       .then((data) => {
         if (!socket) return;
-        socket.emit("send-message-to-admin", {
+        socket.emit("send-message", {
           ...data,
           conversationId,
           senderId,

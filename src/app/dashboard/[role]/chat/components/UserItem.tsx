@@ -4,6 +4,7 @@ import { Conversation, Message, User } from "@/types/common";
 import { useChat } from "../../../../../../stores";
 import clsx from "clsx";
 import Image from "next/image";
+import { useMemo } from "react";
 
 interface Props {
   user: User;
@@ -19,7 +20,13 @@ const UserItem = ({
   getConversatioMessages,
 }: Props) => {
   const lastMessage = messages[0]?.content ?? "بدون پیام";
-  const { openSidebar, userInfo } = useChat();
+  const openSidebar = useChat((state) => state.openSidebar);
+  const userInfo = useChat((state) => state.userInfo);
+  const onlineUsers = useChat((state) => state.onlineUsers);
+
+  const isUserOnline = useMemo(() => {
+    return onlineUsers.includes(user.id);
+  }, [onlineUsers]);
 
   return (
     <div
@@ -33,7 +40,7 @@ const UserItem = ({
       {/* Avatar */}
       <div
         className={clsx(
-          "flex items-center justify-center rounded-full font-bold overflow-hidden bg-gradient-to-tr from-indigo-400 to-purple-400 text-white",
+          "relative flex items-center justify-center rounded-full font-bold bg-gradient-to-tr from-indigo-400 to-purple-400 text-white",
           openSidebar ? "w-10 h-10 text-base" : "w-8 h-8 text-sm"
         )}
       >
@@ -47,6 +54,15 @@ const UserItem = ({
           />
         ) : (
           user.firstName?.[0] ?? "?"
+        )}
+
+        {isUserOnline && (
+          <div
+            className={clsx(
+              " rounded-full bg-green-500 absolute top-0 right-0",
+              openSidebar ? "w-3 h-3" : "w-2 h-2"
+            )}
+          />
         )}
       </div>
 
