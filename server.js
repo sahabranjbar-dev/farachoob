@@ -46,9 +46,9 @@ app.prepare().then(() => {
     // join به کانورسیشن
     socket.on("join-conversation", ({ conversationId }) => {
       // leave همه room ها به جز socket.id
-      for (let room of socket.rooms) {
-        if (room !== socket.id) socket.leave(room);
-      }
+      // for (let room of socket.rooms) {
+      //   if (room !== socket.id) socket.leave(room);
+      // }
       socket.join(conversationId);
     });
 
@@ -69,7 +69,7 @@ app.prepare().then(() => {
         // نوتیفیکیشن به گیرنده‌ها (user room)
         recipients.forEach((userId) => {
           if (userId !== senderId) {
-            io.to(`user_${userId}`).emit("notification", {
+            socket.to(conversationId).emit("notification", {
               ...res,
               conversationId,
               senderId,

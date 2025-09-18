@@ -56,7 +56,20 @@ const ChatMessages = () => {
     return () => {
       socket.off("new-message-to-admin", handleNewMessage);
     };
-  }, []);
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (data: Message) => {
+      setDashboardChatMessage((prev) => [...prev, data]);
+    };
+
+    socket.on("new-message", handleNewMessage);
+    return () => {
+      socket.off("new-message", handleNewMessage);
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (!socket) return;
@@ -102,14 +115,14 @@ const ChatMessages = () => {
   // پیام‌های unread
   const unreadMessages = useMemo(
     () =>
-      messages.filter(
-        (msg) => !msg.read && msg.senderId !== userId && !msg.loading
+      messages?.filter(
+        (msg) => !msg?.read && msg?.senderId !== userId && !msg?.loading
       ),
     [messages, userId]
   );
 
-  const lastUnreadId = unreadMessages.length
-    ? unreadMessages[unreadMessages.length - 1]?.id
+  const lastUnreadId = unreadMessages?.length
+    ? unreadMessages[unreadMessages?.length - 1]?.id
     : null;
 
   const unreadRefs = useRef<{ [key: string]: HTMLLIElement | null }>({});
@@ -151,11 +164,11 @@ const ChatMessages = () => {
 
   // render وضعیت پیام
   const renderStatus = (msg: Message) => {
-    const isOwn = msg.senderId === userId;
-    if (msg.failed) return <MessageCircleWarning />;
-    if (msg.loading && isOwn)
+    const isOwn = msg?.senderId === userId;
+    if (msg?.failed) return <MessageCircleWarning />;
+    if (msg?.loading && isOwn)
       return <Loader size={20} className="animate-spin" />;
-    if (msg.read && isOwn)
+    if (msg?.read && isOwn)
       return <CheckCheck size={20} className="opacity-70" />;
     if (isOwn) return <Check size={20} className="opacity-70" />;
     return null;
@@ -166,7 +179,7 @@ const ChatMessages = () => {
     try {
       setDashboardChatMessage((prev) =>
         prev.map((m) =>
-          m.tempId === msg.tempId ? { ...m, loading: true, failed: false } : m
+          m?.tempId === msg?.tempId ? { ...m, loading: true, failed: false } : m
         )
       );
 
@@ -176,14 +189,14 @@ const ChatMessages = () => {
 
       setDashboardChatMessage((prev) =>
         prev.map((m) =>
-          m.tempId === msg.tempId ? { ...m, loading: false } : m
+          m?.tempId === msg?.tempId ? { ...m, loading: false } : m
         )
       );
     } catch (err) {
       console.error("Failed to resend message:", err);
       setDashboardChatMessage((prev) =>
         prev.map((m) =>
-          m.tempId === msg.tempId ? { ...m, failed: true, loading: false } : m
+          m?.tempId === msg?.tempId ? { ...m, failed: true, loading: false } : m
         )
       );
     }
@@ -200,7 +213,7 @@ const ChatMessages = () => {
     );
   }
 
-  if (!messages.length) {
+  if (!messages?.length) {
     return (
       <div className="flex justify-center items-center h-full">
         پیامی وجود ندارد
@@ -210,7 +223,7 @@ const ChatMessages = () => {
 
   return (
     <ul className="p-4 overflow-y-auto max-h-[500px]">
-      {messages.map((msg, index) => {
+      {messages?.map((msg, index) => {
         const date = new Date(msg?.createdAt ?? "");
         const time = `${date.getHours()}:${date
           .getMinutes()

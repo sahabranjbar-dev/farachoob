@@ -57,7 +57,8 @@ export interface Conversation {
   updatedAt?: string;
   participants?: Participant[];
   _count?: Count;
-  messages: Message[];
+  messages?: Message[];
+  isSecure?: boolean;
 }
 
 export interface Count {

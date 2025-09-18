@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
 
     if (!admin) {
       return NextResponse.json(
-        { message: "ادمین یافت نشد. لطفاً با تیم فنی تماس بگیرید." },
+        { message: "  لطفاً با تیم فنی تماس بگیرید." },
         { status: 500 }
       );
     }

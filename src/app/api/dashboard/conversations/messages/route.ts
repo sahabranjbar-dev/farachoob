@@ -73,7 +73,15 @@ export async function POST(req: Request) {
       },
       include: {
         sender: {
-          select: { id: true, email: true, image: true },
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            roleId: true,
+          },
         },
       },
     });

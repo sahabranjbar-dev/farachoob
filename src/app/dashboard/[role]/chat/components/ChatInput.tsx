@@ -19,7 +19,12 @@ const ChatInput = memo(() => {
   const { register, handleSubmit, reset, watch } = useForm<FormValues>();
   const session = useSession();
   const senderId = session.data?.user.id;
-  const { conversation, setDashboardChatMessage, socket, messages } = useChat();
+  const conversation = useChat((state) => state.conversation);
+  const setDashboardChatMessage = useChat(
+    (state) => state.setDashboardChatMessage
+  );
+  const socket = useChat((state) => state.socket);
+  const messages = useChat((state) => state.messages);
   const conversationId = conversation?.id;
 
   const { fetch: postMessage } = useDataGetter({
@@ -48,17 +53,32 @@ const ChatInput = memo(() => {
     })
       .then((savedMessage) => {
         if (!savedMessage?.id) return;
+        if (conversation?.isSecure) {
+          socket?.emit("send-message", {
+            ...savedMessage,
+            senderId,
+            content: savedMessage.content,
+            conversationId,
+            createdAt: savedMessage.createdAt ?? new Date().toISOString(),
+            read: false,
+            recipients: savedMessage.recipients,
+            loading: false,
+            isSticky: false,
+          });
+        } else {
+          socket?.emit("send-message-to-sticky", {
+            ...savedMessage,
+            senderId,
+            content: savedMessage.content,
+            conversationId,
+            createdAt: savedMessage.createdAt ?? new Date().toISOString(),
+            read: false,
+            recipients: savedMessage.recipients,
+            loading: false,
+            isSticky: false,
+          });
+        }
 
-        socket?.emit("send-message-to-sticky", {
-          ...savedMessage,
-          senderId,
-          content: savedMessage.content,
-          conversationId,
-          createdAt: savedMessage.createdAt ?? new Date().toISOString(),
-          read: false,
-          recipients: savedMessage.recipients,
-          loading: false,
-        });
         setDashboardChatMessage((prev) => {
           const resolvedMessage = prev.filter((item) => item.tempId !== tempId);
 

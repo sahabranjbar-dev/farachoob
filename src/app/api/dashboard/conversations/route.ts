@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const { participantId } = body;
+    const { participantId, isSecure } = body;
 
     if (!participantId) {
       return Response.json(
@@ -27,16 +27,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
-    // بررسی نقش کاربر جاری
-    const currentUser = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: { select: { englishTitle: true } } },
-    });
-
-    const isManager = ["admin", "manager"].includes(
-      currentUser?.role?.englishTitle ?? ""
-    );
 
     // بررسی وجود کانورسیشن قبلی
     let conversation = await prisma.conversation.findFirst({
@@ -52,10 +42,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (!conversation) {
-      const participantsData = [{ userId: participantId }];
-      if (!isManager) {
-        participantsData.push({ userId }); // فقط اگر مدیر نیست، خودش اضافه کن
-      }
+      const participantsData = [{ userId: participantId }, { userId }];
 
       conversation = await prisma.conversation.create({
         data: {
@@ -69,7 +56,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return Response.json(conversation, { status: 200 });
+    return Response.json({ ...conversation, isSecure }, { status: 200 });
   } catch (error) {
     console.error("POST /api/conversation error:", error);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
@@ -111,7 +98,7 @@ const baseConversationInclude = {
   },
 };
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user?.id;
@@ -129,6 +116,12 @@ export async function GET() {
     if (!user || !["admin", "manager"].includes(user.role.englishTitle ?? "")) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
+
+    const url = new URL(req?.url);
+
+    const isSecure = url.searchParams.get("isSecure") ?? "true";
+
+    const parsedSecure = JSON.parse(isSecure);
 
     const conversations = await prisma.conversation.findMany({
       where: {
@@ -150,7 +143,14 @@ export async function GET() {
       orderBy: { updatedAt: "desc" },
     });
 
-    return NextResponse.json({ conversations }, { status: 200 });
+    const mappedWithIsSecure = conversations.map((item) => ({
+      ...item,
+      isSecure: parsedSecure,
+    }));
+    return NextResponse.json(
+      { conversations: mappedWithIsSecure },
+      { status: 200 }
+    );
   } catch (error: any) {
     console.error("GET /conversations error:", error);
     return NextResponse.json(

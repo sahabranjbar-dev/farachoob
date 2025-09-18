@@ -36,8 +36,15 @@ const ChatSideBar = ({ children }: Props) => {
   const { loading: getConversatioLoading, fetch: getConverSations } =
     useDataGetter<{ conversations: Conversation[] }>({
       url: "/dashboard/conversations",
-      onSuccess(data) {
+      onSuccess(data: { conversations: Conversation[] }) {
         setConversations(data?.conversations);
+
+        data?.conversations.forEach((item) => {
+          socket.emit("join-conversation", { conversationId: item.id });
+        });
+      },
+      params: {
+        isSecure: true,
       },
     });
 
@@ -95,6 +102,21 @@ const ChatSideBar = ({ children }: Props) => {
     };
   }, [setOpenSidebar]);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("notification", (data) => {
+      if (data.senderId !== userId)
+        toast.info(
+          `شما یک پیام جدید از ${data?.sender?.firstName} ${data?.sender?.lastName} دریافت کردید`
+        );
+    });
+
+    return () => {
+      socket.off("notification");
+    };
+  }, [socket]);
+
   return (
     <div
       className={clsx(
@@ -127,7 +149,11 @@ const ChatSideBar = ({ children }: Props) => {
               onClick={() => {
                 if (!getConversatioLoading) {
                   setUserInfo(null);
-                  getConverSations?.({});
+                  getConverSations?.({
+                    inputParams: {
+                      isSecure: true,
+                    },
+                  });
                 }
               }}
             >

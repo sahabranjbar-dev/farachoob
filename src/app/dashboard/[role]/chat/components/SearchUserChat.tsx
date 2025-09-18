@@ -14,10 +14,30 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import useDataGetter from "@/hooks/useDataGetter";
 import { debounce } from "lodash";
-import { User } from "@/types/common";
+import { Conversation, User } from "@/types/common";
+import { useChat } from "../../../../../../stores";
+import { toast } from "sonner";
 
 const SearchUserChat = () => {
   const [searchValue, setSearchValue] = useState<string>("");
+
+  const [open, setOpen] = useState(false);
+  const setConversation = useChat((state) => state.setConversation);
+  const setUserInfo = useChat((state) => state.setUserInfo);
+  const setConversatioMessageLoading = useChat(
+    (state) => state.setConversatioMessageLoading
+  );
+  const setDashboardChatMessage = useChat(
+    (state) => state.setDashboardChatMessage
+  );
+  const socket = useChat((state) => state.socket);
+
+  const { fetch: conversationFetch, loading: fetchConversationLoading } =
+    useDataGetter<Conversation>({
+      url: "/dashboard/conversations",
+      method: "POST",
+      immediatelyFetch: false,
+    });
 
   const {
     data: users,
@@ -53,10 +73,35 @@ const SearchUserChat = () => {
     };
   }, [searchValue, debouncedFetch]);
 
-  const searchResultUserClickHanlder = (user: User) => {};
+  const searchResultUserClickHanlder = (user: User) => {
+    setConversatioMessageLoading(true);
+    setUserInfo(null);
+
+    conversationFetch?.({
+      inputBody: { participantId: user.id, isSecure: true },
+    })
+      .then((data) => {
+        setDashboardChatMessage(data?.messages ?? []);
+
+        setUserInfo(user);
+
+        setConversatioMessageLoading(false);
+
+        setConversation(data);
+
+        socket.emit("join-conversation", {
+          conversationId: data?.id,
+        });
+
+        setOpen(false);
+      })
+      .catch(() => {
+        toast.error("ایجاد گپ با مشکل مواجه شد ، دوباره تلاش کنید");
+      });
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <UserRoundSearch className="cursor-pointer hover:scale-110 transition-transform" />
       </DialogTrigger>
@@ -74,7 +119,6 @@ const SearchUserChat = () => {
                   className="bg-gray-100 max-w-sm rounded-xl focus:ring-2 focus:ring-blue-500"
                   placeholder="نام کاربر را وارد کنید..."
                   onChange={(e) => {
-                    console.log(e);
                     setSearchValue(e.target.value);
                   }}
                   value={searchValue}
@@ -83,13 +127,13 @@ const SearchUserChat = () => {
 
               {/* لیست نتایج */}
               <div className="max-h-64 overflow-y-auto mt-2 space-y-2 p-4">
-                {loading && (
-                  <div className="flex justify-center items-center p-6">
+                {(loading || fetchConversationLoading) && (
+                  <div className="flex justify-center items-center p-6 z-10">
                     <Loader2 className="animate-spin w-6 h-6 text-orange-500" />
                   </div>
                 )}
 
-                {error && !loading && (
+                {error && !loading && !fetchConversationLoading && (
                   <div className="flex items-center justify-center gap-2 p-4 text-red-500">
                     <AlertTriangle className="w-5 h-5" />
                     <span>خطا در دریافت اطلاعات کاربران</span>
@@ -97,6 +141,7 @@ const SearchUserChat = () => {
                 )}
 
                 {!loading &&
+                  !fetchConversationLoading &&
                   !error &&
                   users?.resultList?.length === 0 &&
                   searchValue.length > 2 && (
@@ -106,6 +151,7 @@ const SearchUserChat = () => {
                   )}
 
                 {!loading &&
+                  !fetchConversationLoading &&
                   !error &&
                   users?.resultList?.map((user: User, index: number) => (
                     <motion.div
