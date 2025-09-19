@@ -1,11 +1,13 @@
 "use client";
-import React, { useEffect, useRef } from "react";
 import SupportSvg from "@/assets/Support";
-import { X } from "lucide-react";
-import StickyChatContainer from "./StickyChatContainer";
-import { useStickyChat } from "../../../stores/stickyChat";
 import clsx from "clsx";
+import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { useStickyChat } from "../../../stores/stickyChat";
+import ConversationContainer from "./ConversationContainer";
+import StickyChatContainer from "./StickyChatContainer";
+import StickyChatWelcomeContent from "./StickyChatWelcomeContent";
 
 const StickyChat = () => {
   const pathname = usePathname();
@@ -16,9 +18,12 @@ const StickyChat = () => {
 
   const { setShowChat, showChat, showCTA, setShowCTA } = useStickyChat();
 
+  const conversationData = useStickyChat((state) => state.conversationData);
+
   useEffect(() => {
-    if (showChat) return;
     const timeOut = setTimeout(() => {
+      if (showChat) return;
+
       setShowCTA(true);
     }, 5000);
 
@@ -75,7 +80,13 @@ const StickyChat = () => {
           )}
         />
       </div>
-      <StickyChatContainer ref={stickyChatContainerRef} />
+      <StickyChatContainer ref={stickyChatContainerRef}>
+        {conversationData?.id ? (
+          <ConversationContainer />
+        ) : (
+          <StickyChatWelcomeContent />
+        )}
+      </StickyChatContainer>
       <div
         className={clsx(
           "text-xs p-4 w-50 h-24 bg-white border rounded-2xl shadow-lg transition-all duration-300 ease-in-out absolute bottom-24 right-10",

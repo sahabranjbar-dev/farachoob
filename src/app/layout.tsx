@@ -8,7 +8,7 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import "./globals.css";
 import localFont from "next/font/local";
-import { StickyChat } from "@/components/StickyChat";
+import StickyChat from "@/components/StickyChat/StickyChat";
 
 const myFont = localFont({
   src: [

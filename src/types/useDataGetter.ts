@@ -1,4 +1,4 @@
-import { Method } from "axios";
+import { AxiosError, Method } from "axios";
 import { AxiosRequestConfig } from "axios";
 
 export interface UseDataGetterInputs<Body = any, Params = any>
@@ -10,7 +10,7 @@ export interface UseDataGetterInputs<Body = any, Params = any>
 
   immediatelyFetch?: boolean;
   onSuccess?: (data?: any) => void;
-  onFailure?: (error?: any) => void;
+  onFailure?: (error?: AxiosError<any>) => void;
   showError?: boolean;
   showSuccessMessage?: boolean;
 }

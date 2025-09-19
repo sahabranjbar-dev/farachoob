@@ -1,45 +1,17 @@
-import { Message } from "@/types/common";
+import { Conversation, Message } from "@/types/common";
 import { create } from "zustand";
 
-export interface ConverSation {
-  id?: string;
-  title?: any;
-  isGroup?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  participants?: Participant[];
-}
-
-export interface Participant {
-  user: User;
-}
-
-export interface User {
-  id: string;
-  email?: string;
-  password?: string;
-  firstName: string;
-  lastName?: string;
-  nationalId: any;
-  birthDate: any;
-  mobile?: string;
-  isActive: boolean;
-  isVerified: boolean;
-  image: any;
-  sessionToken?: string;
-  roleId: string;
-  role?: Role;
-  createdAt: string;
-}
-
-interface IuseStickyChat {
+interface IStickyChatState {
   showChat: boolean;
-  setShowChat: (value: boolean) => void;
   showCTA: boolean;
-  setShowCTA: (value: boolean) => void;
-  conversationData: ConverSation | null;
-  setConversationData: (value: ConverSation | null) => void;
   messages: Message[];
+  conversationData: Conversation | null;
+  showChatForm: boolean;
+
+  setShowChatForm: (showChatForm: boolean) => void;
+  setShowCTA: (value: boolean) => void;
+  setShowChat: (value: boolean) => void;
+  setConversationData: (value: Conversation | null) => void;
   setMessages: (
     messages: Message[] | ((previousMessages: Message[]) => Message[])
   ) => void;
@@ -51,12 +23,17 @@ export interface Role {
   farsiTitle: string;
 }
 
-export const useStickyChat = create<IuseStickyChat>((set, get) => ({
+export const useStickyChat = create<IStickyChatState>((set, get) => ({
   showCTA: false,
   showChat: false,
   messages: [],
   conversationData: {},
+  showChatForm: false,
+
   //ACTIONS
+  setShowChatForm(showChatForm) {
+    set({ showChatForm });
+  },
   setShowChat(value) {
     set({ showChat: value, showCTA: false });
   },

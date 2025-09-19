@@ -8,6 +8,7 @@ import { useChat } from "../../../stores";
 import { Send } from "lucide-react";
 import { Message } from "@/types/common";
 import { v4 as uuid } from "uuid";
+import { emitSocket } from "@/lib/socket";
 const StickyChatInput = memo(() => {
   const { messages, conversationData, setMessages } = useStickyChat();
   const [value, setValue] = useState<string>("");
@@ -31,11 +32,11 @@ const StickyChatInput = memo(() => {
   const notRegisteredUserId = useMemo(() => {
     const users = conversationData?.participants?.find(
       (item) =>
-        item.user.role?.englishTitle !== "manager" &&
-        item.user.role?.englishTitle !== "admin"
+        item?.user?.role?.englishTitle !== "manager" &&
+        item?.user?.role?.englishTitle !== "admin"
     );
 
-    return users?.user.id;
+    return users?.user?.id;
   }, [conversationData]);
 
   const senderId = userId ? userId : notRegisteredUserId;
@@ -69,8 +70,8 @@ const StickyChatInput = memo(() => {
       },
     })
       .then((data) => {
-        if (!socket) return;
-        socket.emit("send-message", {
+        if (!socket || !conversationId) return;
+        emitSocket("send-message", {
           ...data,
           conversationId,
           senderId,

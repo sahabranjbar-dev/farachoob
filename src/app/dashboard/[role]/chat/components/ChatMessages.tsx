@@ -46,7 +46,9 @@ const ChatMessages = () => {
     if (!socket) return;
 
     const handleNewMessage = (data: Message) => {
-      setDashboardChatMessage((prev) => [...prev, data]);
+      if (conversation?.id === data.conversationId) {
+        setDashboardChatMessage((prev) => [...prev, data]);
+      }
     };
 
     socket.on("new-message", handleNewMessage);

@@ -111,7 +111,7 @@ const ConversationContainer = () => {
         )}
       </div>
 
-      <div className="absolute bottom-0 right-0 left-0 z-10 border-t p-2">
+      <div className="absolute bottom-0 right-0 left-0 z-10 border-t p-2 bg-white">
         <StickyChatInput />
       </div>
     </div>

@@ -11,7 +11,7 @@ const ProjectSection = async () => {
     take: 20,
   });
 
-  if (!projects) return null;
+  if (!projects.length) return null;
 
   return (
     <div className="text-center mt-2 mb-10 min-h-80">

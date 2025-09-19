@@ -8,9 +8,7 @@ const ChatHeader = () => {
   const { setConversationData, conversationData } = useStickyChat();
   const admin = useMemo(() => {
     return conversationData?.participants?.filter(
-      (item) =>
-        item.user.role?.englishTitle === "manager" ||
-        item.user.role?.englishTitle === "admin"
+      (item) => item.user.role?.englishTitle === "admin"
     );
   }, [conversationData]);
   return (

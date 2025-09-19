@@ -56,7 +56,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return Response.json({ ...conversation, isSecure }, { status: 200 });
+    return Response.json(
+      { ...conversation, isSecure, userId },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("POST /api/conversation error:", error);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
@@ -107,21 +110,30 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect("/auth/login");
     }
 
+    const url = new URL(req?.url);
+
+    const isSecure = url.searchParams.get("isSecure") ?? "true";
+    const conversationId =
+      url?.searchParams?.get("conversationId") || undefined;
+    const parsedSecure = JSON.parse(isSecure);
     // بررسی نقش کاربر
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { role: { select: { englishTitle: true } } },
     });
 
-    if (!user || !["admin", "manager"].includes(user.role.englishTitle ?? "")) {
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+      },
+    });
+
+    if (
+      !conversation?.id &&
+      !["admin", "manager"].includes(user?.role.englishTitle ?? "")
+    ) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
-
-    const url = new URL(req?.url);
-
-    const isSecure = url.searchParams.get("isSecure") ?? "true";
-
-    const parsedSecure = JSON.parse(isSecure);
 
     const conversations = await prisma.conversation.findMany({
       where: {
@@ -134,7 +146,7 @@ export async function GET(req: NextRequest) {
             messages: {
               where: {
                 read: false,
-                senderId: { not: userId }, // اگر میخوای فقط پیام‌های دیگران که نخوانده‌اند
+                senderId: { not: userId },
               },
             },
           },
@@ -143,7 +155,13 @@ export async function GET(req: NextRequest) {
       orderBy: { updatedAt: "desc" },
     });
 
-    const mappedWithIsSecure = conversations.map((item) => ({
+    const sorted = conversations.sort(
+      (a, b) =>
+        new Date(b.messages[0]?.createdAt || 0).getTime() -
+        new Date(a.messages[0]?.createdAt || 0).getTime()
+    );
+
+    const mappedWithIsSecure = sorted.map((item) => ({
       ...item,
       isSecure: parsedSecure,
     }));

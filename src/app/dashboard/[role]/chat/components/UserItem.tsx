@@ -25,7 +25,9 @@ const UserItem = ({
   const onlineUsers = useChat((state) => state.onlineUsers);
 
   const isUserOnline = useMemo(() => {
-    return onlineUsers.includes(user.id);
+    if (!Array.isArray(onlineUsers) || !onlineUsers?.length || !user?.id)
+      return false;
+    return onlineUsers?.includes(user?.id);
   }, [onlineUsers]);
 
   return (

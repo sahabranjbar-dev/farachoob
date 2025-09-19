@@ -19,9 +19,22 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { Headset, MessageCircle } from "lucide-react";
+import { Conversation, Participant } from "@/types/common";
+import { Socket } from "socket.io-client";
+import { emitSocket } from "@/lib/socket";
+
+export interface Root {
+  id: string;
+  title: any;
+  isGroup: boolean;
+  createdAt: string;
+  updatedAt: string;
+  participants: Participant[];
+}
 
 const schema = z.object({
-  fullName: z.string().min(2, "نام حداقل ۲ حرف باشد"),
+  fullName: z.string().trim().min(2, "نام حداقل ۲ حرف باشد"),
   phone: z.string().superRefine((val, ctx) => {
     const normalized = normalizePhoneNumber(val);
     if (!/^09\d{9}$/.test(normalized)) {
@@ -45,10 +58,7 @@ const PrePareForChatForm = () => {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      fullName: "",
-      phone: "",
-    },
+    defaultValues: { fullName: "", phone: "" },
   });
 
   const { fetch, loading } = useDataGetter({
@@ -71,20 +81,17 @@ const PrePareForChatForm = () => {
     phone: string;
     isFromSticky: boolean;
   }): Promise<any> => {
-    return await fetch?.(
-      inputBody
-        ? {
-            inputBody,
-          }
-        : {}
-    )
+    return await fetch?.(inputBody ? { inputBody } : {})
       .then((data) => {
         if (data?.conversation?.id) {
-          setConversationData(data.conversation);
-          const newMessage = data?.conversation?.messages;
-          setMessages(newMessage);
-          socket.emit("join-conversation", {
+          setConversationData(data?.conversation);
+          emitSocket("join-conversation", {
             conversationId: data?.conversation?.id,
+            userId,
+          });
+          emitSocket("admin-should-join-conversation", {
+            conversationId: data?.conversation?.id,
+            userId: data?.conversation?.adminId,
           });
         }
       })
@@ -107,24 +114,21 @@ const PrePareForChatForm = () => {
   if (userId) {
     return (
       <div className="h-full mt-10 flex flex-col items-center px-4">
-        <div className="text-center">
-          <p className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-50">
+        <div className="backdrop-blur-md bg-white/30 dark:bg-gray-800/30 p-6 rounded-2xl shadow-lg text-center w-full max-w-md border border-white/20">
+          <p className="text-xl font-bold text-gray-800 dark:text-gray-50">
             👋 سلام، {session.data?.user.firstName || "کاربر عزیز"}!
           </p>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
             خوش آمدید! برای شروع گفتگو، روی دکمه زیر کلیک کنید.
           </p>
-        </div>
 
-        <div className="mt-6 z-0">
           <Button
-            onClick={() => {
-              onCreateChat();
-            }}
+            onClick={() => onCreateChat()}
             disabled={loading}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg shadow-md transition-colors duration-200 z-0"
+            className="mt-6 w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg flex items-center justify-center gap-2 animate-pulse transition-all duration-200"
           >
-            شروع گفتگو 💬
+            <MessageCircle className="w-5 h-5" />
+            شروع گفتگو
           </Button>
         </div>
       </div>
@@ -132,54 +136,63 @@ const PrePareForChatForm = () => {
   }
 
   return (
-    <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4 w-full"
-        >
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>نام و نام خانوادگی</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="نام و نام خانوادگی را وارد کنید..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <div className="w-full h-full flex justify-center items-center px-4">
+      <div className="backdrop-blur-md bg-white/30 dark:bg-gray-800/30 p-6 rounded-2xl shadow-lg w-full max-w-md border border-white/20">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-50 text-center mb-4">
+          <span className="flex justify-center items-center gap-2">
+            شروع گفتگو با پشتیبانی <Headset />
+          </span>
+        </h2>
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>شماره موبایل</FormLabel>
-                <FormControl>
-                  <Input placeholder="مثلاً 09123456789" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>نام و نام‌خانوادگی</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="نام و نام‌خانوادگی"
+                      className="rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-sm text-red-500 mt-1" />
+                </FormItem>
+              )}
+            />
 
-          <div className="flex justify-start items-center z-0">
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>شماره موبایل</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="09123456789"
+                      className="rounded-xl border-gray-300 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-sm text-red-500 mt-1" />
+                </FormItem>
+              )}
+            />
+
             <Button
-              className="bg-blue-500 hover:bg-blue-600 focus:z-0"
               disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all duration-200"
             >
-              شروع گفتگو 💬
+              <MessageCircle className="w-5 h-5" />
+              شروع گفتگو
             </Button>
-          </div>
-        </form>
-      </Form>
-    </>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 };
 

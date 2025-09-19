@@ -1,12 +1,9 @@
-import { API } from "@/configs/API";
-import { IChatState } from "@/types/chat";
-import { io } from "socket.io-client";
+import { socket } from "@/lib/socket";
 import { create } from "zustand";
+import { IChatState } from "@/types/chat";
 
 export const useChat = create<IChatState>((set, get) => ({
-  socket: io("http://localhost:3000", {
-    transports: ["websocket"],
-  }),
+  socket,
   conversation: null,
   messages: [],
   userInfo: null,
@@ -14,7 +11,7 @@ export const useChat = create<IChatState>((set, get) => ({
   conversations: [],
   getConversatioMessageLoading: false,
   openSidebar: true,
-
+  needCustomerChatWithAdmin: false,
   // ACTIONS
   setConversatioMessageLoading(value) {
     set({ getConversatioMessageLoading: value });
@@ -32,11 +29,19 @@ export const useChat = create<IChatState>((set, get) => ({
   setConversation(conversation) {
     set({ conversation });
   },
-  setOnlineUsers(onlineUsers) {
-    set({ onlineUsers });
+  setOnlineUsers(updater) {
+    if (typeof updater === "function") {
+      set((state) => ({ onlineUsers: updater(state.onlineUsers) }));
+    } else {
+      set({ onlineUsers: updater });
+    }
   },
+
   setOpenSidebar: (val: boolean) => set({ openSidebar: val }),
   setConversations(conversations) {
     set({ conversations });
+  },
+  setNeedCustomerChatWithAdmin(needCustomerChatWithAdmin) {
+    set({ needCustomerChatWithAdmin });
   },
 }));

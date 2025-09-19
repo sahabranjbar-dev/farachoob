@@ -89,9 +89,7 @@ export async function GET() {
       // فیلتر: فقط کانورسیشن‌هایی که طرف مقابل admin یا manager هست
       conversations = conversations.filter((conv) =>
         conv.participants.some(
-          (p) =>
-            p.userId !== userId &&
-            ["admin", "manager"].includes(p.user.role?.englishTitle ?? "")
+          (p) => p.userId !== userId && p.user.role?.englishTitle === "admin"
         )
       );
     }
@@ -195,7 +193,10 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({ conversation }, { status: 201 });
+    return NextResponse.json(
+      { conversation: { ...conversation, userId, adminId: admin.id } },
+      { status: 201 }
+    );
   } catch (error: any) {
     console.error("POST /api/conversation error:", error);
     return NextResponse.json(

@@ -10,10 +10,14 @@ export interface IChatState {
   conversations: Conversation[];
   getConversatioMessageLoading: boolean;
   openSidebar: boolean;
+  needCustomerChatWithAdmin: boolean;
 
+  setNeedCustomerChatWithAdmin: (needCustomerChatWithAdmin: boolean) => void;
   setOpenSidebar: (openSidebar: boolean) => void;
   setConversatioMessageLoading: (value: boolean) => void;
-  setOnlineUsers: (onlineUsers: string[]) => void;
+  setOnlineUsers: (
+    onlineUsers: string[] | ((onlineUsers: string[]) => string[])
+  ) => void;
   setDashboardChatMessage: (
     messages: Message[] | ((previousMessages: Message[]) => Message[])
   ) => void;

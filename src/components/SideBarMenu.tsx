@@ -46,7 +46,7 @@ const SideBarMenu = ({ setOpen }: Props) => {
 
       <Separator />
 
-      <div className="space-y-2 z-[100]">
+      <div className="space-y-2 z-[100] overflow-scroll">
         {items.map((item, index) => (
           <Link
             key={item.title}

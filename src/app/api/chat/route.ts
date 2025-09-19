@@ -44,7 +44,13 @@ export async function POST(request: NextRequest) {
       },
       include: {
         sender: {
-          select: { id: true, email: true, image: true },
+          select: {
+            id: true,
+            email: true,
+            image: true,
+            firstName: true,
+            lastName: true,
+          },
         },
       },
     });

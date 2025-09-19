@@ -27,41 +27,27 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("🔗 User connected:", socket.id);
 
-    // وقتی کاربر آنلاین شد
     socket.on("user-online", (userId) => {
-      onlineUsers.set(userId, {
-        socketId: socket.id,
-        userId,
-        lastSeen: new Date(),
-      });
+      if (!onlineUsers.has(userId)) onlineUsers.set(userId, new Set());
+      onlineUsers.get(userId)?.add(socket.id);
 
-      // join به room اختصاصی خودش برای نوتیفیکیشن
+      // broadcast لیست آنلاین
       socket.join(`user_${userId}`);
-
-      // اطلاع به بقیه کاربران
-      socket.broadcast.emit("user-online", userId);
-      console.log(`👤 User ${userId} is now online`);
+      io.emit("online-users-list", Array.from(onlineUsers.keys()));
     });
+
+    socket.on(
+      "admin-should-join-conversation",
+      ({ conversationId, userId }) => {
+        io.to(`user_${userId}`).emit("admin-join-conversation", {
+          conversationId,
+        });
+      }
+    );
 
     // join به کانورسیشن
     socket.on("join-conversation", ({ conversationId }) => {
-      // leave همه room ها به جز socket.id
-      // for (let room of socket.rooms) {
-      //   if (room !== socket.id) socket.leave(room);
-      // }
       socket.join(conversationId);
-
-      io.to("admins").emit("admin-join-request", { conversationId });
-    });
-
-    socket.on("admin-connected", () => {
-      socket.join("admins");
-      console.log(`Admin ${socket.id} joined admins room`);
-    });
-
-    socket.on("admin-join-conversation", ({ conversationId }) => {
-      socket.join(conversationId);
-      console.log(`Admin ${socket.id} joined conversation ${conversationId}`);
     });
 
     // ارسال پیام
@@ -81,7 +67,7 @@ app.prepare().then(() => {
         // نوتیفیکیشن به گیرنده‌ها (user room)
         recipients.forEach((userId) => {
           if (userId !== senderId) {
-            socket.to(conversationId).emit("notification", {
+            io.to(`user_${userId}`).emit("get-new-message-notification", {
               ...res,
               conversationId,
               senderId,
@@ -100,16 +86,13 @@ app.prepare().then(() => {
     });
 
     socket.on("disconnect", () => {
-      console.log("❌ User disconnected:", socket.id);
-
-      for (let [userId, userInfo] of onlineUsers.entries()) {
-        if (userInfo.socketId === socket.id) {
+      for (const [userId, sockets] of onlineUsers.entries()) {
+        sockets.delete(socket.id);
+        if (sockets.size === 0) {
           onlineUsers.delete(userId);
-          socket.broadcast.emit("user-offline", userId);
-          console.log(`👤 User ${userId} is now offline`);
-          break;
         }
       }
+      io.emit("online-users-list", Array.from(onlineUsers.keys()));
     });
   });
 

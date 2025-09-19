@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useChat } from "../../../../../../stores";
 import UserItem from "./UserItem";
+import { emitSocket } from "@/lib/socket";
 
 export interface IChatList {
   getConversatioLoading?: boolean;
@@ -48,7 +49,7 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
     <div className="divide-y">
       {conversationsData?.map((conv) => {
         const otherUser = conv?.participants?.find(
-          (p) => p.userId !== userId
+          (p) => p?.userId !== userId
         )?.user;
 
         return otherUser ? (
@@ -74,7 +75,7 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
 
                 setConversation(conv);
 
-                socket.emit("join-conversation", { conversationId: conv.id });
+                emitSocket("join-conversation", { conversationId: conv.id });
               });
             }}
           />

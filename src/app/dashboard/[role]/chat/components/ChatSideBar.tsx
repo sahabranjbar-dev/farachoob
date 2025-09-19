@@ -4,11 +4,8 @@ import useDataGetter from "@/hooks/useDataGetter";
 import { Conversation } from "@/types/common";
 import clsx from "clsx";
 import { ArrowRightFromLine, RefreshCw } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { cloneElement, ReactElement, useEffect } from "react";
-import { toast } from "sonner";
 import { useChat } from "../../../../../../stores";
-import { fetchConvs } from "../meta/utils";
 import { IChatList } from "./ChatList";
 import SearchUserChat from "./SearchUserChat";
 
@@ -18,9 +15,6 @@ interface Props {
 
 const ChatSideBar = ({ children }: Props) => {
   const setOpenSidebar = useChat((state) => state.setOpenSidebar);
-  const socket = useChat((state) => state.socket);
-  const setOnlineUsers = useChat((state) => state.setOnlineUsers);
-  const onlineUsers = useChat((state) => state.onlineUsers);
   const openSidebar = useChat((state) => state.openSidebar);
   const setUserInfo = useChat((state) => state.setUserInfo);
   const setConversations = useChat((state) => state.setConversations);
@@ -28,50 +22,16 @@ const ChatSideBar = ({ children }: Props) => {
 
   const conversationsData = conversations;
 
-  const session = useSession();
-  const userId = session.data?.user.id;
-
-  const isAdmin = session.data?.user.role?.englishTitle === "admin";
-
   const { loading: getConversatioLoading, fetch: getConverSations } =
     useDataGetter<{ conversations: Conversation[] }>({
       url: "/dashboard/conversations",
       onSuccess(data: { conversations: Conversation[] }) {
         setConversations(data?.conversations);
-
-        data?.conversations.forEach((item) => {
-          socket.emit("join-conversation", { conversationId: item.id });
-        });
       },
       params: {
         isSecure: true,
       },
     });
-
-  useEffect(() => {
-    if (!socket || !userId) return;
-    socket.emit("get-online-users");
-
-    socket.on("user-online", (newUserId: string) => {
-      if (!onlineUsers.includes(newUserId)) {
-        setOnlineUsers([...onlineUsers, newUserId]);
-      }
-    });
-
-    socket.on("user-offline", (offlineUserId: string) => {
-      setOnlineUsers(onlineUsers.filter((id) => id !== offlineUserId));
-    });
-
-    socket.on("online-users-list", (users: string[]) => {
-      setOnlineUsers(users);
-    });
-
-    return () => {
-      socket.off("user-online");
-      socket.off("user-offline");
-      socket.off("online-users-list");
-    };
-  }, []);
 
   useEffect(() => {
     const updateSidebar = () => {
@@ -85,42 +45,6 @@ const ChatSideBar = ({ children }: Props) => {
       window.visualViewport?.removeEventListener("resize", updateSidebar);
     };
   }, [setOpenSidebar]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("notification", (data) => {
-      if (data.senderId !== userId)
-        toast.info(
-          `شما یک پیام جدید از ${data?.sender?.firstName ?? "کاربر"} ${
-            data?.sender?.lastName ?? "میهمان"
-          } دریافت کردید`
-        );
-      if (!getConversatioLoading) {
-        fetchConvs();
-      }
-    });
-
-    return () => {
-      socket.off("notification");
-    };
-  }, [socket]);
-
-  useEffect(() => {
-    if (!socket || !isAdmin) return;
-
-    socket.emit("admin-connected");
-
-    const handler = ({ conversationId }: any) => {
-      socket.emit("admin-join-conversation", { conversationId });
-    };
-
-    socket.on("admin-join-request", handler);
-
-    return () => {
-      socket.on("admin-join-request", handler);
-    };
-  }, [isAdmin, socket]);
 
   return (
     <div

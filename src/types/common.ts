@@ -59,6 +59,8 @@ export interface Conversation {
   _count?: Count;
   messages?: Message[];
   isSecure?: boolean;
+  role?: Role;
+  user?: User;
 }
 
 export interface Count {
