@@ -1,14 +1,21 @@
 import { ArrowRight } from "lucide-react";
 import React, { useMemo, useState } from "react";
-import { Button } from "../ui/button";
-import { useStickyChat } from "../../../stores/stickyChat";
+import { useStickyChat } from "../../../../stores/stickyChat";
+import { Button } from "../../ui/button";
+import { Participant } from "../../../types/common";
 
 const ChatHeader = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const { setConversationData, conversationData } = useStickyChat();
+  const setConversationData = useStickyChat(
+    (state) => state?.setConversationData
+  );
+  const conversationData = useStickyChat((state) => state?.conversationData);
+
   const admin = useMemo(() => {
     return conversationData?.participants?.filter(
-      (item) => item?.user?.role?.englishTitle === "admin"
+      (item: Participant) =>
+        item?.user?.role?.englishTitle === "manager" ||
+        item?.user?.role?.englishTitle === "admin"
     );
   }, [conversationData]);
   return (

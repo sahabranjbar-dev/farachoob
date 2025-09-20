@@ -27,9 +27,7 @@ const ChatScreen = () => {
   return (
     <div className="flex flex-col flex-1 w-full relative bg-gradient-to-b from-gray-50 to-white">
       <ChatContentHeader />
-      <div className="flex-1 overflow-y-auto mb-24 p-4 scrollbar-thin scrollbar-thumb-indigo-300 scrollbar-track-transparent">
-        <ChatMessages />
-      </div>
+      <ChatMessages />
       <ChatInput />
     </div>
   );

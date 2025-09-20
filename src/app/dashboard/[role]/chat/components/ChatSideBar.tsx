@@ -8,6 +8,10 @@ import { cloneElement, ReactElement, useEffect } from "react";
 import { useChat } from "../../../../../../stores";
 import { IChatList } from "./ChatList";
 import SearchUserChat from "./SearchUserChat";
+import { useSession } from "next-auth/react";
+import { emitSocket } from "@/lib/socket";
+import { toast } from "sonner";
+import { fetchConvs } from "../meta/utils";
 
 interface Props {
   children: ReactElement<IChatList>;
@@ -17,8 +21,16 @@ const ChatSideBar = ({ children }: Props) => {
   const setOpenSidebar = useChat((state) => state.setOpenSidebar);
   const openSidebar = useChat((state) => state.openSidebar);
   const setUserInfo = useChat((state) => state.setUserInfo);
+  const conversation = useChat((state) => state.conversation);
   const setConversations = useChat((state) => state.setConversations);
   const conversations = useChat((state) => state.conversations);
+  const socket = useChat((state) => state.socket);
+
+  const session = useSession();
+
+  const user = session.data?.user;
+
+  const isAdmin = user?.role?.englishTitle === "admin";
 
   const conversationsData = conversations;
 
@@ -45,6 +57,52 @@ const ChatSideBar = ({ children }: Props) => {
       window.visualViewport?.removeEventListener("resize", updateSidebar);
     };
   }, [setOpenSidebar]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const handler = (data: { conversationId: string }) => {
+      emitSocket("join-conversation", {
+        conversationId: data.conversationId,
+      });
+    };
+
+    socket.on("admin-join-conversation", handler);
+
+    return () => {
+      socket.off("admin-join-conversation", handler);
+    };
+  }, [socket, isAdmin]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("get-new-message-notification", (data) => {
+      if (data.senderId === user?.id || conversation?.id) return;
+      const alertMessage = () => {
+        const firstName = data?.sender?.firstName;
+        const lastName = data?.sender?.lastName;
+
+        if (firstName && lastName) {
+          return `شما یک پیام جدید از ${firstName} ${lastName} دریافت کردید`;
+        } else if (firstName) {
+          return `شما یک پیام جدید از ${firstName} دریافت کردید`;
+        } else {
+          return "شما یک پیام جدید دریافت کردید";
+        }
+      };
+
+      toast.info(alertMessage(), {
+        position: "top-center",
+      });
+
+      fetchConvs();
+    });
+
+    return () => {
+      socket.off("get-new-message-notification");
+    };
+  }, [socket, conversation?.id]);
 
   return (
     <div

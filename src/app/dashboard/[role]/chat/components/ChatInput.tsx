@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Message } from "@/types/common";
 import { useSession } from "next-auth/react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useChat } from "../../../../../../stores";
 import useDataGetter from "@/hooks/useDataGetter";
-import { memo } from "react";
+import { KeyboardEvent, memo, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
@@ -16,7 +16,10 @@ type FormValues = {
 };
 
 const ChatInput = memo(() => {
-  const { register, handleSubmit, reset, watch } = useForm<FormValues>();
+  const [direction, setDirection] = useState<"rtl" | "ltr">("rtl");
+
+  const { control, handleSubmit, reset, watch, setValue } =
+    useForm<FormValues>();
   const session = useSession();
   const senderId = session.data?.user.id;
   const conversation = useChat((state) => state.conversation);
@@ -76,11 +79,8 @@ const ChatInput = memo(() => {
         console.error("Failed to send message:", err);
 
         setDashboardChatMessage((prev) =>
-          prev.map(
-            (item) =>
-              item.tempId === tempId
-                ? { ...item, failed: true } // پیام failed میشه
-                : item // بقیه پیام‌ها همونطور بمونن
+          prev.map((item) =>
+            item.tempId === tempId ? { ...item, failed: true } : item
           )
         );
       });
@@ -92,16 +92,46 @@ const ChatInput = memo(() => {
         onSubmit={handleSubmit(onSubmit)}
         className="flex items-center gap-2 p-3"
       >
-        <Textarea
-          placeholder="پیام خود را بنویسید..."
-          className="flex-1 resize-none rounded-xl border px-3 py-2 shadow-inner focus:ring-2 focus:ring-indigo-400 transition"
-          {...register("message", { required: true })}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit(onSubmit)();
-            }
-          }}
+        <Controller
+          name="message"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <Textarea
+              {...field}
+              placeholder={
+                direction === "rtl"
+                  ? "پیام خود را بنویسید..."
+                  : "Type your message..."
+              }
+              className="flex-1 resize-none rounded-xl border px-3 py-2 shadow-inner focus:ring-2 focus:ring-indigo-400 transition"
+              style={{
+                direction,
+                textAlign: direction === "rtl" ? "right" : "left",
+              }}
+              onChange={(e) => {
+                const value = e.target.value;
+                field.onChange(value);
+
+                if (value.length > 0) {
+                  if (/[\u0600-\u06FF]/.test(value[0])) {
+                    setDirection("rtl");
+                  } else {
+                    setDirection("ltr");
+                  }
+                } else {
+                  setDirection("ltr");
+                }
+              }}
+              onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(onSubmit)();
+                  setValue("message", "");
+                }
+              }}
+            />
+          )}
         />
 
         <Button

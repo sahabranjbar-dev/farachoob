@@ -12,9 +12,15 @@ import {
 import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
 import { useChat } from "../../../../../../stores";
+import { fetchConvs } from "../meta/utils";
+import { emitSocket } from "@/lib/socket";
+import { toast } from "sonner";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
+  const messagesRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const observedMessages = useRef(new Set<string>());
+
   const session = useSession();
 
   const conversation = useChat((s) => s.conversation);
@@ -52,10 +58,71 @@ const ChatMessages = () => {
     };
 
     socket.on("new-message", handleNewMessage);
+
     return () => {
       socket.off("new-message", handleNewMessage);
     };
-  }, [socket]);
+  }, [socket, conversation?.id]);
+
+  // هر بار messages تغییر کنه → آخرین پیام اسکرول میشه
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry: any) => {
+          const messageId = entry.target?.dataset?.messageId;
+          if (
+            entry.isIntersecting &&
+            !observedMessages.current.has(messageId)
+          ) {
+            observedMessages.current.add(messageId); // جلوگیری از دوباره خواندن
+            updateMessage?.({ inputBody: { id: messageId } }).then((data) => {
+              if (data?.ok) {
+                fetchConvs(); // اگر خیلی ضروری نیست، می‌تونی حذفش کنی
+                emitSocket("message-read", {
+                  messageId: data?.updatedMessage?.id,
+                  conversationId,
+                });
+              }
+            });
+          }
+        });
+      },
+      { root: null, threshold: 0.1 }
+    );
+
+    messagesRefs.current.forEach((item) => {
+      if (item) observer.observe(item);
+    });
+
+    return () => observer.disconnect();
+  }, [messages]);
+
+  useEffect(() => {
+    const setReadMarkHandler = (data: { messageId?: string }) => {
+      setDashboardChatMessage((prev) => {
+        const resoledMessage = prev.map((item) => {
+          if (item.id !== data?.messageId) return item;
+          return { ...item, read: true };
+        });
+        return resoledMessage;
+      });
+    };
+    socket.on("mark-message-read", setReadMarkHandler);
+
+    return () => {
+      socket.off("mark-message-read", setReadMarkHandler);
+    };
+  }, []);
+  function getDirection(text: string): "rtl" | "ltr" {
+    if (!text) return "ltr";
+    return /[\u0600-\u06FF]/.test(text[0]) ? "rtl" : "ltr";
+  }
 
   // render وضعیت پیام
   const renderStatus = (msg: Message) => {
@@ -117,57 +184,68 @@ const ChatMessages = () => {
   }
 
   return (
-    <ul className="p-4 overflow-y-auto max-h-[500px]">
-      {messages?.map((msg, index) => {
-        const date = new Date(msg?.createdAt ?? "");
-        const time = `${date.getHours()}:${date
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}`;
-        const isOwn = msg.senderId === userId;
-
-        return (
-          <li
-            key={msg.id || msg.tempId || `${msg.content}-${index}`}
-            className={clsx(
-              "rounded-2xl w-fit p-3 m-1 relative",
-              isOwn
-                ? msg.failed
-                  ? "bg-red-500 text-white"
-                  : "bg-indigo-500 ml-auto text-white"
-                : "bg-gray-200 mr-auto text-black"
-            )}
-          >
-            <div
-              dir="auto"
-              className="break-words whitespace-pre-wrap text-inherit"
-            >
-              {msg.content}
-            </div>
-
-            <div className="flex justify-end items-center gap-2">
-              {!msg.loading && (
-                <span className="opacity-75 text-sm">{time}</span>
+    <div className="flex-1 mb-24 p-4 scrollbar-thin scrollbar-thumb-indigo-300 scrollbar-track-transparent overflow-y-auto">
+      <ul className="p-4  max-h-[500px]">
+        {messages?.map((msg, index) => {
+          const date = new Date(msg?.createdAt ?? "");
+          const time = `${date.getHours()}:${date
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
+          const isOwn = msg.senderId === userId;
+          const direction = getDirection(msg.content);
+          return (
+            <li
+              key={msg.id || msg.tempId || `${msg.content}-${index}`}
+              className={clsx(
+                "rounded-2xl w-fit p-3 m-1 relative",
+                isOwn
+                  ? msg.failed
+                    ? "bg-red-500 text-white"
+                    : "bg-indigo-500 ml-auto text-white"
+                  : "bg-gray-200 mr-auto text-black"
               )}
-              <span>{renderStatus(msg)}</span>
-            </div>
-
-            {msg.failed && isOwn && (
+              ref={(el) => {
+                if (!isOwn && !msg.read) {
+                  messagesRefs.current[index] = el;
+                }
+              }}
+              data-message-id={msg.id}
+            >
               <div
-                className="absolute -left-8 top-[50%] cursor-pointer"
-                onClick={() => handleRetry(msg)}
+                className={clsx(
+                  "px-1 py-2 rounded-lg break-words whitespace-pre-wrap",
+                  direction === "rtl" ? "text-right" : "text-left"
+                )}
+                style={{ direction }}
               >
-                <RotateCcw
-                  color="gray"
-                  className="hover:-rotate-180 transition-transform duration-200"
-                />
+                {msg.content}
               </div>
-            )}
-          </li>
-        );
-      })}
-      <div ref={lastMessageRef} />
-    </ul>
+
+              <div className="flex justify-end items-center gap-2">
+                {!msg.loading && (
+                  <span className="opacity-75 text-sm">{time}</span>
+                )}
+                <span>{renderStatus(msg)}</span>
+              </div>
+
+              {msg.failed && isOwn && (
+                <div
+                  className="absolute -left-8 top-[50%] cursor-pointer"
+                  onClick={() => handleRetry(msg)}
+                >
+                  <RotateCcw
+                    color="gray"
+                    className="hover:-rotate-180 transition-transform duration-200"
+                  />
+                </div>
+              )}
+            </li>
+          );
+        })}
+        <div ref={lastMessageRef} />
+      </ul>
+    </div>
   );
 };
 

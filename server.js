@@ -79,6 +79,10 @@ app.prepare().then(() => {
       }
     );
 
+    socket.on("message-read", ({ messageId, conversationId }) => {
+      socket.to(conversationId).emit("mark-message-read", { messageId });
+    });
+
     // لیست کاربران آنلاین
     socket.on("get-online-users", () => {
       const users = Array.from(onlineUsers.values()).map((u) => u.userId);

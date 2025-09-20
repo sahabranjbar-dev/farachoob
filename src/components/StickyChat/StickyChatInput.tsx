@@ -1,4 +1,10 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, {
+  KeyboardEvent,
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
@@ -9,7 +15,10 @@ import { Send } from "lucide-react";
 import { Message } from "@/types/common";
 import { v4 as uuid } from "uuid";
 import { emitSocket } from "@/lib/socket";
+import clsx from "clsx";
+
 const StickyChatInput = memo(() => {
+  const [direction, setDirection] = useState<"rtl" | "ltr">("rtl");
   const { messages, conversationData, setMessages } = useStickyChat();
   const [value, setValue] = useState<string>("");
 
@@ -89,16 +98,35 @@ const StickyChatInput = memo(() => {
       });
   }, [value, conversationId, fetch, setMessages, messages, socket]);
 
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setValue(value);
+    if (value.length > 0) {
+      if (/[\u0600-\u06FF]/.test(value[0])) {
+        setDirection("rtl");
+      } else {
+        setDirection("ltr");
+      }
+    } else {
+      setDirection("ltr");
+    }
+  };
   return (
     <div className="relative">
       <Textarea
         value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
+        placeholder={
+          direction === "rtl"
+            ? "پیام خود را بنویسید..."
+            : "Type your message..."
+        }
+        onChange={handleChange}
         name="message"
-        className="bg-white resize-none pl-24"
-        onKeyDown={(e) => {
+        className={clsx(
+          "bg-white resize-none pl-24 overflow-y-scroll max-h-20"
+        )}
+        style={{ direction, textAlign: direction === "rtl" ? "right" : "left" }}
+        onKeyDown={(e: KeyboardEvent<HTMLTextAreaElement>) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
             sendMessageHandler();

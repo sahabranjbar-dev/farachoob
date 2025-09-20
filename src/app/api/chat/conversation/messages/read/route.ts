@@ -24,27 +24,16 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: "Message not found" }, { status: 404 });
     }
 
-    await prisma.$transaction([
-      // 1. پیام فعلی
-      prisma.message.update({
-        where: { id },
-        data: { read: true },
-      }),
-      // 2. پیام‌های قبلی
-      prisma.message.updateMany({
-        where: {
-          conversationId,
-          createdAt: { lt: targetMessage.createdAt },
-          read: false,
-        },
-        data: { read: true },
-      }),
-    ]);
+    const updatedMessage = await prisma.message.update({
+      where: { id },
+      data: { read: true },
+    });
 
     return NextResponse.json(
       {
         message: `read the ${targetMessage.id}`,
         ok: true,
+        updatedMessage,
       },
       { status: 201 }
     );

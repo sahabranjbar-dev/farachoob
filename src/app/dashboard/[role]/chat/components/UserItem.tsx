@@ -87,8 +87,8 @@ const UserItem = ({
       {unReadMessage ? (
         <span
           className={clsx(
-            "bg-indigo-500 text-white text-xs rounded-full",
-            openSidebar ? "px-2 py-1" : "absolute -top-1 -right-1 px-1.5 py-0.5"
+            "bg-indigo-500 w-5 h-5 text-white text-xs rounded-full flex justify-center items-center",
+            !openSidebar && "absolute bottom-0 left-0 px-1.5"
           )}
         >
           {unReadMessage}

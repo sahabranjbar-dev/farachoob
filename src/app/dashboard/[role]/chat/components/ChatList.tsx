@@ -17,11 +17,11 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
   const { data: session } = useSession();
   const setDashboardChatMessage = useChat((s) => s.setDashboardChatMessage);
   const setUserInfo = useChat((s) => s.setUserInfo);
+  const setOpenSidebar = useChat((s) => s.setOpenSidebar);
   const setConversatioMessageLoading = useChat(
     (s) => s.setConversatioMessageLoading
   );
   const setConversation = useChat((s) => s.setConversation);
-  const socket = useChat((s) => s.socket);
 
   const userId = session?.user?.id;
 
@@ -76,6 +76,8 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
                 setConversation(conv);
 
                 emitSocket("join-conversation", { conversationId: conv.id });
+
+                setOpenSidebar(false);
               });
             }}
           />

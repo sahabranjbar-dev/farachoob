@@ -44,17 +44,3 @@ export function normalizePhoneNumber(phone: string) {
     (d) => englishNumbers[persianNumbers.indexOf(d)]
   );
 }
-
-export function markMessagesRead(messages: Message[], messageId: string) {
-  // پیدا کردن اندیس پیام
-  const readMessageIndex = messages.findIndex((item) => item.id === messageId);
-  if (readMessageIndex === -1) return messages; // اگر پیدا نشد، همون آرایه برگرده
-
-  // پیام‌ها رو map می‌کنیم و read = true می‌کنیم
-  return messages.map((msg, index) => {
-    if (index <= readMessageIndex) {
-      return { ...msg, read: true };
-    }
-    return msg;
-  });
-}

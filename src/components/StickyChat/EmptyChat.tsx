@@ -7,13 +7,13 @@ const EmptyChat = () => {
   const userData = useMemo(() => {
     return conversationData?.participants?.filter(
       (item) =>
-        item.user.role?.englishTitle !== "manager" &&
-        item.user.role?.englishTitle !== "admin"
+        item?.user?.role?.englishTitle !== "manager" &&
+        item?.user?.role?.englishTitle !== "admin"
     );
   }, [conversationData]);
   return (
     <div className="flex flex-col justify-center items-center mt-10">
-      <p>{userData?.[0].user.firstName} عزیز ، خوش آمدید</p>
+      <p>{userData?.[0].user?.firstName} عزیز ، خوش آمدید</p>
       <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mt-8">
         پیامی وجود ندارد
       </h2>
