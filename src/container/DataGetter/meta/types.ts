@@ -1,5 +1,5 @@
-import { useDataGetterInputs } from "@/types/useDataGetter";
+import { UseDataGetterInputs } from "@/types/useDataGetter";
 
-export interface IDataGetter extends Omit<useDataGetterInputs, "url"> {
+export interface IDataGetter extends Omit<UseDataGetterInputs, "url"> {
   url: string;
 }

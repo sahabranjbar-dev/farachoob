@@ -134,7 +134,15 @@ exports.Prisma.UserScalarFieldEnum = {
   image: 'image',
   sessionToken: 'sessionToken',
   roleId: 'roleId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  biography: 'biography',
+  location: 'location',
+  emailNotification: 'emailNotification',
+  browserNotification: 'browserNotification',
+  smsNotification: 'smsNotification',
+  profileVisible: 'profileVisible',
+  searchVisible: 'searchVisible',
+  theme: 'theme'
 };
 
 exports.Prisma.OTPScalarFieldEnum = {
@@ -357,6 +365,12 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.ThemeColorScheme = exports.$Enums.ThemeColorScheme = {
+  auto: 'auto',
+  dark: 'dark',
+  light: 'light'
+};
+
 exports.PermissionKey = exports.$Enums.PermissionKey = {
   view_blogs: 'view_blogs',
   create_blogs: 'create_blogs',

@@ -18,9 +18,9 @@ export async function POST(req: NextRequest) {
       await webpush.sendNotification(
         sub,
         JSON.stringify({
-          title: "پیام جدید 🎉",
+          title: "پیام جدید",
           body: message,
-          url: "/chat",
+          url: "/dashboard/notifications",
         })
       );
       console.log("Notification sent to:", sub);

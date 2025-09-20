@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export default function SubscribeButton() {
+export default function useSubscribe() {
   const [subscription, setSubscription] = useState<PushSubscription | null>(
     null
   );
@@ -33,14 +33,11 @@ export default function SubscribeButton() {
     alert("عضویت در نوتیفیکیشن‌ها با موفقیت انجام شد ✅");
   };
 
-  return (
-    <button
-      onClick={subscribe}
-      className="p-2 bg-indigo-500 text-white rounded"
-    >
-      فعال‌سازی نوتیفیکیشن
-    </button>
-  );
+  return {
+    subscribe,
+    setSubscription,
+    subscription,
+  };
 }
 
 // تبدیل base64 به Uint8Array

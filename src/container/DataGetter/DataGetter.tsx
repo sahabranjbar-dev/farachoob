@@ -11,6 +11,7 @@ const DataGetter = ({
   params,
   url,
   children,
+  ...res
 }: PropsWithChildren<IDataGetter>) => {
   const { data, error, fetch, loading } = useDataGetter({
     body,
@@ -20,6 +21,7 @@ const DataGetter = ({
     onSuccess,
     params,
     url,
+    ...res,
   });
   return React.isValidElement(children)
     ? cloneElement(children as React.ReactElement<any>, {

@@ -1,7 +1,7 @@
 import { IFetchData } from "@/types/useDataGetter";
 
-export interface IDataLoader {
-  data?: any;
+export interface IDataLoader<T = any> {
+  data?: T;
   fetch?: ({ inputBody, inputParams, inputUrl }: IFetchData) => Promise<any>;
   error?: any;
   loading?: boolean;

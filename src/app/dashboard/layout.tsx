@@ -1,8 +1,10 @@
 import Breadcrumb from "@/components/Breadcrumb/Breadcrumb";
 import { DashboardSidebar } from "@/components/DashboardSidebar";
 import { ModeToggle } from "@/components/ModeToggle";
+import NotificationIcon from "@/components/NotificationIcon";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { authOptions } from "@/lib/auth";
+import { Bell } from "lucide-react";
 import { getServerSession } from "next-auth";
 
 export default async function DashboardLayout({
@@ -34,9 +36,7 @@ export default async function DashboardLayout({
                 <Breadcrumb />
               </div>
 
-              <div className="flex items-center gap-2">
-                <ModeToggle />
-              </div>
+              <NotificationIcon />
             </div>
           </header>
 

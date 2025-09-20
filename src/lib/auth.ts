@@ -14,6 +14,8 @@ interface JWTWithRole extends JWT {
   image?: string | null;
   firstName?: string;
   lastName?: string;
+  mobile?: string;
+  biography?: string;
 }
 
 // Session سفارشی
@@ -26,6 +28,8 @@ interface SessionWithRole extends DefaultSession {
     image?: string | null;
     firstName?: string | null;
     lastName?: string | null;
+    mobile?: string;
+    biography?: string;
   };
 }
 
@@ -54,6 +58,9 @@ export const authOptions: AuthOptions = {
             isActive: true,
             password: true,
             roleId: true,
+            mobile: true,
+            location: true,
+            biography: true,
             role: {
               select: {
                 id: true,
@@ -85,6 +92,9 @@ export const authOptions: AuthOptions = {
           birthDate: userFromDb.birthDate,
           role: userFromDb.role, // کل آبجکت رول
           roleId: userFromDb.role.id,
+          mobile: userFromDb.mobile,
+          location: userFromDb.location,
+          biography: userFromDb.biography,
           permissions: userFromDb.role.permissions.map((p) => p.permissionId),
         } as unknown as User;
       },
@@ -101,6 +111,10 @@ export const authOptions: AuthOptions = {
         token.image = u.image;
         token.firstName = u.firstName;
         token.lastName = u.lastName;
+        token.mobile = u.mobile;
+        token.biography = u.biography;
+        token.location = u.location;
+        token.birthDate = u.birthDate;
       }
       return token as JWTWithRole;
     },
@@ -114,6 +128,10 @@ export const authOptions: AuthOptions = {
         session.user.image = t.image ?? null;
         session.user.firstName = t.firstName ?? null;
         session.user.lastName = t.lastName ?? null;
+        session.user.mobile = t.mobile ?? "";
+        session.user.location = t.location ?? "";
+        session.user.biography = t.biography ?? "";
+        session.user.birthDate = t.birthDate ?? "";
         session.user.name = `${t.firstName ?? ""} ${t.lastName ?? ""}`.trim();
       }
       return session as SessionWithRole;

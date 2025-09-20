@@ -21,12 +21,12 @@ export function ModeToggle() {
         <Button
           variant="ghost"
           size="icon"
-          className="text-gray-600 hover:text-orange-500 transition-colors relative"
+          className="text-gray-600 dark:text-white hover:text-orange-500 transition-colors relative"
         >
           {/* Sun Icon */}
           <Sun
             className={`h-5 w-5 transition-transform ${
-              theme === "dark" ? "scale-0 rotate-90" : "scale-100 rotate-0"
+              theme === "dark" ? "scale-0 rotate-90" : "scale-100 rotate-0 "
             }`}
           />
           {/* Moon Icon */}

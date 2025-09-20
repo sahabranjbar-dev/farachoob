@@ -51,15 +51,20 @@ export default function useDataGetter<T = any>({
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
       return new Promise(async (resolve, reject) => {
+        const isFormData = inputBody instanceof FormData;
         try {
           const response = await API({
             ...axiosConfigs,
             ...res,
             url: inputUrl || url,
             method,
-            headers,
+            headers: isFormData
+              ? headers
+              : { "Content-Type": "application/json", ...headers },
             params: { ...params, ...inputParams },
-            data: JSON.stringify({ ...body, ...inputBody }),
+            data: isFormData
+              ? inputBody
+              : JSON.stringify({ ...body, ...inputBody }),
             responseType,
             signal: signal || inputSignal,
           });

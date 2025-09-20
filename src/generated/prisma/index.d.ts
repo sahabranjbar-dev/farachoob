@@ -128,7 +128,16 @@ export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
  * Enums
  */
 export namespace $Enums {
-  export const NotificationType: {
+  export const ThemeColorScheme: {
+  auto: 'auto',
+  dark: 'dark',
+  light: 'light'
+};
+
+export type ThemeColorScheme = (typeof ThemeColorScheme)[keyof typeof ThemeColorScheme]
+
+
+export const NotificationType: {
   INFO: 'INFO',
   SUCCESS: 'SUCCESS',
   WARNING: 'WARNING',
@@ -196,6 +205,10 @@ export const PermissionKey: {
 export type PermissionKey = (typeof PermissionKey)[keyof typeof PermissionKey]
 
 }
+
+export type ThemeColorScheme = $Enums.ThemeColorScheme
+
+export const ThemeColorScheme: typeof $Enums.ThemeColorScheme
 
 export type NotificationType = $Enums.NotificationType
 
@@ -3387,6 +3400,14 @@ export namespace Prisma {
     sessionToken: string | null
     roleId: string | null
     createdAt: Date | null
+    biography: string | null
+    location: string | null
+    emailNotification: boolean | null
+    browserNotification: boolean | null
+    smsNotification: boolean | null
+    profileVisible: boolean | null
+    searchVisible: boolean | null
+    theme: $Enums.ThemeColorScheme | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3404,6 +3425,14 @@ export namespace Prisma {
     sessionToken: string | null
     roleId: string | null
     createdAt: Date | null
+    biography: string | null
+    location: string | null
+    emailNotification: boolean | null
+    browserNotification: boolean | null
+    smsNotification: boolean | null
+    profileVisible: boolean | null
+    searchVisible: boolean | null
+    theme: $Enums.ThemeColorScheme | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3421,6 +3450,14 @@ export namespace Prisma {
     sessionToken: number
     roleId: number
     createdAt: number
+    biography: number
+    location: number
+    emailNotification: number
+    browserNotification: number
+    smsNotification: number
+    profileVisible: number
+    searchVisible: number
+    theme: number
     _all: number
   }
 
@@ -3440,6 +3477,14 @@ export namespace Prisma {
     sessionToken?: true
     roleId?: true
     createdAt?: true
+    biography?: true
+    location?: true
+    emailNotification?: true
+    browserNotification?: true
+    smsNotification?: true
+    profileVisible?: true
+    searchVisible?: true
+    theme?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3457,6 +3502,14 @@ export namespace Prisma {
     sessionToken?: true
     roleId?: true
     createdAt?: true
+    biography?: true
+    location?: true
+    emailNotification?: true
+    browserNotification?: true
+    smsNotification?: true
+    profileVisible?: true
+    searchVisible?: true
+    theme?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3474,6 +3527,14 @@ export namespace Prisma {
     sessionToken?: true
     roleId?: true
     createdAt?: true
+    biography?: true
+    location?: true
+    emailNotification?: true
+    browserNotification?: true
+    smsNotification?: true
+    profileVisible?: true
+    searchVisible?: true
+    theme?: true
     _all?: true
   }
 
@@ -3564,6 +3625,14 @@ export namespace Prisma {
     sessionToken: string | null
     roleId: string
     createdAt: Date
+    biography: string | null
+    location: string | null
+    emailNotification: boolean | null
+    browserNotification: boolean | null
+    smsNotification: boolean | null
+    profileVisible: boolean | null
+    searchVisible: boolean | null
+    theme: $Enums.ThemeColorScheme | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3598,6 +3667,14 @@ export namespace Prisma {
     sessionToken?: boolean
     roleId?: boolean
     createdAt?: boolean
+    biography?: boolean
+    location?: boolean
+    emailNotification?: boolean
+    browserNotification?: boolean
+    smsNotification?: boolean
+    profileVisible?: boolean
+    searchVisible?: boolean
+    theme?: boolean
     role?: boolean | RoleDefaultArgs<ExtArgs>
     comments?: boolean | User$commentsArgs<ExtArgs>
     commentLikes?: boolean | User$commentLikesArgs<ExtArgs>
@@ -3625,6 +3702,14 @@ export namespace Prisma {
     sessionToken?: boolean
     roleId?: boolean
     createdAt?: boolean
+    biography?: boolean
+    location?: boolean
+    emailNotification?: boolean
+    browserNotification?: boolean
+    smsNotification?: boolean
+    profileVisible?: boolean
+    searchVisible?: boolean
+    theme?: boolean
     role?: boolean | RoleDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3643,6 +3728,14 @@ export namespace Prisma {
     sessionToken?: boolean
     roleId?: boolean
     createdAt?: boolean
+    biography?: boolean
+    location?: boolean
+    emailNotification?: boolean
+    browserNotification?: boolean
+    smsNotification?: boolean
+    profileVisible?: boolean
+    searchVisible?: boolean
+    theme?: boolean
     role?: boolean | RoleDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3661,9 +3754,17 @@ export namespace Prisma {
     sessionToken?: boolean
     roleId?: boolean
     createdAt?: boolean
+    biography?: boolean
+    location?: boolean
+    emailNotification?: boolean
+    browserNotification?: boolean
+    smsNotification?: boolean
+    profileVisible?: boolean
+    searchVisible?: boolean
+    theme?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstName" | "lastName" | "nationalId" | "birthDate" | "mobile" | "isActive" | "isVerified" | "image" | "sessionToken" | "roleId" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "firstName" | "lastName" | "nationalId" | "birthDate" | "mobile" | "isActive" | "isVerified" | "image" | "sessionToken" | "roleId" | "createdAt" | "biography" | "location" | "emailNotification" | "browserNotification" | "smsNotification" | "profileVisible" | "searchVisible" | "theme", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     role?: boolean | RoleDefaultArgs<ExtArgs>
     comments?: boolean | User$commentsArgs<ExtArgs>
@@ -3711,6 +3812,14 @@ export namespace Prisma {
       sessionToken: string | null
       roleId: string
       createdAt: Date
+      biography: string | null
+      location: string | null
+      emailNotification: boolean | null
+      browserNotification: boolean | null
+      smsNotification: boolean | null
+      profileVisible: boolean | null
+      searchVisible: boolean | null
+      theme: $Enums.ThemeColorScheme | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4157,6 +4266,14 @@ export namespace Prisma {
     readonly sessionToken: FieldRef<"User", 'String'>
     readonly roleId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly biography: FieldRef<"User", 'String'>
+    readonly location: FieldRef<"User", 'String'>
+    readonly emailNotification: FieldRef<"User", 'Boolean'>
+    readonly browserNotification: FieldRef<"User", 'Boolean'>
+    readonly smsNotification: FieldRef<"User", 'Boolean'>
+    readonly profileVisible: FieldRef<"User", 'Boolean'>
+    readonly searchVisible: FieldRef<"User", 'Boolean'>
+    readonly theme: FieldRef<"User", 'ThemeColorScheme'>
   }
     
 
@@ -27843,7 +27960,15 @@ export namespace Prisma {
     image: 'image',
     sessionToken: 'sessionToken',
     roleId: 'roleId',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    biography: 'biography',
+    location: 'location',
+    emailNotification: 'emailNotification',
+    browserNotification: 'browserNotification',
+    smsNotification: 'smsNotification',
+    profileVisible: 'profileVisible',
+    searchVisible: 'searchVisible',
+    theme: 'theme'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -28189,6 +28314,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ThemeColorScheme'
+   */
+  export type EnumThemeColorSchemeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ThemeColorScheme'>
+    
+
+
+  /**
+   * Reference to a field of type 'ThemeColorScheme[]'
+   */
+  export type ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ThemeColorScheme[]'>
+    
+
+
+  /**
    * Reference to a field of type 'PermissionKey'
    */
   export type EnumPermissionKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PermissionKey'>
@@ -28279,6 +28418,14 @@ export namespace Prisma {
     sessionToken?: StringNullableFilter<"User"> | string | null
     roleId?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
+    biography?: StringNullableFilter<"User"> | string | null
+    location?: StringNullableFilter<"User"> | string | null
+    emailNotification?: BoolNullableFilter<"User"> | boolean | null
+    browserNotification?: BoolNullableFilter<"User"> | boolean | null
+    smsNotification?: BoolNullableFilter<"User"> | boolean | null
+    profileVisible?: BoolNullableFilter<"User"> | boolean | null
+    searchVisible?: BoolNullableFilter<"User"> | boolean | null
+    theme?: EnumThemeColorSchemeNullableFilter<"User"> | $Enums.ThemeColorScheme | null
     role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
     comments?: CommentListRelationFilter
     commentLikes?: CommentLikeListRelationFilter
@@ -28305,6 +28452,14 @@ export namespace Prisma {
     sessionToken?: SortOrderInput | SortOrder
     roleId?: SortOrder
     createdAt?: SortOrder
+    biography?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    emailNotification?: SortOrderInput | SortOrder
+    browserNotification?: SortOrderInput | SortOrder
+    smsNotification?: SortOrderInput | SortOrder
+    profileVisible?: SortOrderInput | SortOrder
+    searchVisible?: SortOrderInput | SortOrder
+    theme?: SortOrderInput | SortOrder
     role?: RoleOrderByWithRelationInput
     comments?: CommentOrderByRelationAggregateInput
     commentLikes?: CommentLikeOrderByRelationAggregateInput
@@ -28334,6 +28489,14 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     roleId?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
+    biography?: StringNullableFilter<"User"> | string | null
+    location?: StringNullableFilter<"User"> | string | null
+    emailNotification?: BoolNullableFilter<"User"> | boolean | null
+    browserNotification?: BoolNullableFilter<"User"> | boolean | null
+    smsNotification?: BoolNullableFilter<"User"> | boolean | null
+    profileVisible?: BoolNullableFilter<"User"> | boolean | null
+    searchVisible?: BoolNullableFilter<"User"> | boolean | null
+    theme?: EnumThemeColorSchemeNullableFilter<"User"> | $Enums.ThemeColorScheme | null
     role?: XOR<RoleScalarRelationFilter, RoleWhereInput>
     comments?: CommentListRelationFilter
     commentLikes?: CommentLikeListRelationFilter
@@ -28360,6 +28523,14 @@ export namespace Prisma {
     sessionToken?: SortOrderInput | SortOrder
     roleId?: SortOrder
     createdAt?: SortOrder
+    biography?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    emailNotification?: SortOrderInput | SortOrder
+    browserNotification?: SortOrderInput | SortOrder
+    smsNotification?: SortOrderInput | SortOrder
+    profileVisible?: SortOrderInput | SortOrder
+    searchVisible?: SortOrderInput | SortOrder
+    theme?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -28383,6 +28554,14 @@ export namespace Prisma {
     sessionToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     roleId?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    biography?: StringNullableWithAggregatesFilter<"User"> | string | null
+    location?: StringNullableWithAggregatesFilter<"User"> | string | null
+    emailNotification?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
+    browserNotification?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
+    smsNotification?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
+    profileVisible?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
+    searchVisible?: BoolNullableWithAggregatesFilter<"User"> | boolean | null
+    theme?: EnumThemeColorSchemeNullableWithAggregatesFilter<"User"> | $Enums.ThemeColorScheme | null
   }
 
   export type OTPWhereInput = {
@@ -29758,6 +29937,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -29784,6 +29971,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -29808,6 +30003,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -29834,6 +30037,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -29859,6 +30070,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -29875,6 +30094,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -29892,6 +30119,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
   }
 
   export type OTPCreateInput = {
@@ -31360,6 +31595,18 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type BoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type EnumThemeColorSchemeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ThemeColorScheme | EnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumThemeColorSchemeNullableFilter<$PrismaModel> | $Enums.ThemeColorScheme | null
+  }
+
   export type RoleScalarRelationFilter = {
     is?: RoleWhereInput
     isNot?: RoleWhereInput
@@ -31455,6 +31702,14 @@ export namespace Prisma {
     sessionToken?: SortOrder
     roleId?: SortOrder
     createdAt?: SortOrder
+    biography?: SortOrder
+    location?: SortOrder
+    emailNotification?: SortOrder
+    browserNotification?: SortOrder
+    smsNotification?: SortOrder
+    profileVisible?: SortOrder
+    searchVisible?: SortOrder
+    theme?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -31472,6 +31727,14 @@ export namespace Prisma {
     sessionToken?: SortOrder
     roleId?: SortOrder
     createdAt?: SortOrder
+    biography?: SortOrder
+    location?: SortOrder
+    emailNotification?: SortOrder
+    browserNotification?: SortOrder
+    smsNotification?: SortOrder
+    profileVisible?: SortOrder
+    searchVisible?: SortOrder
+    theme?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -31489,6 +31752,14 @@ export namespace Prisma {
     sessionToken?: SortOrder
     roleId?: SortOrder
     createdAt?: SortOrder
+    biography?: SortOrder
+    location?: SortOrder
+    emailNotification?: SortOrder
+    browserNotification?: SortOrder
+    smsNotification?: SortOrder
+    profileVisible?: SortOrder
+    searchVisible?: SortOrder
+    theme?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -31563,6 +31834,24 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedBoolNullableFilter<$PrismaModel>
+    _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type EnumThemeColorSchemeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ThemeColorScheme | EnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumThemeColorSchemeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ThemeColorScheme | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumThemeColorSchemeNullableFilter<$PrismaModel>
+    _max?: NestedEnumThemeColorSchemeNullableFilter<$PrismaModel>
+  }
+
   export type OTPCountOrderByAggregateInput = {
     id?: SortOrder
     mobile?: SortOrder
@@ -31588,11 +31877,6 @@ export namespace Prisma {
     expiresAt?: SortOrder
     verified?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type BoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
   }
 
   export type RolePermissionListRelationFilter = {
@@ -31643,14 +31927,6 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updateAt?: SortOrder
-  }
-
-  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBoolNullableFilter<$PrismaModel>
-    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type EnumPermissionKeyFilter<$PrismaModel = never> = {
@@ -32671,6 +32947,14 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type NullableBoolFieldUpdateOperationsInput = {
+    set?: boolean | null
+  }
+
+  export type NullableEnumThemeColorSchemeFieldUpdateOperationsInput = {
+    set?: $Enums.ThemeColorScheme | null
+  }
+
   export type RoleUpdateOneRequiredWithoutUsersNestedInput = {
     create?: XOR<RoleCreateWithoutUsersInput, RoleUncheckedCreateWithoutUsersInput>
     connectOrCreate?: RoleCreateOrConnectWithoutUsersInput
@@ -32929,10 +33213,6 @@ export namespace Prisma {
     connectOrCreate?: UserCreateOrConnectWithoutRoleInput | UserCreateOrConnectWithoutRoleInput[]
     createMany?: UserCreateManyRoleInputEnvelope
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
-  export type NullableBoolFieldUpdateOperationsInput = {
-    set?: boolean | null
   }
 
   export type RolePermissionUpdateManyWithoutRoleNestedInput = {
@@ -34078,6 +34358,18 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedBoolNullableFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
+    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
+  }
+
+  export type NestedEnumThemeColorSchemeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ThemeColorScheme | EnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumThemeColorSchemeNullableFilter<$PrismaModel> | $Enums.ThemeColorScheme | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -34170,17 +34462,22 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedBoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
-  }
-
   export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
     not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumThemeColorSchemeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ThemeColorScheme | EnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ThemeColorScheme[] | ListEnumThemeColorSchemeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumThemeColorSchemeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ThemeColorScheme | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumThemeColorSchemeNullableFilter<$PrismaModel>
+    _max?: NestedEnumThemeColorSchemeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumPermissionKeyFilter<$PrismaModel = never> = {
@@ -34885,6 +35182,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
     CartItem?: CartItemCreateNestedManyWithoutUserInput
@@ -34909,6 +35214,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -34988,6 +35301,14 @@ export namespace Prisma {
     sessionToken?: StringNullableFilter<"User"> | string | null
     roleId?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
+    biography?: StringNullableFilter<"User"> | string | null
+    location?: StringNullableFilter<"User"> | string | null
+    emailNotification?: BoolNullableFilter<"User"> | boolean | null
+    browserNotification?: BoolNullableFilter<"User"> | boolean | null
+    smsNotification?: BoolNullableFilter<"User"> | boolean | null
+    profileVisible?: BoolNullableFilter<"User"> | boolean | null
+    searchVisible?: BoolNullableFilter<"User"> | boolean | null
+    theme?: EnumThemeColorSchemeNullableFilter<"User"> | $Enums.ThemeColorScheme | null
   }
 
   export type MenuCreateWithoutPermissionInput = {
@@ -35879,6 +36200,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -35904,6 +36233,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     articles?: ArticleUncheckedCreateNestedManyWithoutAuthorInput
@@ -35978,6 +36315,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -36003,6 +36348,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     articles?: ArticleUncheckedUpdateManyWithoutAuthorNestedInput
@@ -36067,6 +36420,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -36092,6 +36453,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -36165,6 +36534,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -36190,6 +36567,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -36229,6 +36614,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
     CartItem?: CartItemCreateNestedManyWithoutUserInput
@@ -36254,6 +36647,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
     articles?: ArticleUncheckedCreateNestedManyWithoutAuthorInput
@@ -36436,6 +36837,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUpdateManyWithoutUserNestedInput
@@ -36461,6 +36870,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     articles?: ArticleUncheckedUpdateManyWithoutAuthorNestedInput
@@ -36650,6 +37067,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     CartItem?: CartItemCreateNestedManyWithoutUserInput
@@ -36675,6 +37100,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
     articles?: ArticleUncheckedCreateNestedManyWithoutAuthorInput
@@ -36749,6 +37182,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUpdateManyWithoutUserNestedInput
@@ -36774,6 +37215,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
     articles?: ArticleUncheckedUpdateManyWithoutAuthorNestedInput
@@ -36912,6 +37361,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -36937,6 +37394,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -37005,6 +37470,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -37030,6 +37503,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -37076,6 +37557,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -37101,6 +37590,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -37191,6 +37688,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -37216,6 +37721,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -37337,6 +37850,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -37362,6 +37883,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -37424,6 +37953,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     role: RoleCreateNestedOneWithoutUsersInput
     comments?: CommentCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeCreateNestedManyWithoutUserInput
@@ -37449,6 +37986,14 @@ export namespace Prisma {
     sessionToken?: string | null
     roleId: string
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedCreateNestedManyWithoutUserInput
     commentLikes?: CommentLikeUncheckedCreateNestedManyWithoutUserInput
     CartItem?: CartItemUncheckedCreateNestedManyWithoutUserInput
@@ -37488,6 +38033,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -37513,6 +38066,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -37563,6 +38124,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     role?: RoleUpdateOneRequiredWithoutUsersNestedInput
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
@@ -37588,6 +38157,14 @@ export namespace Prisma {
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     roleId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -37932,6 +38509,14 @@ export namespace Prisma {
     image?: string | null
     sessionToken?: string | null
     createdAt?: Date | string
+    biography?: string | null
+    location?: string | null
+    emailNotification?: boolean | null
+    browserNotification?: boolean | null
+    smsNotification?: boolean | null
+    profileVisible?: boolean | null
+    searchVisible?: boolean | null
+    theme?: $Enums.ThemeColorScheme | null
   }
 
   export type RolePermissionUpdateWithoutRoleInput = {
@@ -37963,6 +38548,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUpdateManyWithoutUserNestedInput
@@ -37987,6 +38580,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
     comments?: CommentUncheckedUpdateManyWithoutUserNestedInput
     commentLikes?: CommentLikeUncheckedUpdateManyWithoutUserNestedInput
     CartItem?: CartItemUncheckedUpdateManyWithoutUserNestedInput
@@ -38011,6 +38612,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessionToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    emailNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    browserNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    smsNotification?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    profileVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    searchVisible?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    theme?: NullableEnumThemeColorSchemeFieldUpdateOperationsInput | $Enums.ThemeColorScheme | null
   }
 
   export type MenuCreateManyPermissionInput = {

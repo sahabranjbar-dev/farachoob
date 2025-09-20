@@ -13,6 +13,10 @@ declare module "next-auth" {
       roleId?: string;
       permissions?: string[];
       roleFarsiTitle?: string;
+      mobile?: string;
+      biography?: string;
+      birthDate?: Date | string;
+      location?: string;
     };
   }
 
@@ -21,6 +25,10 @@ declare module "next-auth" {
     role?: string;
     roleId?: string;
     permissions?: string[];
+    mobile?: string;
+    biography?: string;
+    location?: string;
+    birthDate?: Date | string;
   }
 }
 
@@ -30,5 +38,8 @@ declare module "next-auth/jwt" {
     role?: string;
     roleId?: string;
     permissions?: string[];
+    mobile?: string;
+    location?: string;
+    birthDate?: Date | string;
   }
 }
