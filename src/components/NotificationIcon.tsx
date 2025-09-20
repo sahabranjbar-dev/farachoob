@@ -8,7 +8,7 @@ import {
 } from "../../stores/notificationStore";
 import { toast } from "sonner";
 import { useChat } from "../../stores";
-import { notificationSound } from "@/lib/sounds";
+import { getNotificationSound } from "@/lib/sounds";
 
 const NotificationIcon = () => {
   const { open } = useTabular();
@@ -19,9 +19,11 @@ const NotificationIcon = () => {
     (state) => state.addNewNotification
   );
 
+  const notificationSound = getNotificationSound();
+
   useEffect(() => {
     const addNewNotificationHandler = ({ toUserId }: { toUserId: string }) => {
-      notificationSound.play();
+      notificationSound?.play();
       toast.info("اعلان جدید دریافت کرده‌اید", {
         position: "top-center",
       });

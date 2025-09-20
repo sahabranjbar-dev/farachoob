@@ -1,7 +1,7 @@
 "use client";
 
 import { emitSocket } from "@/lib/socket";
-import { notificationSound } from "@/lib/sounds";
+import { getNotificationSound } from "@/lib/sounds";
 import { User } from "@/types/common";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -38,6 +38,8 @@ export default function DashboardClient({
     };
   }, [socket, user?.id]);
 
+  const notificationSound = getNotificationSound();
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -52,7 +54,7 @@ export default function DashboardClient({
 
     socket.on("get-new-message-notification", (data) => {
       if (data.senderId === user?.id || conversation?.id) return;
-      notificationSound.play();
+      notificationSound?.play();
       const alertMessage = () => {
         const firstName = data?.sender?.firstName;
         const lastName = data?.sender?.lastName;

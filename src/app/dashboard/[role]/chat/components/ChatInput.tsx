@@ -10,7 +10,7 @@ import { KeyboardEvent, memo, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
-import { sendMessageSound } from "@/lib/sounds";
+import { getSendMessageSound } from "@/lib/sounds";
 
 type FormValues = {
   message: string;
@@ -38,6 +38,8 @@ const ChatInput = memo(() => {
     immediatelyFetch: false,
   });
 
+  const sendMessageSound = getSendMessageSound();
+
   const onSubmit = (data: FormValues) => {
     if (!data.message.trim() || !conversationId) return;
     const randomId = uuid();
@@ -56,7 +58,7 @@ const ChatInput = memo(() => {
     })
       .then((savedMessage) => {
         if (!savedMessage?.id) return;
-        sendMessageSound.play();
+        sendMessageSound?.play();
 
         socket?.emit("send-message", {
           ...savedMessage,

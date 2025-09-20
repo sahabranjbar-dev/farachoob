@@ -14,6 +14,7 @@ import useDataGetter from "@/hooks/useDataGetter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import useTabular from "@/hooks/useTabular";
 
 export interface IUserData {
   id?: string;
@@ -72,7 +73,7 @@ const SettingForm = ({
   const setUserData = useSetting((state) => state.setUserData);
   const userData = useSetting((state) => state.userData);
   const { setTheme, theme } = useTheme();
-
+  const { closeCurrentTab } = useTabular();
   const form = useForm<IUserForm>();
 
   const { register, handleSubmit, watch, reset, control, setValue } = form;
@@ -214,6 +215,7 @@ const SettingForm = ({
               <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end gap-2 space-x-3 space-x-reverse">
                 <Button
                   type="button"
+                  onClick={closeCurrentTab}
                   variant={"ghost"}
                   className="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >

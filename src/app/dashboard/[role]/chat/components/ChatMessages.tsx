@@ -1,5 +1,7 @@
 "use client";
 import useDataGetter from "@/hooks/useDataGetter";
+import { emitSocket } from "@/lib/socket";
+import { getReceiveMessageSound } from "@/lib/sounds";
 import { Message } from "@/types/common";
 import clsx from "clsx";
 import {
@@ -13,8 +15,6 @@ import { useSession } from "next-auth/react";
 import { useEffect, useRef } from "react";
 import { useChat } from "../../../../../../stores";
 import { fetchConvs } from "../meta/utils";
-import { emitSocket } from "@/lib/socket";
-import { recieveMessageSound } from "@/lib/sounds";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
@@ -48,12 +48,14 @@ const ChatMessages = () => {
     params: { conversationId },
   });
 
+  const recieveMessageSound = getReceiveMessageSound();
+
   useEffect(() => {
     if (!socket) return;
 
     const handleNewMessage = (data: Message) => {
       if (conversation?.id === data.conversationId) {
-        recieveMessageSound.play();
+        recieveMessageSound?.play();
         setDashboardChatMessage((prev) => [...prev, data]);
       }
     };
