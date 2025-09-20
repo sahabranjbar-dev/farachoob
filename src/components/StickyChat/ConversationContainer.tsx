@@ -1,7 +1,7 @@
 import useDataGetter from "@/hooks/useDataGetter";
 import { Message } from "@/types/common";
 import clsx from "clsx";
-import { Check, CheckCheck, Loader } from "lucide-react";
+import { Check, CheckCheck, Loader, RotateCcw } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef } from "react";
 import { useChat } from "../../../stores";
@@ -117,6 +117,39 @@ const ConversationContainer = () => {
     return /[\u0600-\u06FF]/.test(text[0]) ? "rtl" : "ltr";
   }
 
+  const { fetch: postMessage } = useDataGetter({
+    url: "/chat",
+    method: "POST",
+    immediatelyFetch: false,
+  });
+
+  const handleRetry = async (msg: Message) => {
+    try {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m?.tempId === msg?.tempId ? { ...m, loading: true, failed: false } : m
+        )
+      );
+
+      await postMessage?.({
+        inputBody: { content: msg.content },
+      });
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          m?.tempId === msg?.tempId ? { ...m, loading: false } : m
+        )
+      );
+    } catch (err) {
+      console.error("Failed to resend message:", err);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m?.tempId === msg?.tempId ? { ...m, failed: true, loading: false } : m
+        )
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col h-full relative">
       <ChatHeader />
@@ -134,7 +167,14 @@ const ConversationContainer = () => {
               const direction = getDirection(message.content);
               return (
                 <li
-                  className={clsx("m-2")}
+                  className={clsx(
+                    "rounded-2xl w-fit p-3 m-1 relative",
+                    isOwn
+                      ? message.failed
+                        ? "bg-red-500 text-white"
+                        : "bg-indigo-500 ml-auto text-white"
+                      : "bg-gray-200 mr-auto text-black"
+                  )}
                   key={
                     message.id ||
                     message.tempId ||
@@ -149,34 +189,36 @@ const ConversationContainer = () => {
                 >
                   <div
                     className={clsx(
-                      "p-2 rounded-2xl w-fit",
-                      isOwn
-                        ? " text-left ml-auto bg-indigo-500 text-white"
-                        : "text-right mr-auto bg-gray-300"
+                      "px-1 py-2 rounded-lg break-words whitespace-pre-wrap",
+                      direction === "rtl" ? "text-right" : "text-left"
                     )}
+                    style={{ direction }}
                   >
-                    <div
-                      className={clsx(
-                        "px-1 py-2 rounded-lg break-words whitespace-pre-wrap",
-                        direction === "rtl" ? "text-right" : "text-left"
-                      )}
-                      style={{ direction }}
-                    >
-                      {message.content}
-                    </div>
-                    <div className="flex justify-end items-center gap-2">
-                      {isOwn ? (
-                        message.loading ? (
-                          <Loader size={15} className="animate-spin" />
-                        ) : message.read ? (
-                          <CheckCheck size={15} />
-                        ) : (
-                          <Check size={15} />
-                        )
-                      ) : null}
-                      <div className="text-xs">{time}</div>
-                    </div>
+                    {message.content}
                   </div>
+                  <div className="flex justify-end items-center gap-2">
+                    {isOwn ? (
+                      message.loading ? (
+                        <Loader size={15} className="animate-spin" />
+                      ) : message.read ? (
+                        <CheckCheck size={15} />
+                      ) : (
+                        <Check size={15} />
+                      )
+                    ) : null}
+                    <div className="text-xs">{time}</div>
+                  </div>
+                  {message.failed && isOwn && (
+                    <div
+                      className="absolute -left-8 top-[50%] cursor-pointer"
+                      onClick={() => handleRetry(message)}
+                    >
+                      <RotateCcw
+                        color="gray"
+                        className="hover:-rotate-180 transition-transform duration-200"
+                      />
+                    </div>
+                  )}
                 </li>
               );
             })}

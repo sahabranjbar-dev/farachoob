@@ -5,9 +5,9 @@ import useSubscribe from "@/hooks/useSubscribe";
 
 const NotificationsEdit = ({ register, watch }: INotificationsEdit) => {
   const setUserData = useSetting((state) => state.setUserData);
+  const userData = useSetting((state) => state.userData);
 
-  const { subscribe, subscription } = useSubscribe();
-
+  const { subscribe } = useSubscribe();
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 border-b pb-2">
@@ -48,6 +48,7 @@ const NotificationsEdit = ({ register, watch }: INotificationsEdit) => {
               type="checkbox"
               {...register?.("browserNotification")}
               onChange={(e) => {
+                e.preventDefault();
                 const pushNotification = e.target.checked;
                 setUserData((prev) => {
                   return {
@@ -57,9 +58,9 @@ const NotificationsEdit = ({ register, watch }: INotificationsEdit) => {
                     },
                   };
                 });
-
-                if (!pushNotification) return;
-                subscribe();
+                // TODO: implement new bussiness
+                if (!pushNotification || !userData.id) return;
+                subscribe({ userId: userData.id });
               }}
               className="sr-only peer"
             />
@@ -84,18 +85,6 @@ const NotificationsEdit = ({ register, watch }: INotificationsEdit) => {
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
           </label>
-
-          <button
-            type="button"
-            onClick={async () => {
-              const response = await fetch("/api/send-notification", {
-                method: "POST",
-                body: JSON.stringify({ message: "سلام چطوری سحاب؟" }),
-              });
-            }}
-          >
-            send notif
-          </button>
         </div>
       </div>
     </div>

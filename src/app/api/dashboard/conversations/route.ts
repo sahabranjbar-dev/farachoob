@@ -9,7 +9,9 @@ export async function POST(req: NextRequest) {
     const userId = session?.user?.id;
 
     if (!userId) {
-      return Response.redirect("/auth/login");
+      return Response.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+      );
     }
 
     let body;
@@ -52,6 +54,14 @@ export async function POST(req: NextRequest) {
         include: {
           participants: { select: { userId: true } },
           messages: true,
+        },
+      });
+
+      const notification = await prisma.notification.create({
+        data: {
+          message: "چت جدید ایجاد شد",
+          title: "چت جدید از طرف کاربر ایجاد شد",
+          type: "INFO",
         },
       });
     }
@@ -107,7 +117,9 @@ export async function GET(req: NextRequest) {
     const userId = session?.user?.id;
 
     if (!userId) {
-      return NextResponse.redirect("/auth/login");
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+      );
     }
 
     const url = new URL(req?.url);

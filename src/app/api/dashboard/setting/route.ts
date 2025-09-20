@@ -9,7 +9,9 @@ export async function GET(request: NextRequest) {
     const userSession = await getServerSession(authOptions);
 
     if (!userSession?.user.id) {
-      return NextResponse.redirect("/auth/login");
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+      );
     }
 
     const searchParams = new URL(request.url).searchParams;
@@ -20,6 +22,13 @@ export async function GET(request: NextRequest) {
 
     const userInformation = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        subscriptions: {
+          where: {
+            userId,
+          },
+        },
+      },
     });
 
     if (!userInformation)
@@ -38,7 +47,9 @@ export async function PUT(request: NextRequest) {
     const userSession = await getServerSession(authOptions);
 
     if (!userSession?.user.id) {
-      return NextResponse.redirect("/auth/login");
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+      );
     }
 
     // گرفتن فرم دیتا

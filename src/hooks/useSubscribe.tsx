@@ -1,12 +1,16 @@
 "use client";
 import { useState } from "react";
 
+interface Props {
+  userId: string;
+}
+
 export default function useSubscribe() {
   const [subscription, setSubscription] = useState<PushSubscription | null>(
     null
   );
 
-  const subscribe = async () => {
+  const subscribe = async ({ userId }: Props) => {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") {
       alert("اجازه نوتیفیکیشن داده نشد!");
@@ -20,17 +24,20 @@ export default function useSubscribe() {
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
       ),
     });
+    console.log({ sub });
 
     setSubscription(sub);
 
     // ارسال به سرور
-    await fetch("/api/save-subscription", {
+    const response = await fetch(`/api/save-subscription?userId=${userId}`, {
       method: "POST",
       body: JSON.stringify(sub),
       headers: { "Content-Type": "application/json" },
     });
 
-    alert("عضویت در نوتیفیکیشن‌ها با موفقیت انجام شد ✅");
+    const result = await response.json();
+
+    console.log({ result }, "in save-subscription");
   };
 
   return {

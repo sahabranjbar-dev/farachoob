@@ -136,15 +136,17 @@ const SettingForm = ({
   }, [userData.theme, theme]);
 
   useEffect(() => {
-    if (userInformation) {
+    if (userInformation?.id) {
       reset({
         ...userInformation,
+        id: userInformation?.id,
         theme: userInformation.theme,
         birthDate: userInformation.birthDate
           ? new Date(userInformation.birthDate).toISOString().slice(0, 10)
           : "",
         image: userInformation.image as string,
       });
+      setUserData({ ...userInformation });
     }
   }, [userInformation, reset]);
 

@@ -36,7 +36,9 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
-    return NextResponse.redirect("/auth/login");
+    return NextResponse.redirect(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+    );
   }
 
   const url = new URL(req.url);

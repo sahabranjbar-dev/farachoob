@@ -289,7 +289,8 @@ exports.Prisma.NotificationScalarFieldEnum = {
   type: 'type',
   isRead: 'isRead',
   readAt: 'readAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  userId: 'userId'
 };
 
 exports.Prisma.ConversationScalarFieldEnum = {
@@ -338,6 +339,15 @@ exports.Prisma.ProjectScalarFieldEnum = {
   active: 'active',
   userId: 'userId',
   authorId: 'authorId'
+};
+
+exports.Prisma.PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userId: 'userId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -455,7 +465,8 @@ exports.Prisma.ModelName = {
   ConversationParticipant: 'ConversationParticipant',
   Message: 'Message',
   MessageHistory: 'MessageHistory',
-  Project: 'Project'
+  Project: 'Project',
+  PushSubscription: 'PushSubscription'
 };
 
 /**

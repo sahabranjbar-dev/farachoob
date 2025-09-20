@@ -10,6 +10,7 @@ export interface ISettingStates {
 }
 
 interface IUserData {
+  id?: string;
   firstName?: string;
   lastName?: string;
   birthDate?: Date | string;

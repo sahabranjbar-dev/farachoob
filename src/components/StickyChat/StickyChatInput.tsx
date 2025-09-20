@@ -94,7 +94,11 @@ const StickyChatInput = memo(() => {
         });
       })
       .catch((err) => {
-        setMessages((prev: any) => prev?.filter((item: any) => !item.loading));
+        setMessages((prev: any) =>
+          prev?.map((item: any) =>
+            item.tempId === tempId ? { ...item, failed: true } : item
+          )
+        );
       });
   }, [value, conversationId, fetch, setMessages, messages, socket]);
 

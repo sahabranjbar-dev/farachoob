@@ -103,6 +103,7 @@ export async function GET() {
     );
   }
 }
+
 const baseConversationInclude = (withMessages: boolean) => ({
   participants: {
     select: {
@@ -188,11 +189,36 @@ export async function POST(request: NextRequest) {
           participants: {
             create: participantIds.map((id) => ({ userId: id })),
           },
+          title: `گفت و گوی آنلاین ${user?.firstName ?? "کاربر جدید"} `,
         },
         include: baseConversationInclude(withMessages),
       });
     }
 
+    const conversationTitle = conversation.title;
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/notifications`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          title: `${conversationTitle} ایجاد شد`,
+          message: `${user.firstName} یک گفت و گوی جدید در سایت ایجاد کرد و منتظر پیام شماست`,
+          type: "INFO",
+          userId: admin.id,
+        }),
+      }
+    );
+
+    if (!response.ok)
+      return NextResponse.json(
+        {
+          message: "خطایی رخ داده است، لطفا دوباره تلاش کنید",
+        },
+        {
+          status: 402,
+        }
+      );
     return NextResponse.json(
       { conversation: { ...conversation, userId, adminId: admin.id } },
       { status: 201 }

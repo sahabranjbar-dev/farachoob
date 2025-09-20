@@ -95,3 +95,22 @@ export interface Sender {
   email: string;
   image: any;
 }
+
+export interface Notifications {
+  id: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  isRead: boolean;
+  readAt?: Date;
+  createdAt?: Date;
+}
+
+export enum NotificationType {
+  INFO,
+  SUCCESS,
+  WARNING,
+  ERROR,
+  MESSAGE,
+  ORDER,
+}

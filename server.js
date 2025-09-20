@@ -50,6 +50,10 @@ app.prepare().then(() => {
       socket.join(conversationId);
     });
 
+    socket.on("new-notification", ({ toUserId }) => {
+      io.to(`user_${toUserId}`).emit("add-new-notificaiton", { toUserId });
+    });
+
     // ارسال پیام
     socket.on(
       "send-message",

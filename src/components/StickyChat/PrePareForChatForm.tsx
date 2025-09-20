@@ -1,12 +1,14 @@
 "use client";
 import useDataGetter from "@/hooks/useDataGetter";
+import { emitSocket } from "@/lib/socket";
 import { normalizePhoneNumber } from "@/lib/utils";
+import { Participant } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import { Headset, MessageCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useChat } from "../../../stores";
 import { useStickyChat } from "../../../stores/stickyChat";
 import Spinner from "../Spinner";
 import { Button } from "../ui/button";
@@ -19,10 +21,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Headset, MessageCircle } from "lucide-react";
-import { Conversation, Participant } from "@/types/common";
-import { Socket } from "socket.io-client";
-import { emitSocket } from "@/lib/socket";
 
 export interface Root {
   id: string;
@@ -52,9 +50,6 @@ const PrePareForChatForm = () => {
   const session = useSession();
   const userId = session.data?.user.id;
   const setConversationData = useStickyChat((s) => s.setConversationData);
-  const setMessages = useStickyChat((s) => s.setMessages);
-
-  const socket = useChat((s) => s.socket);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -66,6 +61,7 @@ const PrePareForChatForm = () => {
     method: "POST",
     immediatelyFetch: false,
     headers: { "Content-Type": "application/json; charset=utf-8" },
+    showError: true,
   });
 
   const onSubmit = (values: FormValues) => {
@@ -92,6 +88,9 @@ const PrePareForChatForm = () => {
           emitSocket("admin-should-join-conversation", {
             conversationId: data?.conversation?.id,
             userId: data?.conversation?.adminId,
+          });
+          emitSocket("new-notification", {
+            toUserId: data?.conversation?.adminId,
           });
         }
       })

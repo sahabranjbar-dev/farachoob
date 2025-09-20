@@ -1,6 +1,6 @@
+import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import webpush from "web-push";
-import { getSubscriptions } from "../save-subscription/route";
 
 webpush.setVapidDetails(
   "mailto:you@example.com",
@@ -9,14 +9,27 @@ webpush.setVapidDetails(
 );
 
 export async function POST(req: NextRequest) {
-  const { message } = await req.json();
-  const subscriptions = getSubscriptions();
+  const { message, title, userId } = await req.json();
+
+  const subscriptions = await prisma.pushSubscription.findMany({
+    where: {
+      userId,
+    },
+  });
+
   for (const sub of subscriptions) {
     try {
       await webpush.sendNotification(
-        sub,
+        {
+          endpoint: sub.endpoint,
+          keys: {
+            auth: sub.auth,
+            p256dh: sub.p256dh,
+          },
+          expirationTime: null,
+        },
         JSON.stringify({
-          title: "پیام جدید",
+          title,
           body: message,
           url: "/dashboard/notifications",
         })
