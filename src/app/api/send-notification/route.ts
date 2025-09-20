@@ -11,8 +11,6 @@ webpush.setVapidDetails(
 export async function POST(req: NextRequest) {
   const { message } = await req.json();
   const subscriptions = getSubscriptions();
-  console.log("All subscriptions:", getSubscriptions());
-
   for (const sub of subscriptions) {
     try {
       await webpush.sendNotification(
@@ -23,7 +21,6 @@ export async function POST(req: NextRequest) {
           url: "/dashboard/notifications",
         })
       );
-      console.log("Notification sent to:", sub);
     } catch (err) {
       console.error("Push error", err);
     }

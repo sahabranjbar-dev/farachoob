@@ -85,8 +85,6 @@ const SettingForm = ({
     });
 
   const onSubmit = async (data: IUserForm) => {
-    console.log({ data });
-
     try {
       const formData = new FormData();
       formData.append("id", data.id ?? "");
@@ -119,7 +117,6 @@ const SettingForm = ({
       updateProfile?.({
         inputBody: formData,
       }).then((data) => {
-        console.log({ data });
         if (data?.id) {
           toast.success("پروفایل با موفقیت ویرایش شد");
           getUserInformation?.({});
@@ -135,7 +132,6 @@ const SettingForm = ({
   };
 
   useLayoutEffect(() => {
-    console.log({ userData });
     setTheme(userData.theme ?? theme ?? "");
   }, [userData.theme, theme]);
 

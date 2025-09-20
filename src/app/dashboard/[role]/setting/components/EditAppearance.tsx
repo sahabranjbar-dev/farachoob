@@ -15,8 +15,6 @@ const EditAppearance = ({ register, watch }: EditAppearanceProps) => {
   const setUserData = useSetting((state) => state.setUserData);
 
   useEffect(() => {
-    console.log({ theme });
-
     setTheme(theme === "auto" ? "system" : theme);
     setUserData((prev) => ({ ...prev, theme: theme }));
   }, [theme]);
