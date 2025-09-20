@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { emitSocket } from "@/lib/socket";
 import { toast } from "sonner";
 import { fetchConvs } from "../meta/utils";
+import { notificationSound } from "@/lib/sounds";
 
 interface Props {
   children: ReactElement<IChatList>;
@@ -79,6 +80,7 @@ const ChatSideBar = ({ children }: Props) => {
 
     socket.on("get-new-message-notification", (data) => {
       if (data.senderId === user?.id || conversation?.id) return;
+      notificationSound.play();
       const alertMessage = () => {
         const firstName = data?.sender?.firstName;
         const lastName = data?.sender?.lastName;

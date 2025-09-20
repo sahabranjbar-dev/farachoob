@@ -2,12 +2,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import SubscribeButton from "./SubscribeButton";
 
 const HeroSection = () => {
   const refs = {
     text: useRef<HTMLDivElement>(null),
     image: useRef<HTMLDivElement>(null),
   };
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("Service Worker registered"))
+        .catch((err) => console.error("SW registration failed:", err));
+    }
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,6 +47,7 @@ const HeroSection = () => {
       dir="rtl"
       className="flex flex-col lg:flex-row items-center gap-8 p-8 mt-8"
     >
+      <SubscribeButton />
       {/* متن */}
       <div
         ref={refs.text}

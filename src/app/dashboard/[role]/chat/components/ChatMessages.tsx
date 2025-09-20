@@ -14,7 +14,7 @@ import { useEffect, useRef } from "react";
 import { useChat } from "../../../../../../stores";
 import { fetchConvs } from "../meta/utils";
 import { emitSocket } from "@/lib/socket";
-import { toast } from "sonner";
+import { recieveMessageSound } from "@/lib/sounds";
 
 const ChatMessages = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
@@ -53,6 +53,7 @@ const ChatMessages = () => {
 
     const handleNewMessage = (data: Message) => {
       if (conversation?.id === data.conversationId) {
+        recieveMessageSound.play();
         setDashboardChatMessage((prev) => [...prev, data]);
       }
     };
