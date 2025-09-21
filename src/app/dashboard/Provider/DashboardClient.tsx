@@ -81,5 +81,30 @@ export default function DashboardClient({
     };
   }, [socket, conversation?.id, pathname]);
 
+  useEffect(() => {
+    const joinRequestHandler = ({
+      toUserId,
+      fromUserId,
+      conversationId,
+    }: {
+      toUserId: string;
+      fromUserId: string;
+      conversationId: string;
+    }) => {
+      console.log("join-conversation-request", user?.id, toUserId);
+
+      if (user?.id !== toUserId) return;
+      toast.info(`یوزر ${fromUserId} درخواست شروع چت ارسال کرد`, {
+        position: "top-center",
+      });
+    };
+
+    socket.on("join-conversation-request", joinRequestHandler);
+
+    return () => {
+      socket.off("join-conversation-request", joinRequestHandler);
+    };
+  }, [socket]);
+
   return <>{children}</>;
 }

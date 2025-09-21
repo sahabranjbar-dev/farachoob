@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
         data: {
           isGroup: false,
           participants: { create: participantsData },
+          creatorId: userId,
         },
         include: {
           participants: { select: { userId: true } },
@@ -62,6 +63,7 @@ export async function POST(req: NextRequest) {
           message: "چت جدید ایجاد شد",
           title: "چت جدید از طرف کاربر ایجاد شد",
           type: "INFO",
+          userId: participantId,
         },
       });
     }
@@ -87,6 +89,14 @@ const baseConversationInclude = {
           id: true,
           firstName: true,
           mobile: true,
+          image: true,
+          lastName: true,
+          email: true,
+          biography: true,
+          isActive: true,
+          isVerified: true,
+          searchVisible: true,
+          profileVisible: true,
           role: {
             select: {
               id: true,
@@ -187,5 +197,57 @@ export async function GET(req: NextRequest) {
       { message: error.message || "خطای سرور" },
       { status: 500 }
     );
+  }
+}
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+      );
+    }
+
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "شناسه چت الزامی است" },
+        { status: 400 }
+      );
+    }
+
+    const conversation = await prisma.conversation.findUnique({
+      where: { id },
+    });
+
+    if (!conversation) {
+      return NextResponse.json(
+        { message: "چت مورد نظر پیدا نشد" },
+        { status: 404 }
+      );
+    }
+
+    // چک می‌کنیم که فقط سازنده اجازه حذف داشته باشه
+    if (conversation.creatorId !== userId) {
+      return NextResponse.json(
+        { message: "شما اجازه حذف این چت را ندارید" },
+        { status: 403 }
+      );
+    }
+
+    await prisma.conversation.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      message: "چت با موفقیت حذف شد",
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "خطایی رخ داده است" }, { status: 500 });
   }
 }

@@ -45,6 +45,23 @@ app.prepare().then(() => {
       }
     );
 
+    socket.on(
+      "user-request-to-join-conversation",
+      ({ toUserId, fromUserId, conversationId }) => {
+        console.log("user-request-to-join-conversation", {
+          toUserId,
+          fromUserId,
+          conversationId,
+        });
+
+        io.to(`user_${toUserId}`).emit("join-conversation-request", {
+          fromUserId,
+          conversationId,
+          toUserId,
+        });
+      }
+    );
+
     // join به کانورسیشن
     socket.on("join-conversation", ({ conversationId }) => {
       socket.join(conversationId);

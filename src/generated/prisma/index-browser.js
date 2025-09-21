@@ -298,7 +298,8 @@ exports.Prisma.ConversationScalarFieldEnum = {
   title: 'title',
   isGroup: 'isGroup',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  creatorId: 'creatorId'
 };
 
 exports.Prisma.ConversationParticipantScalarFieldEnum = {

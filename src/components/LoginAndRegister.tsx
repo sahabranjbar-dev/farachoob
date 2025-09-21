@@ -6,12 +6,15 @@ import { useSession } from "next-auth/react";
 import LogoutButton from "./LogoutButton";
 import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import clsx from "clsx";
+import { drop } from "lodash";
 
 interface Props {
   nameSpace: string;
+  dropUp?: boolean;
 }
 
-const LoginAndRegister = ({ nameSpace }: Props) => {
+const LoginAndRegister = ({ nameSpace, dropUp = false }: Props) => {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -61,7 +64,10 @@ const LoginAndRegister = ({ nameSpace }: Props) => {
 
         {open && (
           <div
-            className="absolute left-5 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+            className={clsx(
+              "absolute left-5 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50",
+              dropUp && "-top-28 right-0"
+            )}
             role="menu"
           >
             <div className="py-1 flex flex-col">

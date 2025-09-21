@@ -1,6 +1,4 @@
 "use client";
-import { UserRoundSearch, Loader2, AlertTriangle } from "lucide-react";
-import React, { useEffect, useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,17 +8,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { motion } from "framer-motion";
 import useDataGetter from "@/hooks/useDataGetter";
-import { debounce } from "lodash";
+import { emitSocket } from "@/lib/socket";
 import { Conversation, User } from "@/types/common";
-import { useChat } from "../../../../../../stores";
+import { motion } from "framer-motion";
+import { debounce } from "lodash";
+import { AlertTriangle, Loader2, UserRoundSearch } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useChat } from "../../../../../../stores";
+import { useSession } from "next-auth/react";
 
 const SearchUserChat = () => {
   const [searchValue, setSearchValue] = useState<string>("");
-
+  const session = useSession();
   const [open, setOpen] = useState(false);
   const setConversation = useChat((state) => state.setConversation);
   const setUserInfo = useChat((state) => state.setUserInfo);
@@ -30,7 +32,6 @@ const SearchUserChat = () => {
   const setDashboardChatMessage = useChat(
     (state) => state.setDashboardChatMessage
   );
-  const socket = useChat((state) => state.socket);
 
   const { fetch: conversationFetch, loading: fetchConversationLoading } =
     useDataGetter<Conversation>({
@@ -89,7 +90,13 @@ const SearchUserChat = () => {
 
         setConversation(data);
 
-        socket.emit("join-conversation", {
+        emitSocket("join-conversation", {
+          conversationId: data?.id,
+        });
+
+        emitSocket("user-request-to-join-conversation", {
+          toUserId: user?.id,
+          fromUserId: session.data?.user.id,
           conversationId: data?.id,
         });
 

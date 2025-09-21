@@ -141,7 +141,7 @@ const SettingForm = ({
       reset({
         ...userInformation,
         id: userInformation?.id,
-        theme: userInformation.theme,
+        theme: userInformation.theme ?? "light",
         birthDate: userInformation.birthDate
           ? new Date(userInformation.birthDate).toISOString().slice(0, 10)
           : "",

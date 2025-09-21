@@ -73,7 +73,7 @@ const SideBarMenu = ({ setOpen }: Props) => {
           <ModeToggle />
           {/* <LanguageSwitcher /> */}
         </div>
-        <LoginAndRegister nameSpace="Header" />
+        <LoginAndRegister nameSpace="Header" dropUp />
       </div>
     </>
   );

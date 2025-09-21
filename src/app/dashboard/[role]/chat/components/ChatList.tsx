@@ -59,6 +59,8 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
             unReadMessage={conv._count?.messages}
             messages={conv.messages ?? []}
             getConversatioMessages={() => {
+              console.log({ otherUser });
+
               setConversatioMessageLoading(true);
 
               setUserInfo(null);
@@ -69,7 +71,12 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
               }).then((data) => {
                 setDashboardChatMessage(data);
 
-                setUserInfo(otherUser);
+                setUserInfo({
+                  ...otherUser,
+                  fullName: `${otherUser.firstName ?? "کاربر"} ${
+                    otherUser.lastName ?? ""
+                  }`,
+                });
 
                 setConversatioMessageLoading(false);
 
