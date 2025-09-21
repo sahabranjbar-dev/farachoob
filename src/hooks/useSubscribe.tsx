@@ -24,7 +24,6 @@ export default function useSubscribe() {
         process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
       ),
     });
-    console.log({ sub });
 
     setSubscription(sub);
 
@@ -37,7 +36,7 @@ export default function useSubscribe() {
 
     const result = await response.json();
 
-    console.log({ result }, "in save-subscription");
+    return result;
   };
 
   return {

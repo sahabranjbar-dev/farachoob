@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
 import useTabular from "@/hooks/useTabular";
+import useSubscribe from "@/hooks/useSubscribe";
 
 export interface IUserData {
   id?: string;
@@ -37,6 +38,7 @@ export interface IUserData {
   profileVisible?: boolean;
   searchVisible?: boolean;
   theme?: Theme;
+  subscriptions?: any;
 }
 
 export interface IUserForm {
@@ -59,6 +61,7 @@ export interface IUserForm {
   isActive?: boolean;
   isVerified?: boolean;
   nationalId?: string;
+  subscriptions?: any;
 }
 
 export type Theme = "auto" | "dark" | "light";
@@ -75,6 +78,7 @@ const SettingForm = ({
   const { setTheme, theme } = useTheme();
   const { closeCurrentTab } = useTabular();
   const form = useForm<IUserForm>();
+  const { setSubscription, subscribe, subscription } = useSubscribe();
 
   const { register, handleSubmit, watch, reset, control, setValue } = form;
 
@@ -88,47 +92,50 @@ const SettingForm = ({
   const onSubmit = async (data: IUserForm) => {
     try {
       const formData = new FormData();
-      formData.append("id", data.id ?? "");
-      formData.append("firstName", data.firstName);
-      formData.append("lastName", data.lastName);
-      formData.append("email", data.email);
-      formData.append("mobile", data.mobile);
-      formData.append("location", data.location);
-      formData.append("biography", data.biography);
-      formData.append(
+
+      // helper برای append کردن فقط وقتی مقدار وجود داره
+      const safeAppend = (key: string, value?: string | Blob | null) => {
+        if (value !== undefined && value !== null && value !== "") {
+          formData.append(key, value);
+        }
+      };
+
+      safeAppend("id", data.id);
+      safeAppend("firstName", data.firstName);
+      safeAppend("lastName", data.lastName);
+      safeAppend("email", data.email);
+      safeAppend("mobile", data.mobile);
+      safeAppend("location", data.location);
+      safeAppend("biography", data.biography);
+
+      safeAppend(
         "emailNotification",
         data.emailNotification ? "true" : "false"
       );
-      formData.append(
+      safeAppend(
         "browserNotification",
-        data.browserNotification ? "true" : "false"
+        userData.notification?.pushNotification ? "true" : "false"
       );
-      formData.append("profileVisible", data.searchVisible ? "true" : "false");
-      formData.append("searchVisible", data.searchVisible ? "true" : "false");
-      formData.append(
-        "smsNotification",
-        data.smsNotification ? "true" : "false"
-      );
-      formData.append("theme", data.theme as "light" | "dark" | "auto");
+      safeAppend("profileVisible", data?.profileVisible ? "true" : "false");
+      safeAppend("searchVisible", data.searchVisible ? "true" : "false");
+      safeAppend("smsNotification", data.smsNotification ? "true" : "false");
+      safeAppend("theme", data.theme as "light" | "dark" | "auto");
 
       if (typeof data.image !== "string" && data.image && data.image.size > 0) {
-        formData.append("image", data.image);
+        safeAppend("image", data.image);
       }
 
       updateProfile?.({
         inputBody: formData,
-      }).then((data) => {
-        if (data?.id) {
+      }).then((res) => {
+        if (res?.id) {
           toast.success("پروفایل با موفقیت ویرایش شد");
           getUserInformation?.({});
-          setUserData({
-            ...data,
-          });
+          setUserData({ ...res });
         }
       });
     } catch (err: any) {
-      alert(err.message);
-    } finally {
+      toast.success("ویرایش پروفایل با خطا مواجه شد");
     }
   };
 
@@ -147,7 +154,31 @@ const SettingForm = ({
           : "",
         image: userInformation.image as string,
       });
-      setUserData({ ...userInformation });
+      setUserData({
+        notification: {
+          email: userInformation.emailNotification,
+          pushNotification: userInformation.browserNotification,
+          sms: userInformation.smsNotification,
+        },
+        privacy: {
+          profileVisible: userInformation.profileVisible,
+          searchVisible: userInformation.searchVisible,
+        },
+        theme: userInformation.theme,
+        biography: userInformation.biography,
+        birthDate: userInformation.birthDate,
+        email: userInformation.email,
+        firstName: userInformation.firstName,
+        id: userInformation.id,
+        image: userInformation.image,
+        isActive: userInformation.isActive,
+        isVerified: userInformation.isActive,
+        lastName: userInformation.lastName,
+        location: userInformation.location,
+        phone: userInformation.mobile,
+      });
+
+      setSubscription(userInformation?.subscriptions);
     }
   }, [userInformation, reset]);
 
@@ -198,6 +229,9 @@ const SettingForm = ({
                   register={register}
                   watch={watch}
                   control={control}
+                  setSubscription={setSubscription}
+                  subscribe={subscribe}
+                  subscription={subscription}
                 />
               )}
 

@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { useChat } from "../../../../stores";
 import { fetchConvs } from "../[role]/chat/meta/utils";
 
+const notificationSound = getNotificationSound();
+
 export default function DashboardClient({
   children,
   user,
@@ -86,15 +88,18 @@ export default function DashboardClient({
       toUserId,
       fromUserId,
       conversationId,
+      fromUserName,
     }: {
       toUserId: string;
       fromUserId: string;
       conversationId: string;
+      fromUserName: string;
     }) => {
       console.log("join-conversation-request", user?.id, toUserId);
 
       if (user?.id !== toUserId) return;
-      toast.info(`یوزر ${fromUserId} درخواست شروع چت ارسال کرد`, {
+      notificationSound?.play();
+      toast.info(`یوزر ${fromUserName} درخواست شروع چت ارسال کرد`, {
         position: "top-center",
       });
     };

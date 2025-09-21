@@ -231,15 +231,21 @@ export async function DELETE(req: NextRequest) {
     }
 
     // چک می‌کنیم که فقط سازنده اجازه حذف داشته باشه
-    if (conversation.creatorId !== userId) {
+    if (
+      conversation.creatorId !== userId &&
+      session.user.role?.englishTitle !== "admin"
+    ) {
       return NextResponse.json(
         { message: "شما اجازه حذف این چت را ندارید" },
         { status: 403 }
       );
     }
 
-    await prisma.conversation.delete({
-      where: { id },
+    const conversationId = conversation?.id;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.message.deleteMany({ where: { conversationId } });
+      await tx.conversation.delete({ where: { id: conversationId } });
     });
 
     return NextResponse.json({

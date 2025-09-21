@@ -9,7 +9,11 @@ export interface IEditProfile {
   control: Control<any>;
 }
 
-export interface INotificationsEdit extends Partial<IEditProfile> {}
+export interface INotificationsEdit extends Partial<IEditProfile> {
+  setSubscription: Dispatch<SetStateAction<PushSubscription | null>> | null;
+  subscribe: (userId: { userId: string }) => Promise<any>;
+  subscription: PushSubscription | null;
+}
 
 export interface IEditPrivacy extends Partial<IEditProfile> {}
 

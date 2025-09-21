@@ -58,7 +58,6 @@ const ConversationInformation = ({ children }: PropsWithChildren) => {
   const handleBlockUser = async () => {
     setIsBlocking(true);
     try {
-      console.log("handleBlockUser");
     } finally {
       setIsBlocking(false);
     }
@@ -68,7 +67,6 @@ const ConversationInformation = ({ children }: PropsWithChildren) => {
     setIsReporting(true);
     try {
       // شبیه‌سازی درخواست API
-      console.log("handleReportUser");
     } finally {
       setIsReporting(false);
     }
@@ -96,15 +94,12 @@ const ConversationInformation = ({ children }: PropsWithChildren) => {
       },
     });
   const deleteConversationHandler = () => {
-    console.log("delete");
-
     deleteConversation?.({
       inputUrl: "/dashboard/conversations",
       inputBody: {
         id: conversation?.id,
       },
     }).then((data) => {
-      console.log({ data });
       if (!data?.success) return;
 
       setOpenDeleteDialog(false);

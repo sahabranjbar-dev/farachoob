@@ -40,14 +40,10 @@ const SearchUserChat = () => {
       immediatelyFetch: false,
     });
 
-  const {
-    data: users,
-    error,
-    fetch,
-    loading,
-  } = useDataGetter({
-    url: "/dashboard/users",
+  const { data, error, fetch, loading } = useDataGetter({
+    url: "/dashboard/conversations/users",
     immediatelyFetch: false,
+    method: "POST",
   });
 
   // ✅ ساختن نسخه ثابت از debounce
@@ -57,7 +53,7 @@ const SearchUserChat = () => {
         const abordController = new AbortController();
 
         fetch?.({
-          inputParams: { name: value },
+          inputBody: { name: value },
           signal: abordController.signal,
         });
       }, 500),
@@ -97,6 +93,7 @@ const SearchUserChat = () => {
         emitSocket("user-request-to-join-conversation", {
           toUserId: user?.id,
           fromUserId: session.data?.user.id,
+          fromUserName: session.data?.user.firstName,
           conversationId: data?.id,
         });
 
@@ -150,17 +147,17 @@ const SearchUserChat = () => {
                 {!loading &&
                   !fetchConversationLoading &&
                   !error &&
-                  users?.resultList?.length === 0 &&
+                  !data?.users?.length &&
                   searchValue.length > 2 && (
                     <div className="text-center text-gray-500 p-4">
-                      هیچ کاربری پیدا نشد
+                      {data?.message}
                     </div>
                   )}
 
                 {!loading &&
                   !fetchConversationLoading &&
                   !error &&
-                  users?.resultList?.map((user: User, index: number) => (
+                  data?.users?.map((user: User, index: number) => (
                     <motion.div
                       key={user.id}
                       initial={{ opacity: 0, y: 10 }}

@@ -61,14 +61,14 @@ export async function PUT(request: NextRequest) {
     }
 
     // گرفتن فیلدها
-    const firstName = formData.get("firstName")?.toString();
-    const lastName = formData.get("lastName")?.toString();
-    const email = formData.get("email")?.toString();
-    const mobile = formData.get("mobile")?.toString();
-    const location = formData.get("location")?.toString();
-    const biography = formData.get("biography")?.toString();
-    const birthDate = formData.get("birthDate")?.toString();
-    const nationalId = formData.get("nationalId")?.toString();
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const mobile = formData.get("mobile") as string;
+    const location = formData.get("location") as string;
+    const biography = formData.get("biography") as string;
+    const birthDate = formData.get("birthDate") as string;
+    const nationalId = formData.get("nationalId") as string;
     const isActive = formData.get("isActive") === "true";
     const isVerified = formData.get("isVerified") === "true";
     const emailNotification = formData.get("emailNotification") === "true";

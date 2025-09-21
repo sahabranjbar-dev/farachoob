@@ -14,18 +14,3 @@ export const useNotification = create<INotificationStates>((set) => ({
     set({ loading });
   },
 }));
-
-// فایل جداگانه یا در کامپوننت root
-export async function fetchInitialNotificationCount() {
-  try {
-    useNotification.getState().setLoading(true);
-    const response = await fetch("/api/dashboard/notifications");
-    const result: any[] = await response.json();
-    const unreadNotifications = result.filter((item) => !item.isRead);
-    useNotification.getState().setNotificationCount(unreadNotifications.length);
-  } catch (err) {
-    console.error("Failed to fetch notifications:", err);
-  } finally {
-    useNotification.getState().setLoading(false);
-  }
-}

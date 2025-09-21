@@ -2,13 +2,11 @@
 import useTabular from "@/hooks/useTabular";
 import { Bell, Loader2 } from "lucide-react";
 import React, { useEffect } from "react";
-import {
-  fetchInitialNotificationCount,
-  useNotification,
-} from "../../stores/notificationStore";
+import { useNotification } from "../../stores/notificationStore";
 import { toast } from "sonner";
 import { useChat } from "../../stores";
 import { getNotificationSound } from "@/lib/sounds";
+import { fetchInitialNotificationCount } from "@/lib/utils";
 
 const NotificationIcon = () => {
   const { open } = useTabular();

@@ -1,8 +1,17 @@
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    const userSession = await getServerSession(authOptions);
+
+    if (!userSession?.user.id) {
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`
+      );
+    }
     const body = await req.json();
     const url = new URL(req.url);
 
