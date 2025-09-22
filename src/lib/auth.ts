@@ -1,6 +1,6 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { AuthOptions, DefaultSession, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import prisma from "./prisma";

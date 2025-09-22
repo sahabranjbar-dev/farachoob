@@ -12,9 +12,7 @@ export async function POST(req: NextRequest) {
   const { message, title, userId } = await req.json();
 
   const subscriptions = await prisma.pushSubscription.findMany({
-    where: {
-      userId,
-    },
+    where: { userId },
   });
 
   for (const sub of subscriptions) {
@@ -34,8 +32,28 @@ export async function POST(req: NextRequest) {
           url: "/dashboard/notifications",
         })
       );
-    } catch (err) {
-      console.error("Push error", err);
+    } catch (err: any) {
+      if (err.statusCode === 410 || err.statusCode === 404) {
+        // subscription منقضی یا نامعتبره، پس حذفش می‌کنیم
+        await prisma.pushSubscription.delete({
+          where: { endpoint: sub.endpoint },
+        });
+
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            subscriptions: {
+              deleteMany: {
+                endpoint: sub.endpoint,
+              },
+            },
+          },
+        });
+      } else {
+        console.error("Push error", err);
+      }
     }
   }
 

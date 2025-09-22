@@ -128,6 +128,16 @@ export type Project = $Result.DefaultSelection<Prisma.$ProjectPayload>
  * 
  */
 export type PushSubscription = $Result.DefaultSelection<Prisma.$PushSubscriptionPayload>
+/**
+ * Model CustomDesignRequest
+ * 
+ */
+export type CustomDesignRequest = $Result.DefaultSelection<Prisma.$CustomDesignRequestPayload>
+/**
+ * Model CustomDesignRequestImage
+ * 
+ */
+export type CustomDesignRequestImage = $Result.DefaultSelection<Prisma.$CustomDesignRequestImagePayload>
 
 /**
  * Enums
@@ -204,7 +214,9 @@ export const PermissionKey: {
   view_chat: 'view_chat',
   create_chat: 'create_chat',
   edit_chat: 'edit_chat',
-  delete_chat: 'delete_chat'
+  delete_chat: 'delete_chat',
+  view_custom_design: 'view_custom_design',
+  delete_custom_design: 'delete_custom_design'
 };
 
 export type PermissionKey = (typeof PermissionKey)[keyof typeof PermissionKey]
@@ -570,6 +582,26 @@ export class PrismaClient<
     * ```
     */
   get pushSubscription(): Prisma.PushSubscriptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.customDesignRequest`: Exposes CRUD operations for the **CustomDesignRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CustomDesignRequests
+    * const customDesignRequests = await prisma.customDesignRequest.findMany()
+    * ```
+    */
+  get customDesignRequest(): Prisma.CustomDesignRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.customDesignRequestImage`: Exposes CRUD operations for the **CustomDesignRequestImage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CustomDesignRequestImages
+    * const customDesignRequestImages = await prisma.customDesignRequestImage.findMany()
+    * ```
+    */
+  get customDesignRequestImage(): Prisma.CustomDesignRequestImageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1032,7 +1064,9 @@ export namespace Prisma {
     Message: 'Message',
     MessageHistory: 'MessageHistory',
     Project: 'Project',
-    PushSubscription: 'PushSubscription'
+    PushSubscription: 'PushSubscription',
+    CustomDesignRequest: 'CustomDesignRequest',
+    CustomDesignRequestImage: 'CustomDesignRequestImage'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1051,7 +1085,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "oTP" | "role" | "permission" | "rolePermission" | "menu" | "product" | "variation" | "variationImage" | "brand" | "category" | "cartItem" | "article" | "comment" | "commentLike" | "contactMessage" | "notification" | "conversation" | "conversationParticipant" | "message" | "messageHistory" | "project" | "pushSubscription"
+      modelProps: "user" | "oTP" | "role" | "permission" | "rolePermission" | "menu" | "product" | "variation" | "variationImage" | "brand" | "category" | "cartItem" | "article" | "comment" | "commentLike" | "contactMessage" | "notification" | "conversation" | "conversationParticipant" | "message" | "messageHistory" | "project" | "pushSubscription" | "customDesignRequest" | "customDesignRequestImage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2757,6 +2791,154 @@ export namespace Prisma {
           }
         }
       }
+      CustomDesignRequest: {
+        payload: Prisma.$CustomDesignRequestPayload<ExtArgs>
+        fields: Prisma.CustomDesignRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CustomDesignRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CustomDesignRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.CustomDesignRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CustomDesignRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>
+          }
+          findMany: {
+            args: Prisma.CustomDesignRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>[]
+          }
+          create: {
+            args: Prisma.CustomDesignRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>
+          }
+          createMany: {
+            args: Prisma.CustomDesignRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CustomDesignRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.CustomDesignRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>
+          }
+          update: {
+            args: Prisma.CustomDesignRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.CustomDesignRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CustomDesignRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CustomDesignRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.CustomDesignRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.CustomDesignRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCustomDesignRequest>
+          }
+          groupBy: {
+            args: Prisma.CustomDesignRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CustomDesignRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CustomDesignRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<CustomDesignRequestCountAggregateOutputType> | number
+          }
+        }
+      }
+      CustomDesignRequestImage: {
+        payload: Prisma.$CustomDesignRequestImagePayload<ExtArgs>
+        fields: Prisma.CustomDesignRequestImageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CustomDesignRequestImageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CustomDesignRequestImageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>
+          }
+          findFirst: {
+            args: Prisma.CustomDesignRequestImageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CustomDesignRequestImageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>
+          }
+          findMany: {
+            args: Prisma.CustomDesignRequestImageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>[]
+          }
+          create: {
+            args: Prisma.CustomDesignRequestImageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>
+          }
+          createMany: {
+            args: Prisma.CustomDesignRequestImageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CustomDesignRequestImageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>[]
+          }
+          delete: {
+            args: Prisma.CustomDesignRequestImageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>
+          }
+          update: {
+            args: Prisma.CustomDesignRequestImageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>
+          }
+          deleteMany: {
+            args: Prisma.CustomDesignRequestImageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CustomDesignRequestImageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CustomDesignRequestImageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>[]
+          }
+          upsert: {
+            args: Prisma.CustomDesignRequestImageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomDesignRequestImagePayload>
+          }
+          aggregate: {
+            args: Prisma.CustomDesignRequestImageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCustomDesignRequestImage>
+          }
+          groupBy: {
+            args: Prisma.CustomDesignRequestImageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CustomDesignRequestImageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CustomDesignRequestImageCountArgs<ExtArgs>
+            result: $Utils.Optional<CustomDesignRequestImageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2876,6 +3058,8 @@ export namespace Prisma {
     messageHistory?: MessageHistoryOmit
     project?: ProjectOmit
     pushSubscription?: PushSubscriptionOmit
+    customDesignRequest?: CustomDesignRequestOmit
+    customDesignRequestImage?: CustomDesignRequestImageOmit
   }
 
   /* Types for Logging */
@@ -3486,6 +3670,37 @@ export namespace Prisma {
    */
   export type ProjectCountOutputTypeCountCommentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CommentWhereInput
+  }
+
+
+  /**
+   * Count Type CustomDesignRequestCountOutputType
+   */
+
+  export type CustomDesignRequestCountOutputType = {
+    images: number
+  }
+
+  export type CustomDesignRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    images?: boolean | CustomDesignRequestCountOutputTypeCountImagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CustomDesignRequestCountOutputType without action
+   */
+  export type CustomDesignRequestCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestCountOutputType
+     */
+    select?: CustomDesignRequestCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CustomDesignRequestCountOutputType without action
+   */
+  export type CustomDesignRequestCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomDesignRequestImageWhereInput
   }
 
 
@@ -18514,8 +18729,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     userId: string
-    articleId: string
-    projectId: string
+    articleId: string | null
+    projectId: string | null
     parentId: string | null
     _count: CommentCountAggregateOutputType | null
     _min: CommentMinAggregateOutputType | null
@@ -18546,8 +18761,8 @@ export namespace Prisma {
     projectId?: boolean
     parentId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    article?: boolean | ArticleDefaultArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    article?: boolean | Comment$articleArgs<ExtArgs>
+    project?: boolean | Comment$projectArgs<ExtArgs>
     parent?: boolean | Comment$parentArgs<ExtArgs>
     replies?: boolean | Comment$repliesArgs<ExtArgs>
     likes?: boolean | Comment$likesArgs<ExtArgs>
@@ -18564,8 +18779,8 @@ export namespace Prisma {
     projectId?: boolean
     parentId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    article?: boolean | ArticleDefaultArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    article?: boolean | Comment$articleArgs<ExtArgs>
+    project?: boolean | Comment$projectArgs<ExtArgs>
     parent?: boolean | Comment$parentArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
@@ -18579,8 +18794,8 @@ export namespace Prisma {
     projectId?: boolean
     parentId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-    article?: boolean | ArticleDefaultArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    article?: boolean | Comment$articleArgs<ExtArgs>
+    project?: boolean | Comment$projectArgs<ExtArgs>
     parent?: boolean | Comment$parentArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
@@ -18598,8 +18813,8 @@ export namespace Prisma {
   export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "userId" | "articleId" | "projectId" | "parentId", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    article?: boolean | ArticleDefaultArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    article?: boolean | Comment$articleArgs<ExtArgs>
+    project?: boolean | Comment$projectArgs<ExtArgs>
     parent?: boolean | Comment$parentArgs<ExtArgs>
     replies?: boolean | Comment$repliesArgs<ExtArgs>
     likes?: boolean | Comment$likesArgs<ExtArgs>
@@ -18607,14 +18822,14 @@ export namespace Prisma {
   }
   export type CommentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    article?: boolean | ArticleDefaultArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    article?: boolean | Comment$articleArgs<ExtArgs>
+    project?: boolean | Comment$projectArgs<ExtArgs>
     parent?: boolean | Comment$parentArgs<ExtArgs>
   }
   export type CommentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
-    article?: boolean | ArticleDefaultArgs<ExtArgs>
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
+    article?: boolean | Comment$articleArgs<ExtArgs>
+    project?: boolean | Comment$projectArgs<ExtArgs>
     parent?: boolean | Comment$parentArgs<ExtArgs>
   }
 
@@ -18622,8 +18837,8 @@ export namespace Prisma {
     name: "Comment"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
-      article: Prisma.$ArticlePayload<ExtArgs>
-      project: Prisma.$ProjectPayload<ExtArgs>
+      article: Prisma.$ArticlePayload<ExtArgs> | null
+      project: Prisma.$ProjectPayload<ExtArgs> | null
       parent: Prisma.$CommentPayload<ExtArgs> | null
       replies: Prisma.$CommentPayload<ExtArgs>[]
       likes: Prisma.$CommentLikePayload<ExtArgs>[]
@@ -18634,8 +18849,8 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       userId: string
-      articleId: string
-      projectId: string
+      articleId: string | null
+      projectId: string | null
       parentId: string | null
     }, ExtArgs["result"]["comment"]>
     composites: {}
@@ -19032,8 +19247,8 @@ export namespace Prisma {
   export interface Prisma__CommentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    article<T extends ArticleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ArticleDefaultArgs<ExtArgs>>): Prisma__ArticleClient<$Result.GetResult<Prisma.$ArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    article<T extends Comment$articleArgs<ExtArgs> = {}>(args?: Subset<T, Comment$articleArgs<ExtArgs>>): Prisma__ArticleClient<$Result.GetResult<Prisma.$ArticlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    project<T extends Comment$projectArgs<ExtArgs> = {}>(args?: Subset<T, Comment$projectArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     parent<T extends Comment$parentArgs<ExtArgs> = {}>(args?: Subset<T, Comment$parentArgs<ExtArgs>>): Prisma__CommentClient<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     replies<T extends Comment$repliesArgs<ExtArgs> = {}>(args?: Subset<T, Comment$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     likes<T extends Comment$likesArgs<ExtArgs> = {}>(args?: Subset<T, Comment$likesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -19467,6 +19682,44 @@ export namespace Prisma {
      * Limit how many Comments to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Comment.article
+   */
+  export type Comment$articleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Article
+     */
+    select?: ArticleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Article
+     */
+    omit?: ArticleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArticleInclude<ExtArgs> | null
+    where?: ArticleWhereInput
+  }
+
+  /**
+   * Comment.project
+   */
+  export type Comment$projectArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Project
+     */
+    select?: ProjectSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Project
+     */
+    omit?: ProjectOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProjectInclude<ExtArgs> | null
+    where?: ProjectWhereInput
   }
 
   /**
@@ -29351,6 +29604,2205 @@ export namespace Prisma {
 
 
   /**
+   * Model CustomDesignRequest
+   */
+
+  export type AggregateCustomDesignRequest = {
+    _count: CustomDesignRequestCountAggregateOutputType | null
+    _min: CustomDesignRequestMinAggregateOutputType | null
+    _max: CustomDesignRequestMaxAggregateOutputType | null
+  }
+
+  export type CustomDesignRequestMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    mobile: string | null
+    productType: string | null
+    dimensions: string | null
+    material: string | null
+    color: string | null
+    description: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomDesignRequestMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    mobile: string | null
+    productType: string | null
+    dimensions: string | null
+    material: string | null
+    color: string | null
+    description: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomDesignRequestCountAggregateOutputType = {
+    id: number
+    name: number
+    mobile: number
+    productType: number
+    dimensions: number
+    material: number
+    color: number
+    description: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CustomDesignRequestMinAggregateInputType = {
+    id?: true
+    name?: true
+    mobile?: true
+    productType?: true
+    dimensions?: true
+    material?: true
+    color?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomDesignRequestMaxAggregateInputType = {
+    id?: true
+    name?: true
+    mobile?: true
+    productType?: true
+    dimensions?: true
+    material?: true
+    color?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomDesignRequestCountAggregateInputType = {
+    id?: true
+    name?: true
+    mobile?: true
+    productType?: true
+    dimensions?: true
+    material?: true
+    color?: true
+    description?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CustomDesignRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomDesignRequest to aggregate.
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequests to fetch.
+     */
+    orderBy?: CustomDesignRequestOrderByWithRelationInput | CustomDesignRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CustomDesignRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CustomDesignRequests
+    **/
+    _count?: true | CustomDesignRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CustomDesignRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CustomDesignRequestMaxAggregateInputType
+  }
+
+  export type GetCustomDesignRequestAggregateType<T extends CustomDesignRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateCustomDesignRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCustomDesignRequest[P]>
+      : GetScalarType<T[P], AggregateCustomDesignRequest[P]>
+  }
+
+
+
+
+  export type CustomDesignRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomDesignRequestWhereInput
+    orderBy?: CustomDesignRequestOrderByWithAggregationInput | CustomDesignRequestOrderByWithAggregationInput[]
+    by: CustomDesignRequestScalarFieldEnum[] | CustomDesignRequestScalarFieldEnum
+    having?: CustomDesignRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CustomDesignRequestCountAggregateInputType | true
+    _min?: CustomDesignRequestMinAggregateInputType
+    _max?: CustomDesignRequestMaxAggregateInputType
+  }
+
+  export type CustomDesignRequestGroupByOutputType = {
+    id: string
+    name: string
+    mobile: string
+    productType: string
+    dimensions: string
+    material: string
+    color: string
+    description: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CustomDesignRequestCountAggregateOutputType | null
+    _min: CustomDesignRequestMinAggregateOutputType | null
+    _max: CustomDesignRequestMaxAggregateOutputType | null
+  }
+
+  type GetCustomDesignRequestGroupByPayload<T extends CustomDesignRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CustomDesignRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CustomDesignRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CustomDesignRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], CustomDesignRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CustomDesignRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    mobile?: boolean
+    productType?: boolean
+    dimensions?: boolean
+    material?: boolean
+    color?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    images?: boolean | CustomDesignRequest$imagesArgs<ExtArgs>
+    _count?: boolean | CustomDesignRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["customDesignRequest"]>
+
+  export type CustomDesignRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    mobile?: boolean
+    productType?: boolean
+    dimensions?: boolean
+    material?: boolean
+    color?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["customDesignRequest"]>
+
+  export type CustomDesignRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    mobile?: boolean
+    productType?: boolean
+    dimensions?: boolean
+    material?: boolean
+    color?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["customDesignRequest"]>
+
+  export type CustomDesignRequestSelectScalar = {
+    id?: boolean
+    name?: boolean
+    mobile?: boolean
+    productType?: boolean
+    dimensions?: boolean
+    material?: boolean
+    color?: boolean
+    description?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CustomDesignRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "mobile" | "productType" | "dimensions" | "material" | "color" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["customDesignRequest"]>
+  export type CustomDesignRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    images?: boolean | CustomDesignRequest$imagesArgs<ExtArgs>
+    _count?: boolean | CustomDesignRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CustomDesignRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CustomDesignRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $CustomDesignRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CustomDesignRequest"
+    objects: {
+      images: Prisma.$CustomDesignRequestImagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      mobile: string
+      productType: string
+      dimensions: string
+      material: string
+      color: string
+      description: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["customDesignRequest"]>
+    composites: {}
+  }
+
+  type CustomDesignRequestGetPayload<S extends boolean | null | undefined | CustomDesignRequestDefaultArgs> = $Result.GetResult<Prisma.$CustomDesignRequestPayload, S>
+
+  type CustomDesignRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CustomDesignRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CustomDesignRequestCountAggregateInputType | true
+    }
+
+  export interface CustomDesignRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CustomDesignRequest'], meta: { name: 'CustomDesignRequest' } }
+    /**
+     * Find zero or one CustomDesignRequest that matches the filter.
+     * @param {CustomDesignRequestFindUniqueArgs} args - Arguments to find a CustomDesignRequest
+     * @example
+     * // Get one CustomDesignRequest
+     * const customDesignRequest = await prisma.customDesignRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CustomDesignRequestFindUniqueArgs>(args: SelectSubset<T, CustomDesignRequestFindUniqueArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CustomDesignRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CustomDesignRequestFindUniqueOrThrowArgs} args - Arguments to find a CustomDesignRequest
+     * @example
+     * // Get one CustomDesignRequest
+     * const customDesignRequest = await prisma.customDesignRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CustomDesignRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, CustomDesignRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomDesignRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestFindFirstArgs} args - Arguments to find a CustomDesignRequest
+     * @example
+     * // Get one CustomDesignRequest
+     * const customDesignRequest = await prisma.customDesignRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CustomDesignRequestFindFirstArgs>(args?: SelectSubset<T, CustomDesignRequestFindFirstArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomDesignRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestFindFirstOrThrowArgs} args - Arguments to find a CustomDesignRequest
+     * @example
+     * // Get one CustomDesignRequest
+     * const customDesignRequest = await prisma.customDesignRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CustomDesignRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, CustomDesignRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CustomDesignRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CustomDesignRequests
+     * const customDesignRequests = await prisma.customDesignRequest.findMany()
+     * 
+     * // Get first 10 CustomDesignRequests
+     * const customDesignRequests = await prisma.customDesignRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const customDesignRequestWithIdOnly = await prisma.customDesignRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CustomDesignRequestFindManyArgs>(args?: SelectSubset<T, CustomDesignRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CustomDesignRequest.
+     * @param {CustomDesignRequestCreateArgs} args - Arguments to create a CustomDesignRequest.
+     * @example
+     * // Create one CustomDesignRequest
+     * const CustomDesignRequest = await prisma.customDesignRequest.create({
+     *   data: {
+     *     // ... data to create a CustomDesignRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends CustomDesignRequestCreateArgs>(args: SelectSubset<T, CustomDesignRequestCreateArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CustomDesignRequests.
+     * @param {CustomDesignRequestCreateManyArgs} args - Arguments to create many CustomDesignRequests.
+     * @example
+     * // Create many CustomDesignRequests
+     * const customDesignRequest = await prisma.customDesignRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CustomDesignRequestCreateManyArgs>(args?: SelectSubset<T, CustomDesignRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CustomDesignRequests and returns the data saved in the database.
+     * @param {CustomDesignRequestCreateManyAndReturnArgs} args - Arguments to create many CustomDesignRequests.
+     * @example
+     * // Create many CustomDesignRequests
+     * const customDesignRequest = await prisma.customDesignRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CustomDesignRequests and only return the `id`
+     * const customDesignRequestWithIdOnly = await prisma.customDesignRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CustomDesignRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, CustomDesignRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CustomDesignRequest.
+     * @param {CustomDesignRequestDeleteArgs} args - Arguments to delete one CustomDesignRequest.
+     * @example
+     * // Delete one CustomDesignRequest
+     * const CustomDesignRequest = await prisma.customDesignRequest.delete({
+     *   where: {
+     *     // ... filter to delete one CustomDesignRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CustomDesignRequestDeleteArgs>(args: SelectSubset<T, CustomDesignRequestDeleteArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CustomDesignRequest.
+     * @param {CustomDesignRequestUpdateArgs} args - Arguments to update one CustomDesignRequest.
+     * @example
+     * // Update one CustomDesignRequest
+     * const customDesignRequest = await prisma.customDesignRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CustomDesignRequestUpdateArgs>(args: SelectSubset<T, CustomDesignRequestUpdateArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CustomDesignRequests.
+     * @param {CustomDesignRequestDeleteManyArgs} args - Arguments to filter CustomDesignRequests to delete.
+     * @example
+     * // Delete a few CustomDesignRequests
+     * const { count } = await prisma.customDesignRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CustomDesignRequestDeleteManyArgs>(args?: SelectSubset<T, CustomDesignRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomDesignRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CustomDesignRequests
+     * const customDesignRequest = await prisma.customDesignRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CustomDesignRequestUpdateManyArgs>(args: SelectSubset<T, CustomDesignRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomDesignRequests and returns the data updated in the database.
+     * @param {CustomDesignRequestUpdateManyAndReturnArgs} args - Arguments to update many CustomDesignRequests.
+     * @example
+     * // Update many CustomDesignRequests
+     * const customDesignRequest = await prisma.customDesignRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CustomDesignRequests and only return the `id`
+     * const customDesignRequestWithIdOnly = await prisma.customDesignRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CustomDesignRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, CustomDesignRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CustomDesignRequest.
+     * @param {CustomDesignRequestUpsertArgs} args - Arguments to update or create a CustomDesignRequest.
+     * @example
+     * // Update or create a CustomDesignRequest
+     * const customDesignRequest = await prisma.customDesignRequest.upsert({
+     *   create: {
+     *     // ... data to create a CustomDesignRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CustomDesignRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CustomDesignRequestUpsertArgs>(args: SelectSubset<T, CustomDesignRequestUpsertArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CustomDesignRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestCountArgs} args - Arguments to filter CustomDesignRequests to count.
+     * @example
+     * // Count the number of CustomDesignRequests
+     * const count = await prisma.customDesignRequest.count({
+     *   where: {
+     *     // ... the filter for the CustomDesignRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends CustomDesignRequestCountArgs>(
+      args?: Subset<T, CustomDesignRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CustomDesignRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CustomDesignRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CustomDesignRequestAggregateArgs>(args: Subset<T, CustomDesignRequestAggregateArgs>): Prisma.PrismaPromise<GetCustomDesignRequestAggregateType<T>>
+
+    /**
+     * Group by CustomDesignRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CustomDesignRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CustomDesignRequestGroupByArgs['orderBy'] }
+        : { orderBy?: CustomDesignRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CustomDesignRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCustomDesignRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CustomDesignRequest model
+   */
+  readonly fields: CustomDesignRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CustomDesignRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CustomDesignRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    images<T extends CustomDesignRequest$imagesArgs<ExtArgs> = {}>(args?: Subset<T, CustomDesignRequest$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CustomDesignRequest model
+   */
+  interface CustomDesignRequestFieldRefs {
+    readonly id: FieldRef<"CustomDesignRequest", 'String'>
+    readonly name: FieldRef<"CustomDesignRequest", 'String'>
+    readonly mobile: FieldRef<"CustomDesignRequest", 'String'>
+    readonly productType: FieldRef<"CustomDesignRequest", 'String'>
+    readonly dimensions: FieldRef<"CustomDesignRequest", 'String'>
+    readonly material: FieldRef<"CustomDesignRequest", 'String'>
+    readonly color: FieldRef<"CustomDesignRequest", 'String'>
+    readonly description: FieldRef<"CustomDesignRequest", 'String'>
+    readonly createdAt: FieldRef<"CustomDesignRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"CustomDesignRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CustomDesignRequest findUnique
+   */
+  export type CustomDesignRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequest to fetch.
+     */
+    where: CustomDesignRequestWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequest findUniqueOrThrow
+   */
+  export type CustomDesignRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequest to fetch.
+     */
+    where: CustomDesignRequestWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequest findFirst
+   */
+  export type CustomDesignRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequest to fetch.
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequests to fetch.
+     */
+    orderBy?: CustomDesignRequestOrderByWithRelationInput | CustomDesignRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomDesignRequests.
+     */
+    cursor?: CustomDesignRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomDesignRequests.
+     */
+    distinct?: CustomDesignRequestScalarFieldEnum | CustomDesignRequestScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequest findFirstOrThrow
+   */
+  export type CustomDesignRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequest to fetch.
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequests to fetch.
+     */
+    orderBy?: CustomDesignRequestOrderByWithRelationInput | CustomDesignRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomDesignRequests.
+     */
+    cursor?: CustomDesignRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomDesignRequests.
+     */
+    distinct?: CustomDesignRequestScalarFieldEnum | CustomDesignRequestScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequest findMany
+   */
+  export type CustomDesignRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequests to fetch.
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequests to fetch.
+     */
+    orderBy?: CustomDesignRequestOrderByWithRelationInput | CustomDesignRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CustomDesignRequests.
+     */
+    cursor?: CustomDesignRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequests.
+     */
+    skip?: number
+    distinct?: CustomDesignRequestScalarFieldEnum | CustomDesignRequestScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequest create
+   */
+  export type CustomDesignRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CustomDesignRequest.
+     */
+    data: XOR<CustomDesignRequestCreateInput, CustomDesignRequestUncheckedCreateInput>
+  }
+
+  /**
+   * CustomDesignRequest createMany
+   */
+  export type CustomDesignRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CustomDesignRequests.
+     */
+    data: CustomDesignRequestCreateManyInput | CustomDesignRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomDesignRequest createManyAndReturn
+   */
+  export type CustomDesignRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many CustomDesignRequests.
+     */
+    data: CustomDesignRequestCreateManyInput | CustomDesignRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomDesignRequest update
+   */
+  export type CustomDesignRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CustomDesignRequest.
+     */
+    data: XOR<CustomDesignRequestUpdateInput, CustomDesignRequestUncheckedUpdateInput>
+    /**
+     * Choose, which CustomDesignRequest to update.
+     */
+    where: CustomDesignRequestWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequest updateMany
+   */
+  export type CustomDesignRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CustomDesignRequests.
+     */
+    data: XOR<CustomDesignRequestUpdateManyMutationInput, CustomDesignRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomDesignRequests to update
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * Limit how many CustomDesignRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomDesignRequest updateManyAndReturn
+   */
+  export type CustomDesignRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update CustomDesignRequests.
+     */
+    data: XOR<CustomDesignRequestUpdateManyMutationInput, CustomDesignRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomDesignRequests to update
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * Limit how many CustomDesignRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomDesignRequest upsert
+   */
+  export type CustomDesignRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CustomDesignRequest to update in case it exists.
+     */
+    where: CustomDesignRequestWhereUniqueInput
+    /**
+     * In case the CustomDesignRequest found by the `where` argument doesn't exist, create a new CustomDesignRequest with this data.
+     */
+    create: XOR<CustomDesignRequestCreateInput, CustomDesignRequestUncheckedCreateInput>
+    /**
+     * In case the CustomDesignRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CustomDesignRequestUpdateInput, CustomDesignRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * CustomDesignRequest delete
+   */
+  export type CustomDesignRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    /**
+     * Filter which CustomDesignRequest to delete.
+     */
+    where: CustomDesignRequestWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequest deleteMany
+   */
+  export type CustomDesignRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomDesignRequests to delete
+     */
+    where?: CustomDesignRequestWhereInput
+    /**
+     * Limit how many CustomDesignRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomDesignRequest.images
+   */
+  export type CustomDesignRequest$imagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    where?: CustomDesignRequestImageWhereInput
+    orderBy?: CustomDesignRequestImageOrderByWithRelationInput | CustomDesignRequestImageOrderByWithRelationInput[]
+    cursor?: CustomDesignRequestImageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomDesignRequestImageScalarFieldEnum | CustomDesignRequestImageScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequest without action
+   */
+  export type CustomDesignRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CustomDesignRequestImage
+   */
+
+  export type AggregateCustomDesignRequestImage = {
+    _count: CustomDesignRequestImageCountAggregateOutputType | null
+    _min: CustomDesignRequestImageMinAggregateOutputType | null
+    _max: CustomDesignRequestImageMaxAggregateOutputType | null
+  }
+
+  export type CustomDesignRequestImageMinAggregateOutputType = {
+    id: string | null
+    url: string | null
+    requestId: string | null
+    createdAt: Date | null
+  }
+
+  export type CustomDesignRequestImageMaxAggregateOutputType = {
+    id: string | null
+    url: string | null
+    requestId: string | null
+    createdAt: Date | null
+  }
+
+  export type CustomDesignRequestImageCountAggregateOutputType = {
+    id: number
+    url: number
+    requestId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CustomDesignRequestImageMinAggregateInputType = {
+    id?: true
+    url?: true
+    requestId?: true
+    createdAt?: true
+  }
+
+  export type CustomDesignRequestImageMaxAggregateInputType = {
+    id?: true
+    url?: true
+    requestId?: true
+    createdAt?: true
+  }
+
+  export type CustomDesignRequestImageCountAggregateInputType = {
+    id?: true
+    url?: true
+    requestId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CustomDesignRequestImageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomDesignRequestImage to aggregate.
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequestImages to fetch.
+     */
+    orderBy?: CustomDesignRequestImageOrderByWithRelationInput | CustomDesignRequestImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CustomDesignRequestImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequestImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequestImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CustomDesignRequestImages
+    **/
+    _count?: true | CustomDesignRequestImageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CustomDesignRequestImageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CustomDesignRequestImageMaxAggregateInputType
+  }
+
+  export type GetCustomDesignRequestImageAggregateType<T extends CustomDesignRequestImageAggregateArgs> = {
+        [P in keyof T & keyof AggregateCustomDesignRequestImage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCustomDesignRequestImage[P]>
+      : GetScalarType<T[P], AggregateCustomDesignRequestImage[P]>
+  }
+
+
+
+
+  export type CustomDesignRequestImageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomDesignRequestImageWhereInput
+    orderBy?: CustomDesignRequestImageOrderByWithAggregationInput | CustomDesignRequestImageOrderByWithAggregationInput[]
+    by: CustomDesignRequestImageScalarFieldEnum[] | CustomDesignRequestImageScalarFieldEnum
+    having?: CustomDesignRequestImageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CustomDesignRequestImageCountAggregateInputType | true
+    _min?: CustomDesignRequestImageMinAggregateInputType
+    _max?: CustomDesignRequestImageMaxAggregateInputType
+  }
+
+  export type CustomDesignRequestImageGroupByOutputType = {
+    id: string
+    url: string
+    requestId: string | null
+    createdAt: Date
+    _count: CustomDesignRequestImageCountAggregateOutputType | null
+    _min: CustomDesignRequestImageMinAggregateOutputType | null
+    _max: CustomDesignRequestImageMaxAggregateOutputType | null
+  }
+
+  type GetCustomDesignRequestImageGroupByPayload<T extends CustomDesignRequestImageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CustomDesignRequestImageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CustomDesignRequestImageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CustomDesignRequestImageGroupByOutputType[P]>
+            : GetScalarType<T[P], CustomDesignRequestImageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CustomDesignRequestImageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    url?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+    request?: boolean | CustomDesignRequestImage$requestArgs<ExtArgs>
+  }, ExtArgs["result"]["customDesignRequestImage"]>
+
+  export type CustomDesignRequestImageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    url?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+    request?: boolean | CustomDesignRequestImage$requestArgs<ExtArgs>
+  }, ExtArgs["result"]["customDesignRequestImage"]>
+
+  export type CustomDesignRequestImageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    url?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+    request?: boolean | CustomDesignRequestImage$requestArgs<ExtArgs>
+  }, ExtArgs["result"]["customDesignRequestImage"]>
+
+  export type CustomDesignRequestImageSelectScalar = {
+    id?: boolean
+    url?: boolean
+    requestId?: boolean
+    createdAt?: boolean
+  }
+
+  export type CustomDesignRequestImageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "requestId" | "createdAt", ExtArgs["result"]["customDesignRequestImage"]>
+  export type CustomDesignRequestImageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | CustomDesignRequestImage$requestArgs<ExtArgs>
+  }
+  export type CustomDesignRequestImageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | CustomDesignRequestImage$requestArgs<ExtArgs>
+  }
+  export type CustomDesignRequestImageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    request?: boolean | CustomDesignRequestImage$requestArgs<ExtArgs>
+  }
+
+  export type $CustomDesignRequestImagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CustomDesignRequestImage"
+    objects: {
+      request: Prisma.$CustomDesignRequestPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      url: string
+      requestId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["customDesignRequestImage"]>
+    composites: {}
+  }
+
+  type CustomDesignRequestImageGetPayload<S extends boolean | null | undefined | CustomDesignRequestImageDefaultArgs> = $Result.GetResult<Prisma.$CustomDesignRequestImagePayload, S>
+
+  type CustomDesignRequestImageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CustomDesignRequestImageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CustomDesignRequestImageCountAggregateInputType | true
+    }
+
+  export interface CustomDesignRequestImageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CustomDesignRequestImage'], meta: { name: 'CustomDesignRequestImage' } }
+    /**
+     * Find zero or one CustomDesignRequestImage that matches the filter.
+     * @param {CustomDesignRequestImageFindUniqueArgs} args - Arguments to find a CustomDesignRequestImage
+     * @example
+     * // Get one CustomDesignRequestImage
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CustomDesignRequestImageFindUniqueArgs>(args: SelectSubset<T, CustomDesignRequestImageFindUniqueArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CustomDesignRequestImage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CustomDesignRequestImageFindUniqueOrThrowArgs} args - Arguments to find a CustomDesignRequestImage
+     * @example
+     * // Get one CustomDesignRequestImage
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CustomDesignRequestImageFindUniqueOrThrowArgs>(args: SelectSubset<T, CustomDesignRequestImageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomDesignRequestImage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageFindFirstArgs} args - Arguments to find a CustomDesignRequestImage
+     * @example
+     * // Get one CustomDesignRequestImage
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CustomDesignRequestImageFindFirstArgs>(args?: SelectSubset<T, CustomDesignRequestImageFindFirstArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomDesignRequestImage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageFindFirstOrThrowArgs} args - Arguments to find a CustomDesignRequestImage
+     * @example
+     * // Get one CustomDesignRequestImage
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CustomDesignRequestImageFindFirstOrThrowArgs>(args?: SelectSubset<T, CustomDesignRequestImageFindFirstOrThrowArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CustomDesignRequestImages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CustomDesignRequestImages
+     * const customDesignRequestImages = await prisma.customDesignRequestImage.findMany()
+     * 
+     * // Get first 10 CustomDesignRequestImages
+     * const customDesignRequestImages = await prisma.customDesignRequestImage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const customDesignRequestImageWithIdOnly = await prisma.customDesignRequestImage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CustomDesignRequestImageFindManyArgs>(args?: SelectSubset<T, CustomDesignRequestImageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CustomDesignRequestImage.
+     * @param {CustomDesignRequestImageCreateArgs} args - Arguments to create a CustomDesignRequestImage.
+     * @example
+     * // Create one CustomDesignRequestImage
+     * const CustomDesignRequestImage = await prisma.customDesignRequestImage.create({
+     *   data: {
+     *     // ... data to create a CustomDesignRequestImage
+     *   }
+     * })
+     * 
+     */
+    create<T extends CustomDesignRequestImageCreateArgs>(args: SelectSubset<T, CustomDesignRequestImageCreateArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CustomDesignRequestImages.
+     * @param {CustomDesignRequestImageCreateManyArgs} args - Arguments to create many CustomDesignRequestImages.
+     * @example
+     * // Create many CustomDesignRequestImages
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CustomDesignRequestImageCreateManyArgs>(args?: SelectSubset<T, CustomDesignRequestImageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CustomDesignRequestImages and returns the data saved in the database.
+     * @param {CustomDesignRequestImageCreateManyAndReturnArgs} args - Arguments to create many CustomDesignRequestImages.
+     * @example
+     * // Create many CustomDesignRequestImages
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CustomDesignRequestImages and only return the `id`
+     * const customDesignRequestImageWithIdOnly = await prisma.customDesignRequestImage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CustomDesignRequestImageCreateManyAndReturnArgs>(args?: SelectSubset<T, CustomDesignRequestImageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CustomDesignRequestImage.
+     * @param {CustomDesignRequestImageDeleteArgs} args - Arguments to delete one CustomDesignRequestImage.
+     * @example
+     * // Delete one CustomDesignRequestImage
+     * const CustomDesignRequestImage = await prisma.customDesignRequestImage.delete({
+     *   where: {
+     *     // ... filter to delete one CustomDesignRequestImage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CustomDesignRequestImageDeleteArgs>(args: SelectSubset<T, CustomDesignRequestImageDeleteArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CustomDesignRequestImage.
+     * @param {CustomDesignRequestImageUpdateArgs} args - Arguments to update one CustomDesignRequestImage.
+     * @example
+     * // Update one CustomDesignRequestImage
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CustomDesignRequestImageUpdateArgs>(args: SelectSubset<T, CustomDesignRequestImageUpdateArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CustomDesignRequestImages.
+     * @param {CustomDesignRequestImageDeleteManyArgs} args - Arguments to filter CustomDesignRequestImages to delete.
+     * @example
+     * // Delete a few CustomDesignRequestImages
+     * const { count } = await prisma.customDesignRequestImage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CustomDesignRequestImageDeleteManyArgs>(args?: SelectSubset<T, CustomDesignRequestImageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomDesignRequestImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CustomDesignRequestImages
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CustomDesignRequestImageUpdateManyArgs>(args: SelectSubset<T, CustomDesignRequestImageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomDesignRequestImages and returns the data updated in the database.
+     * @param {CustomDesignRequestImageUpdateManyAndReturnArgs} args - Arguments to update many CustomDesignRequestImages.
+     * @example
+     * // Update many CustomDesignRequestImages
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CustomDesignRequestImages and only return the `id`
+     * const customDesignRequestImageWithIdOnly = await prisma.customDesignRequestImage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CustomDesignRequestImageUpdateManyAndReturnArgs>(args: SelectSubset<T, CustomDesignRequestImageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CustomDesignRequestImage.
+     * @param {CustomDesignRequestImageUpsertArgs} args - Arguments to update or create a CustomDesignRequestImage.
+     * @example
+     * // Update or create a CustomDesignRequestImage
+     * const customDesignRequestImage = await prisma.customDesignRequestImage.upsert({
+     *   create: {
+     *     // ... data to create a CustomDesignRequestImage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CustomDesignRequestImage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CustomDesignRequestImageUpsertArgs>(args: SelectSubset<T, CustomDesignRequestImageUpsertArgs<ExtArgs>>): Prisma__CustomDesignRequestImageClient<$Result.GetResult<Prisma.$CustomDesignRequestImagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CustomDesignRequestImages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageCountArgs} args - Arguments to filter CustomDesignRequestImages to count.
+     * @example
+     * // Count the number of CustomDesignRequestImages
+     * const count = await prisma.customDesignRequestImage.count({
+     *   where: {
+     *     // ... the filter for the CustomDesignRequestImages we want to count
+     *   }
+     * })
+    **/
+    count<T extends CustomDesignRequestImageCountArgs>(
+      args?: Subset<T, CustomDesignRequestImageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CustomDesignRequestImageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CustomDesignRequestImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CustomDesignRequestImageAggregateArgs>(args: Subset<T, CustomDesignRequestImageAggregateArgs>): Prisma.PrismaPromise<GetCustomDesignRequestImageAggregateType<T>>
+
+    /**
+     * Group by CustomDesignRequestImage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomDesignRequestImageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CustomDesignRequestImageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CustomDesignRequestImageGroupByArgs['orderBy'] }
+        : { orderBy?: CustomDesignRequestImageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CustomDesignRequestImageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCustomDesignRequestImageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CustomDesignRequestImage model
+   */
+  readonly fields: CustomDesignRequestImageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CustomDesignRequestImage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CustomDesignRequestImageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    request<T extends CustomDesignRequestImage$requestArgs<ExtArgs> = {}>(args?: Subset<T, CustomDesignRequestImage$requestArgs<ExtArgs>>): Prisma__CustomDesignRequestClient<$Result.GetResult<Prisma.$CustomDesignRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CustomDesignRequestImage model
+   */
+  interface CustomDesignRequestImageFieldRefs {
+    readonly id: FieldRef<"CustomDesignRequestImage", 'String'>
+    readonly url: FieldRef<"CustomDesignRequestImage", 'String'>
+    readonly requestId: FieldRef<"CustomDesignRequestImage", 'String'>
+    readonly createdAt: FieldRef<"CustomDesignRequestImage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CustomDesignRequestImage findUnique
+   */
+  export type CustomDesignRequestImageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequestImage to fetch.
+     */
+    where: CustomDesignRequestImageWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequestImage findUniqueOrThrow
+   */
+  export type CustomDesignRequestImageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequestImage to fetch.
+     */
+    where: CustomDesignRequestImageWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequestImage findFirst
+   */
+  export type CustomDesignRequestImageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequestImage to fetch.
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequestImages to fetch.
+     */
+    orderBy?: CustomDesignRequestImageOrderByWithRelationInput | CustomDesignRequestImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomDesignRequestImages.
+     */
+    cursor?: CustomDesignRequestImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequestImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequestImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomDesignRequestImages.
+     */
+    distinct?: CustomDesignRequestImageScalarFieldEnum | CustomDesignRequestImageScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequestImage findFirstOrThrow
+   */
+  export type CustomDesignRequestImageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequestImage to fetch.
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequestImages to fetch.
+     */
+    orderBy?: CustomDesignRequestImageOrderByWithRelationInput | CustomDesignRequestImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomDesignRequestImages.
+     */
+    cursor?: CustomDesignRequestImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequestImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequestImages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomDesignRequestImages.
+     */
+    distinct?: CustomDesignRequestImageScalarFieldEnum | CustomDesignRequestImageScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequestImage findMany
+   */
+  export type CustomDesignRequestImageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * Filter, which CustomDesignRequestImages to fetch.
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomDesignRequestImages to fetch.
+     */
+    orderBy?: CustomDesignRequestImageOrderByWithRelationInput | CustomDesignRequestImageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CustomDesignRequestImages.
+     */
+    cursor?: CustomDesignRequestImageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomDesignRequestImages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomDesignRequestImages.
+     */
+    skip?: number
+    distinct?: CustomDesignRequestImageScalarFieldEnum | CustomDesignRequestImageScalarFieldEnum[]
+  }
+
+  /**
+   * CustomDesignRequestImage create
+   */
+  export type CustomDesignRequestImageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CustomDesignRequestImage.
+     */
+    data: XOR<CustomDesignRequestImageCreateInput, CustomDesignRequestImageUncheckedCreateInput>
+  }
+
+  /**
+   * CustomDesignRequestImage createMany
+   */
+  export type CustomDesignRequestImageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CustomDesignRequestImages.
+     */
+    data: CustomDesignRequestImageCreateManyInput | CustomDesignRequestImageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomDesignRequestImage createManyAndReturn
+   */
+  export type CustomDesignRequestImageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * The data used to create many CustomDesignRequestImages.
+     */
+    data: CustomDesignRequestImageCreateManyInput | CustomDesignRequestImageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomDesignRequestImage update
+   */
+  export type CustomDesignRequestImageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CustomDesignRequestImage.
+     */
+    data: XOR<CustomDesignRequestImageUpdateInput, CustomDesignRequestImageUncheckedUpdateInput>
+    /**
+     * Choose, which CustomDesignRequestImage to update.
+     */
+    where: CustomDesignRequestImageWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequestImage updateMany
+   */
+  export type CustomDesignRequestImageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CustomDesignRequestImages.
+     */
+    data: XOR<CustomDesignRequestImageUpdateManyMutationInput, CustomDesignRequestImageUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomDesignRequestImages to update
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * Limit how many CustomDesignRequestImages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomDesignRequestImage updateManyAndReturn
+   */
+  export type CustomDesignRequestImageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * The data used to update CustomDesignRequestImages.
+     */
+    data: XOR<CustomDesignRequestImageUpdateManyMutationInput, CustomDesignRequestImageUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomDesignRequestImages to update
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * Limit how many CustomDesignRequestImages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CustomDesignRequestImage upsert
+   */
+  export type CustomDesignRequestImageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CustomDesignRequestImage to update in case it exists.
+     */
+    where: CustomDesignRequestImageWhereUniqueInput
+    /**
+     * In case the CustomDesignRequestImage found by the `where` argument doesn't exist, create a new CustomDesignRequestImage with this data.
+     */
+    create: XOR<CustomDesignRequestImageCreateInput, CustomDesignRequestImageUncheckedCreateInput>
+    /**
+     * In case the CustomDesignRequestImage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CustomDesignRequestImageUpdateInput, CustomDesignRequestImageUncheckedUpdateInput>
+  }
+
+  /**
+   * CustomDesignRequestImage delete
+   */
+  export type CustomDesignRequestImageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+    /**
+     * Filter which CustomDesignRequestImage to delete.
+     */
+    where: CustomDesignRequestImageWhereUniqueInput
+  }
+
+  /**
+   * CustomDesignRequestImage deleteMany
+   */
+  export type CustomDesignRequestImageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomDesignRequestImages to delete
+     */
+    where?: CustomDesignRequestImageWhereInput
+    /**
+     * Limit how many CustomDesignRequestImages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomDesignRequestImage.request
+   */
+  export type CustomDesignRequestImage$requestArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequest
+     */
+    select?: CustomDesignRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequest
+     */
+    omit?: CustomDesignRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestInclude<ExtArgs> | null
+    where?: CustomDesignRequestWhereInput
+  }
+
+  /**
+   * CustomDesignRequestImage without action
+   */
+  export type CustomDesignRequestImageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomDesignRequestImage
+     */
+    select?: CustomDesignRequestImageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomDesignRequestImage
+     */
+    omit?: CustomDesignRequestImageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomDesignRequestImageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -29662,6 +32114,32 @@ export namespace Prisma {
   };
 
   export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
+
+
+  export const CustomDesignRequestScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    mobile: 'mobile',
+    productType: 'productType',
+    dimensions: 'dimensions',
+    material: 'material',
+    color: 'color',
+    description: 'description',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CustomDesignRequestScalarFieldEnum = (typeof CustomDesignRequestScalarFieldEnum)[keyof typeof CustomDesignRequestScalarFieldEnum]
+
+
+  export const CustomDesignRequestImageScalarFieldEnum: {
+    id: 'id',
+    url: 'url',
+    requestId: 'requestId',
+    createdAt: 'createdAt'
+  };
+
+  export type CustomDesignRequestImageScalarFieldEnum = (typeof CustomDesignRequestImageScalarFieldEnum)[keyof typeof CustomDesignRequestImageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -30787,12 +33265,12 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     userId?: StringFilter<"Comment"> | string
-    articleId?: StringFilter<"Comment"> | string
-    projectId?: StringFilter<"Comment"> | string
+    articleId?: StringNullableFilter<"Comment"> | string | null
+    projectId?: StringNullableFilter<"Comment"> | string | null
     parentId?: StringNullableFilter<"Comment"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    article?: XOR<ArticleScalarRelationFilter, ArticleWhereInput>
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    article?: XOR<ArticleNullableScalarRelationFilter, ArticleWhereInput> | null
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
     parent?: XOR<CommentNullableScalarRelationFilter, CommentWhereInput> | null
     replies?: CommentListRelationFilter
     likes?: CommentLikeListRelationFilter
@@ -30804,8 +33282,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
-    articleId?: SortOrder
-    projectId?: SortOrder
+    articleId?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     parentId?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     article?: ArticleOrderByWithRelationInput
@@ -30824,12 +33302,12 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     userId?: StringFilter<"Comment"> | string
-    articleId?: StringFilter<"Comment"> | string
-    projectId?: StringFilter<"Comment"> | string
+    articleId?: StringNullableFilter<"Comment"> | string | null
+    projectId?: StringNullableFilter<"Comment"> | string | null
     parentId?: StringNullableFilter<"Comment"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    article?: XOR<ArticleScalarRelationFilter, ArticleWhereInput>
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    article?: XOR<ArticleNullableScalarRelationFilter, ArticleWhereInput> | null
+    project?: XOR<ProjectNullableScalarRelationFilter, ProjectWhereInput> | null
     parent?: XOR<CommentNullableScalarRelationFilter, CommentWhereInput> | null
     replies?: CommentListRelationFilter
     likes?: CommentLikeListRelationFilter
@@ -30841,8 +33319,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
-    articleId?: SortOrder
-    projectId?: SortOrder
+    articleId?: SortOrderInput | SortOrder
+    projectId?: SortOrderInput | SortOrder
     parentId?: SortOrderInput | SortOrder
     _count?: CommentCountOrderByAggregateInput
     _max?: CommentMaxOrderByAggregateInput
@@ -30858,8 +33336,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     userId?: StringWithAggregatesFilter<"Comment"> | string
-    articleId?: StringWithAggregatesFilter<"Comment"> | string
-    projectId?: StringWithAggregatesFilter<"Comment"> | string
+    articleId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
+    projectId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
     parentId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
   }
 
@@ -31438,6 +33916,136 @@ export namespace Prisma {
     auth?: StringWithAggregatesFilter<"PushSubscription"> | string
     userId?: StringWithAggregatesFilter<"PushSubscription"> | string
     createdAt?: DateTimeWithAggregatesFilter<"PushSubscription"> | Date | string
+  }
+
+  export type CustomDesignRequestWhereInput = {
+    AND?: CustomDesignRequestWhereInput | CustomDesignRequestWhereInput[]
+    OR?: CustomDesignRequestWhereInput[]
+    NOT?: CustomDesignRequestWhereInput | CustomDesignRequestWhereInput[]
+    id?: StringFilter<"CustomDesignRequest"> | string
+    name?: StringFilter<"CustomDesignRequest"> | string
+    mobile?: StringFilter<"CustomDesignRequest"> | string
+    productType?: StringFilter<"CustomDesignRequest"> | string
+    dimensions?: StringFilter<"CustomDesignRequest"> | string
+    material?: StringFilter<"CustomDesignRequest"> | string
+    color?: StringFilter<"CustomDesignRequest"> | string
+    description?: StringNullableFilter<"CustomDesignRequest"> | string | null
+    createdAt?: DateTimeFilter<"CustomDesignRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomDesignRequest"> | Date | string
+    images?: CustomDesignRequestImageListRelationFilter
+  }
+
+  export type CustomDesignRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    mobile?: SortOrder
+    productType?: SortOrder
+    dimensions?: SortOrder
+    material?: SortOrder
+    color?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    images?: CustomDesignRequestImageOrderByRelationAggregateInput
+  }
+
+  export type CustomDesignRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CustomDesignRequestWhereInput | CustomDesignRequestWhereInput[]
+    OR?: CustomDesignRequestWhereInput[]
+    NOT?: CustomDesignRequestWhereInput | CustomDesignRequestWhereInput[]
+    name?: StringFilter<"CustomDesignRequest"> | string
+    mobile?: StringFilter<"CustomDesignRequest"> | string
+    productType?: StringFilter<"CustomDesignRequest"> | string
+    dimensions?: StringFilter<"CustomDesignRequest"> | string
+    material?: StringFilter<"CustomDesignRequest"> | string
+    color?: StringFilter<"CustomDesignRequest"> | string
+    description?: StringNullableFilter<"CustomDesignRequest"> | string | null
+    createdAt?: DateTimeFilter<"CustomDesignRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomDesignRequest"> | Date | string
+    images?: CustomDesignRequestImageListRelationFilter
+  }, "id">
+
+  export type CustomDesignRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    mobile?: SortOrder
+    productType?: SortOrder
+    dimensions?: SortOrder
+    material?: SortOrder
+    color?: SortOrder
+    description?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CustomDesignRequestCountOrderByAggregateInput
+    _max?: CustomDesignRequestMaxOrderByAggregateInput
+    _min?: CustomDesignRequestMinOrderByAggregateInput
+  }
+
+  export type CustomDesignRequestScalarWhereWithAggregatesInput = {
+    AND?: CustomDesignRequestScalarWhereWithAggregatesInput | CustomDesignRequestScalarWhereWithAggregatesInput[]
+    OR?: CustomDesignRequestScalarWhereWithAggregatesInput[]
+    NOT?: CustomDesignRequestScalarWhereWithAggregatesInput | CustomDesignRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    name?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    mobile?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    productType?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    dimensions?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    material?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    color?: StringWithAggregatesFilter<"CustomDesignRequest"> | string
+    description?: StringNullableWithAggregatesFilter<"CustomDesignRequest"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CustomDesignRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CustomDesignRequest"> | Date | string
+  }
+
+  export type CustomDesignRequestImageWhereInput = {
+    AND?: CustomDesignRequestImageWhereInput | CustomDesignRequestImageWhereInput[]
+    OR?: CustomDesignRequestImageWhereInput[]
+    NOT?: CustomDesignRequestImageWhereInput | CustomDesignRequestImageWhereInput[]
+    id?: StringFilter<"CustomDesignRequestImage"> | string
+    url?: StringFilter<"CustomDesignRequestImage"> | string
+    requestId?: StringNullableFilter<"CustomDesignRequestImage"> | string | null
+    createdAt?: DateTimeFilter<"CustomDesignRequestImage"> | Date | string
+    request?: XOR<CustomDesignRequestNullableScalarRelationFilter, CustomDesignRequestWhereInput> | null
+  }
+
+  export type CustomDesignRequestImageOrderByWithRelationInput = {
+    id?: SortOrder
+    url?: SortOrder
+    requestId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    request?: CustomDesignRequestOrderByWithRelationInput
+  }
+
+  export type CustomDesignRequestImageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CustomDesignRequestImageWhereInput | CustomDesignRequestImageWhereInput[]
+    OR?: CustomDesignRequestImageWhereInput[]
+    NOT?: CustomDesignRequestImageWhereInput | CustomDesignRequestImageWhereInput[]
+    url?: StringFilter<"CustomDesignRequestImage"> | string
+    requestId?: StringNullableFilter<"CustomDesignRequestImage"> | string | null
+    createdAt?: DateTimeFilter<"CustomDesignRequestImage"> | Date | string
+    request?: XOR<CustomDesignRequestNullableScalarRelationFilter, CustomDesignRequestWhereInput> | null
+  }, "id">
+
+  export type CustomDesignRequestImageOrderByWithAggregationInput = {
+    id?: SortOrder
+    url?: SortOrder
+    requestId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: CustomDesignRequestImageCountOrderByAggregateInput
+    _max?: CustomDesignRequestImageMaxOrderByAggregateInput
+    _min?: CustomDesignRequestImageMinOrderByAggregateInput
+  }
+
+  export type CustomDesignRequestImageScalarWhereWithAggregatesInput = {
+    AND?: CustomDesignRequestImageScalarWhereWithAggregatesInput | CustomDesignRequestImageScalarWhereWithAggregatesInput[]
+    OR?: CustomDesignRequestImageScalarWhereWithAggregatesInput[]
+    NOT?: CustomDesignRequestImageScalarWhereWithAggregatesInput | CustomDesignRequestImageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CustomDesignRequestImage"> | string
+    url?: StringWithAggregatesFilter<"CustomDesignRequestImage"> | string
+    requestId?: StringNullableWithAggregatesFilter<"CustomDesignRequestImage"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CustomDesignRequestImage"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -32474,8 +35082,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCommentsInput
-    article: ArticleCreateNestedOneWithoutCommentsInput
-    project: ProjectCreateNestedOneWithoutCommentInput
+    article?: ArticleCreateNestedOneWithoutCommentsInput
+    project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
     replies?: CommentCreateNestedManyWithoutParentInput
     likes?: CommentLikeCreateNestedManyWithoutCommentInput
@@ -32487,8 +35095,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     parentId?: string | null
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
     likes?: CommentLikeUncheckedCreateNestedManyWithoutCommentInput
@@ -32500,8 +35108,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    article?: ArticleUpdateOneRequiredWithoutCommentsNestedInput
-    project?: ProjectUpdateOneRequiredWithoutCommentNestedInput
+    article?: ArticleUpdateOneWithoutCommentsNestedInput
+    project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
     replies?: CommentUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUpdateManyWithoutCommentNestedInput
@@ -32513,8 +35121,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
@@ -32526,8 +35134,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     parentId?: string | null
   }
 
@@ -32544,8 +35152,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -33138,6 +35746,149 @@ export namespace Prisma {
     p256dh?: StringFieldUpdateOperationsInput | string
     auth?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestCreateInput = {
+    id?: string
+    name: string
+    mobile: string
+    productType: string
+    dimensions: string
+    material: string
+    color: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: CustomDesignRequestImageCreateNestedManyWithoutRequestInput
+  }
+
+  export type CustomDesignRequestUncheckedCreateInput = {
+    id?: string
+    name: string
+    mobile: string
+    productType: string
+    dimensions: string
+    material: string
+    color: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    images?: CustomDesignRequestImageUncheckedCreateNestedManyWithoutRequestInput
+  }
+
+  export type CustomDesignRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
+    productType?: StringFieldUpdateOperationsInput | string
+    dimensions?: StringFieldUpdateOperationsInput | string
+    material?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: CustomDesignRequestImageUpdateManyWithoutRequestNestedInput
+  }
+
+  export type CustomDesignRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
+    productType?: StringFieldUpdateOperationsInput | string
+    dimensions?: StringFieldUpdateOperationsInput | string
+    material?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    images?: CustomDesignRequestImageUncheckedUpdateManyWithoutRequestNestedInput
+  }
+
+  export type CustomDesignRequestCreateManyInput = {
+    id?: string
+    name: string
+    mobile: string
+    productType: string
+    dimensions: string
+    material: string
+    color: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomDesignRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
+    productType?: StringFieldUpdateOperationsInput | string
+    dimensions?: StringFieldUpdateOperationsInput | string
+    material?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
+    productType?: StringFieldUpdateOperationsInput | string
+    dimensions?: StringFieldUpdateOperationsInput | string
+    material?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestImageCreateInput = {
+    id?: string
+    url: string
+    createdAt?: Date | string
+    request?: CustomDesignRequestCreateNestedOneWithoutImagesInput
+  }
+
+  export type CustomDesignRequestImageUncheckedCreateInput = {
+    id?: string
+    url: string
+    requestId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CustomDesignRequestImageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    request?: CustomDesignRequestUpdateOneWithoutImagesNestedInput
+  }
+
+  export type CustomDesignRequestImageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestImageCreateManyInput = {
+    id?: string
+    url: string
+    requestId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CustomDesignRequestImageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestImageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    requestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -34083,14 +36834,14 @@ export namespace Prisma {
     authorId?: SortOrder
   }
 
-  export type ArticleScalarRelationFilter = {
-    is?: ArticleWhereInput
-    isNot?: ArticleWhereInput
+  export type ArticleNullableScalarRelationFilter = {
+    is?: ArticleWhereInput | null
+    isNot?: ArticleWhereInput | null
   }
 
-  export type ProjectScalarRelationFilter = {
-    is?: ProjectWhereInput
-    isNot?: ProjectWhereInput
+  export type ProjectNullableScalarRelationFilter = {
+    is?: ProjectWhereInput | null
+    isNot?: ProjectWhereInput | null
   }
 
   export type CommentNullableScalarRelationFilter = {
@@ -34477,6 +37228,81 @@ export namespace Prisma {
     p256dh?: SortOrder
     auth?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CustomDesignRequestImageListRelationFilter = {
+    every?: CustomDesignRequestImageWhereInput
+    some?: CustomDesignRequestImageWhereInput
+    none?: CustomDesignRequestImageWhereInput
+  }
+
+  export type CustomDesignRequestImageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CustomDesignRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    mobile?: SortOrder
+    productType?: SortOrder
+    dimensions?: SortOrder
+    material?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomDesignRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    mobile?: SortOrder
+    productType?: SortOrder
+    dimensions?: SortOrder
+    material?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomDesignRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    mobile?: SortOrder
+    productType?: SortOrder
+    dimensions?: SortOrder
+    material?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomDesignRequestNullableScalarRelationFilter = {
+    is?: CustomDesignRequestWhereInput | null
+    isNot?: CustomDesignRequestWhereInput | null
+  }
+
+  export type CustomDesignRequestImageCountOrderByAggregateInput = {
+    id?: SortOrder
+    url?: SortOrder
+    requestId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CustomDesignRequestImageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    url?: SortOrder
+    requestId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CustomDesignRequestImageMinOrderByAggregateInput = {
+    id?: SortOrder
+    url?: SortOrder
+    requestId?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -35711,18 +38537,22 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentsInput, UserUpdateWithoutCommentsInput>, UserUncheckedUpdateWithoutCommentsInput>
   }
 
-  export type ArticleUpdateOneRequiredWithoutCommentsNestedInput = {
+  export type ArticleUpdateOneWithoutCommentsNestedInput = {
     create?: XOR<ArticleCreateWithoutCommentsInput, ArticleUncheckedCreateWithoutCommentsInput>
     connectOrCreate?: ArticleCreateOrConnectWithoutCommentsInput
     upsert?: ArticleUpsertWithoutCommentsInput
+    disconnect?: ArticleWhereInput | boolean
+    delete?: ArticleWhereInput | boolean
     connect?: ArticleWhereUniqueInput
     update?: XOR<XOR<ArticleUpdateToOneWithWhereWithoutCommentsInput, ArticleUpdateWithoutCommentsInput>, ArticleUncheckedUpdateWithoutCommentsInput>
   }
 
-  export type ProjectUpdateOneRequiredWithoutCommentNestedInput = {
+  export type ProjectUpdateOneWithoutCommentNestedInput = {
     create?: XOR<ProjectCreateWithoutCommentInput, ProjectUncheckedCreateWithoutCommentInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutCommentInput
     upsert?: ProjectUpsertWithoutCommentInput
+    disconnect?: ProjectWhereInput | boolean
+    delete?: ProjectWhereInput | boolean
     connect?: ProjectWhereUniqueInput
     update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutCommentInput, ProjectUpdateWithoutCommentInput>, ProjectUncheckedUpdateWithoutCommentInput>
   }
@@ -36146,6 +38976,64 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSubscriptionsInput, UserUpdateWithoutSubscriptionsInput>, UserUncheckedUpdateWithoutSubscriptionsInput>
   }
 
+  export type CustomDesignRequestImageCreateNestedManyWithoutRequestInput = {
+    create?: XOR<CustomDesignRequestImageCreateWithoutRequestInput, CustomDesignRequestImageUncheckedCreateWithoutRequestInput> | CustomDesignRequestImageCreateWithoutRequestInput[] | CustomDesignRequestImageUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: CustomDesignRequestImageCreateOrConnectWithoutRequestInput | CustomDesignRequestImageCreateOrConnectWithoutRequestInput[]
+    createMany?: CustomDesignRequestImageCreateManyRequestInputEnvelope
+    connect?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+  }
+
+  export type CustomDesignRequestImageUncheckedCreateNestedManyWithoutRequestInput = {
+    create?: XOR<CustomDesignRequestImageCreateWithoutRequestInput, CustomDesignRequestImageUncheckedCreateWithoutRequestInput> | CustomDesignRequestImageCreateWithoutRequestInput[] | CustomDesignRequestImageUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: CustomDesignRequestImageCreateOrConnectWithoutRequestInput | CustomDesignRequestImageCreateOrConnectWithoutRequestInput[]
+    createMany?: CustomDesignRequestImageCreateManyRequestInputEnvelope
+    connect?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+  }
+
+  export type CustomDesignRequestImageUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<CustomDesignRequestImageCreateWithoutRequestInput, CustomDesignRequestImageUncheckedCreateWithoutRequestInput> | CustomDesignRequestImageCreateWithoutRequestInput[] | CustomDesignRequestImageUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: CustomDesignRequestImageCreateOrConnectWithoutRequestInput | CustomDesignRequestImageCreateOrConnectWithoutRequestInput[]
+    upsert?: CustomDesignRequestImageUpsertWithWhereUniqueWithoutRequestInput | CustomDesignRequestImageUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: CustomDesignRequestImageCreateManyRequestInputEnvelope
+    set?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    disconnect?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    delete?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    connect?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    update?: CustomDesignRequestImageUpdateWithWhereUniqueWithoutRequestInput | CustomDesignRequestImageUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: CustomDesignRequestImageUpdateManyWithWhereWithoutRequestInput | CustomDesignRequestImageUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: CustomDesignRequestImageScalarWhereInput | CustomDesignRequestImageScalarWhereInput[]
+  }
+
+  export type CustomDesignRequestImageUncheckedUpdateManyWithoutRequestNestedInput = {
+    create?: XOR<CustomDesignRequestImageCreateWithoutRequestInput, CustomDesignRequestImageUncheckedCreateWithoutRequestInput> | CustomDesignRequestImageCreateWithoutRequestInput[] | CustomDesignRequestImageUncheckedCreateWithoutRequestInput[]
+    connectOrCreate?: CustomDesignRequestImageCreateOrConnectWithoutRequestInput | CustomDesignRequestImageCreateOrConnectWithoutRequestInput[]
+    upsert?: CustomDesignRequestImageUpsertWithWhereUniqueWithoutRequestInput | CustomDesignRequestImageUpsertWithWhereUniqueWithoutRequestInput[]
+    createMany?: CustomDesignRequestImageCreateManyRequestInputEnvelope
+    set?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    disconnect?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    delete?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    connect?: CustomDesignRequestImageWhereUniqueInput | CustomDesignRequestImageWhereUniqueInput[]
+    update?: CustomDesignRequestImageUpdateWithWhereUniqueWithoutRequestInput | CustomDesignRequestImageUpdateWithWhereUniqueWithoutRequestInput[]
+    updateMany?: CustomDesignRequestImageUpdateManyWithWhereWithoutRequestInput | CustomDesignRequestImageUpdateManyWithWhereWithoutRequestInput[]
+    deleteMany?: CustomDesignRequestImageScalarWhereInput | CustomDesignRequestImageScalarWhereInput[]
+  }
+
+  export type CustomDesignRequestCreateNestedOneWithoutImagesInput = {
+    create?: XOR<CustomDesignRequestCreateWithoutImagesInput, CustomDesignRequestUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: CustomDesignRequestCreateOrConnectWithoutImagesInput
+    connect?: CustomDesignRequestWhereUniqueInput
+  }
+
+  export type CustomDesignRequestUpdateOneWithoutImagesNestedInput = {
+    create?: XOR<CustomDesignRequestCreateWithoutImagesInput, CustomDesignRequestUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: CustomDesignRequestCreateOrConnectWithoutImagesInput
+    upsert?: CustomDesignRequestUpsertWithoutImagesInput
+    disconnect?: CustomDesignRequestWhereInput | boolean
+    delete?: CustomDesignRequestWhereInput | boolean
+    connect?: CustomDesignRequestWhereUniqueInput
+    update?: XOR<XOR<CustomDesignRequestUpdateToOneWithWhereWithoutImagesInput, CustomDesignRequestUpdateWithoutImagesInput>, CustomDesignRequestUncheckedUpdateWithoutImagesInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -36498,8 +39386,8 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    article: ArticleCreateNestedOneWithoutCommentsInput
-    project: ProjectCreateNestedOneWithoutCommentInput
+    article?: ArticleCreateNestedOneWithoutCommentsInput
+    project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
     replies?: CommentCreateNestedManyWithoutParentInput
     likes?: CommentLikeCreateNestedManyWithoutCommentInput
@@ -36510,8 +39398,8 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     parentId?: string | null
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
     likes?: CommentLikeUncheckedCreateNestedManyWithoutCommentInput
@@ -36881,8 +39769,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
     userId?: StringFilter<"Comment"> | string
-    articleId?: StringFilter<"Comment"> | string
-    projectId?: StringFilter<"Comment"> | string
+    articleId?: StringNullableFilter<"Comment"> | string | null
+    projectId?: StringNullableFilter<"Comment"> | string | null
     parentId?: StringNullableFilter<"Comment"> | string | null
   }
 
@@ -38520,7 +41408,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCommentsInput
-    project: ProjectCreateNestedOneWithoutCommentInput
+    project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
     replies?: CommentCreateNestedManyWithoutParentInput
     likes?: CommentLikeCreateNestedManyWithoutCommentInput
@@ -38532,7 +41420,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    projectId: string
+    projectId?: string | null
     parentId?: string | null
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
     likes?: CommentLikeUncheckedCreateNestedManyWithoutCommentInput
@@ -38784,8 +41672,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCommentsInput
-    article: ArticleCreateNestedOneWithoutCommentsInput
-    project: ProjectCreateNestedOneWithoutCommentInput
+    article?: ArticleCreateNestedOneWithoutCommentsInput
+    project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
     likes?: CommentLikeCreateNestedManyWithoutCommentInput
   }
@@ -38796,8 +41684,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     parentId?: string | null
     likes?: CommentLikeUncheckedCreateNestedManyWithoutCommentInput
   }
@@ -38813,8 +41701,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCommentsInput
-    article: ArticleCreateNestedOneWithoutCommentsInput
-    project: ProjectCreateNestedOneWithoutCommentInput
+    article?: ArticleCreateNestedOneWithoutCommentsInput
+    project?: ProjectCreateNestedOneWithoutCommentInput
     replies?: CommentCreateNestedManyWithoutParentInput
     likes?: CommentLikeCreateNestedManyWithoutCommentInput
   }
@@ -38825,8 +41713,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
     likes?: CommentLikeUncheckedCreateNestedManyWithoutCommentInput
   }
@@ -39031,8 +41919,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    article?: ArticleUpdateOneRequiredWithoutCommentsNestedInput
-    project?: ProjectUpdateOneRequiredWithoutCommentNestedInput
+    article?: ArticleUpdateOneWithoutCommentsNestedInput
+    project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
     likes?: CommentLikeUpdateManyWithoutCommentNestedInput
   }
@@ -39043,8 +41931,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     likes?: CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
   }
@@ -39087,8 +41975,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCommentsInput
-    article: ArticleCreateNestedOneWithoutCommentsInput
-    project: ProjectCreateNestedOneWithoutCommentInput
+    article?: ArticleCreateNestedOneWithoutCommentsInput
+    project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
     replies?: CommentCreateNestedManyWithoutParentInput
   }
@@ -39099,8 +41987,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     parentId?: string | null
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
   }
@@ -39202,8 +42090,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    article?: ArticleUpdateOneRequiredWithoutCommentsNestedInput
-    project?: ProjectUpdateOneRequiredWithoutCommentNestedInput
+    article?: ArticleUpdateOneWithoutCommentsNestedInput
+    project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
     replies?: CommentUpdateManyWithoutParentNestedInput
   }
@@ -39214,8 +42102,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
   }
@@ -40330,7 +43218,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCommentsInput
-    article: ArticleCreateNestedOneWithoutCommentsInput
+    article?: ArticleCreateNestedOneWithoutCommentsInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
     replies?: CommentCreateNestedManyWithoutParentInput
     likes?: CommentLikeCreateNestedManyWithoutCommentInput
@@ -40342,7 +43230,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
+    articleId?: string | null
     parentId?: string | null
     replies?: CommentUncheckedCreateNestedManyWithoutParentInput
     likes?: CommentLikeUncheckedCreateNestedManyWithoutCommentInput
@@ -40767,13 +43655,129 @@ export namespace Prisma {
     creator?: ConversationUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
+  export type CustomDesignRequestImageCreateWithoutRequestInput = {
+    id?: string
+    url: string
+    createdAt?: Date | string
+  }
+
+  export type CustomDesignRequestImageUncheckedCreateWithoutRequestInput = {
+    id?: string
+    url: string
+    createdAt?: Date | string
+  }
+
+  export type CustomDesignRequestImageCreateOrConnectWithoutRequestInput = {
+    where: CustomDesignRequestImageWhereUniqueInput
+    create: XOR<CustomDesignRequestImageCreateWithoutRequestInput, CustomDesignRequestImageUncheckedCreateWithoutRequestInput>
+  }
+
+  export type CustomDesignRequestImageCreateManyRequestInputEnvelope = {
+    data: CustomDesignRequestImageCreateManyRequestInput | CustomDesignRequestImageCreateManyRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomDesignRequestImageUpsertWithWhereUniqueWithoutRequestInput = {
+    where: CustomDesignRequestImageWhereUniqueInput
+    update: XOR<CustomDesignRequestImageUpdateWithoutRequestInput, CustomDesignRequestImageUncheckedUpdateWithoutRequestInput>
+    create: XOR<CustomDesignRequestImageCreateWithoutRequestInput, CustomDesignRequestImageUncheckedCreateWithoutRequestInput>
+  }
+
+  export type CustomDesignRequestImageUpdateWithWhereUniqueWithoutRequestInput = {
+    where: CustomDesignRequestImageWhereUniqueInput
+    data: XOR<CustomDesignRequestImageUpdateWithoutRequestInput, CustomDesignRequestImageUncheckedUpdateWithoutRequestInput>
+  }
+
+  export type CustomDesignRequestImageUpdateManyWithWhereWithoutRequestInput = {
+    where: CustomDesignRequestImageScalarWhereInput
+    data: XOR<CustomDesignRequestImageUpdateManyMutationInput, CustomDesignRequestImageUncheckedUpdateManyWithoutRequestInput>
+  }
+
+  export type CustomDesignRequestImageScalarWhereInput = {
+    AND?: CustomDesignRequestImageScalarWhereInput | CustomDesignRequestImageScalarWhereInput[]
+    OR?: CustomDesignRequestImageScalarWhereInput[]
+    NOT?: CustomDesignRequestImageScalarWhereInput | CustomDesignRequestImageScalarWhereInput[]
+    id?: StringFilter<"CustomDesignRequestImage"> | string
+    url?: StringFilter<"CustomDesignRequestImage"> | string
+    requestId?: StringNullableFilter<"CustomDesignRequestImage"> | string | null
+    createdAt?: DateTimeFilter<"CustomDesignRequestImage"> | Date | string
+  }
+
+  export type CustomDesignRequestCreateWithoutImagesInput = {
+    id?: string
+    name: string
+    mobile: string
+    productType: string
+    dimensions: string
+    material: string
+    color: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomDesignRequestUncheckedCreateWithoutImagesInput = {
+    id?: string
+    name: string
+    mobile: string
+    productType: string
+    dimensions: string
+    material: string
+    color: string
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomDesignRequestCreateOrConnectWithoutImagesInput = {
+    where: CustomDesignRequestWhereUniqueInput
+    create: XOR<CustomDesignRequestCreateWithoutImagesInput, CustomDesignRequestUncheckedCreateWithoutImagesInput>
+  }
+
+  export type CustomDesignRequestUpsertWithoutImagesInput = {
+    update: XOR<CustomDesignRequestUpdateWithoutImagesInput, CustomDesignRequestUncheckedUpdateWithoutImagesInput>
+    create: XOR<CustomDesignRequestCreateWithoutImagesInput, CustomDesignRequestUncheckedCreateWithoutImagesInput>
+    where?: CustomDesignRequestWhereInput
+  }
+
+  export type CustomDesignRequestUpdateToOneWithWhereWithoutImagesInput = {
+    where?: CustomDesignRequestWhereInput
+    data: XOR<CustomDesignRequestUpdateWithoutImagesInput, CustomDesignRequestUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type CustomDesignRequestUpdateWithoutImagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
+    productType?: StringFieldUpdateOperationsInput | string
+    dimensions?: StringFieldUpdateOperationsInput | string
+    material?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestUncheckedUpdateWithoutImagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    mobile?: StringFieldUpdateOperationsInput | string
+    productType?: StringFieldUpdateOperationsInput | string
+    dimensions?: StringFieldUpdateOperationsInput | string
+    material?: StringFieldUpdateOperationsInput | string
+    color?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CommentCreateManyUserInput = {
     id?: string
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
     parentId?: string | null
   }
 
@@ -40874,8 +43878,8 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    article?: ArticleUpdateOneRequiredWithoutCommentsNestedInput
-    project?: ProjectUpdateOneRequiredWithoutCommentNestedInput
+    article?: ArticleUpdateOneWithoutCommentsNestedInput
+    project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
     replies?: CommentUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUpdateManyWithoutCommentNestedInput
@@ -40886,8 +43890,8 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
@@ -40898,8 +43902,8 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -41645,7 +44649,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    projectId: string
+    projectId?: string | null
     parentId?: string | null
   }
 
@@ -41655,7 +44659,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    project?: ProjectUpdateOneRequiredWithoutCommentNestedInput
+    project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
     replies?: CommentUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUpdateManyWithoutCommentNestedInput
@@ -41667,7 +44671,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
@@ -41679,7 +44683,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -41689,8 +44693,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
-    projectId: string
+    articleId?: string | null
+    projectId?: string | null
   }
 
   export type CommentLikeCreateManyCommentInput = {
@@ -41705,8 +44709,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    article?: ArticleUpdateOneRequiredWithoutCommentsNestedInput
-    project?: ProjectUpdateOneRequiredWithoutCommentNestedInput
+    article?: ArticleUpdateOneWithoutCommentsNestedInput
+    project?: ProjectUpdateOneWithoutCommentNestedInput
     replies?: CommentUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUpdateManyWithoutCommentNestedInput
   }
@@ -41717,8 +44721,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
   }
@@ -41729,8 +44733,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
-    projectId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CommentLikeUpdateWithoutCommentInput = {
@@ -41859,7 +44863,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    articleId: string
+    articleId?: string | null
     parentId?: string | null
   }
 
@@ -41869,7 +44873,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
-    article?: ArticleUpdateOneRequiredWithoutCommentsNestedInput
+    article?: ArticleUpdateOneWithoutCommentsNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
     replies?: CommentUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUpdateManyWithoutCommentNestedInput
@@ -41881,7 +44885,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     replies?: CommentUncheckedUpdateManyWithoutParentNestedInput
     likes?: CommentLikeUncheckedUpdateManyWithoutCommentNestedInput
@@ -41893,8 +44897,32 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    articleId?: StringFieldUpdateOperationsInput | string
+    articleId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type CustomDesignRequestImageCreateManyRequestInput = {
+    id?: string
+    url: string
+    createdAt?: Date | string
+  }
+
+  export type CustomDesignRequestImageUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestImageUncheckedUpdateWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomDesignRequestImageUncheckedUpdateManyWithoutRequestInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

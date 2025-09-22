@@ -1,7 +1,7 @@
 // /app/api/users/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { normalizePhoneNumber } from "@/lib/utils";
 
 export async function GET(request: Request) {

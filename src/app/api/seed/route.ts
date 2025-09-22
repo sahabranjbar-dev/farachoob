@@ -1,7 +1,7 @@
 // prisma?/seed.ts
 
 import { MENU_CONFIG, PermissionKey } from "@/constants/MENU_CONFIG";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 

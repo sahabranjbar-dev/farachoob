@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { useChat } from "../../../../stores";
 import { fetchConvs } from "../[role]/chat/meta/utils";
+import { Button } from "@/components/ui/button";
+import useTabular from "@/hooks/useTabular";
 
 const notificationSound = getNotificationSound();
 
@@ -22,7 +24,7 @@ export default function DashboardClient({
   const socket = useChat((state) => state.socket);
   const setOnlineUsers = useChat((state) => state.setOnlineUsers);
   const conversation = useChat((state) => state.conversation);
-
+  const { open } = useTabular();
   useEffect(() => {
     if (!user?.id) return;
 
@@ -55,7 +57,7 @@ export default function DashboardClient({
     if (!socket) return;
 
     socket.on("get-new-message-notification", (data) => {
-      if (data.senderId === user?.id || conversation?.id) return;
+      if (data.senderId === user?.id) return;
       notificationSound?.play();
       const alertMessage = () => {
         const firstName = data?.sender?.firstName;
@@ -72,6 +74,18 @@ export default function DashboardClient({
 
       toast.info(alertMessage(), {
         position: "top-center",
+        actionButtonStyle: {
+          backgroundColor: "blue",
+        },
+        duration: 7000,
+        action: {
+          children: <>رفتن به چت</>,
+          key: `toast_${new Date()}`,
+          label: "رفتن به چت",
+          onClick: () => {
+            open("/chat", "کفت و گو آنلاین");
+          },
+        },
       });
 
       if (!pathname.includes("chat")) return;
@@ -95,8 +109,6 @@ export default function DashboardClient({
       conversationId: string;
       fromUserName: string;
     }) => {
-      console.log("join-conversation-request", user?.id, toUserId);
-
       if (user?.id !== toUserId) return;
       notificationSound?.play();
       toast.info(`یوزر ${fromUserName} درخواست شروع چت ارسال کرد`, {

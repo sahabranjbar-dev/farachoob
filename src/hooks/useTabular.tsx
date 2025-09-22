@@ -7,16 +7,19 @@ import { useLoadingStore } from "../../stores/loadingStore";
 import { useRouter } from "next/navigation";
 
 export default function useTabular() {
-  const {
-    open: openTabInStore,
-    closeAllTabs,
-    closeCurrentTab,
-    closeTab,
-    tabs,
-    activeTabId,
-  } = useTabStore();
+  const tabStore = useTabStore();
 
-  const { startLoading, stopLoading } = useLoadingStore();
+  const openTabInStore = tabStore.open;
+  const closeAllTabs = tabStore.closeAllTabs;
+  const closeCurrentTab = tabStore.closeCurrentTab;
+  const closeTab = tabStore.closeTab;
+  const tabs = tabStore.tabs;
+  const activeTabId = tabStore.activeTabId;
+
+  const loadingStore = useLoadingStore();
+
+  const startLoading = loadingStore.startLoading;
+  const stopLoading = loadingStore.stopLoading;
   const [isPending, startTransition] = useTransition();
 
   const router = useRouter();

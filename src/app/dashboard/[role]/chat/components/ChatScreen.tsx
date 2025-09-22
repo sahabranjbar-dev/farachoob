@@ -7,7 +7,11 @@ import { useChat } from "../../../../../../stores";
 import { Loader } from "lucide-react";
 
 const ChatScreen = () => {
-  const { userInfo, getConversatioMessageLoading } = useChat();
+  const userInfo = useChat((state) => state.userInfo);
+  const getConversatioMessageLoading = useChat(
+    (state) => state.getConversatioMessageLoading
+  );
+
   if (getConversatioMessageLoading) {
     return (
       <div className="flex-1 flex items-center justify-center text-gray-500">

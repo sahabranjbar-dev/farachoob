@@ -351,6 +351,26 @@ exports.Prisma.PushSubscriptionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.CustomDesignRequestScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  mobile: 'mobile',
+  productType: 'productType',
+  dimensions: 'dimensions',
+  material: 'material',
+  color: 'color',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CustomDesignRequestImageScalarFieldEnum = {
+  id: 'id',
+  url: 'url',
+  requestId: 'requestId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -432,7 +452,9 @@ exports.PermissionKey = exports.$Enums.PermissionKey = {
   view_chat: 'view_chat',
   create_chat: 'create_chat',
   edit_chat: 'edit_chat',
-  delete_chat: 'delete_chat'
+  delete_chat: 'delete_chat',
+  view_custom_design: 'view_custom_design',
+  delete_custom_design: 'delete_custom_design'
 };
 
 exports.NotificationType = exports.$Enums.NotificationType = {
@@ -467,7 +489,9 @@ exports.Prisma.ModelName = {
   Message: 'Message',
   MessageHistory: 'MessageHistory',
   Project: 'Project',
-  PushSubscription: 'PushSubscription'
+  PushSubscription: 'PushSubscription',
+  CustomDesignRequest: 'CustomDesignRequest',
+  CustomDesignRequestImage: 'CustomDesignRequestImage'
 };
 
 /**

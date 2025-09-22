@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sendNotification } from "@/lib/sendNotification";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -44,16 +45,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/send-notification`,
-    {
-      method: "POST",
-      body: JSON.stringify({
-        message,
-        userId,
-      }),
-    }
-  );
+  const response = await sendNotification(message, userId);
   if (!response.ok)
     return NextResponse.json(
       {

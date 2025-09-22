@@ -59,6 +59,7 @@ const ChatList = ({ getConversatioLoading, conversationsData }: IChatList) => {
             unReadMessage={conv._count?.messages}
             messages={conv.messages ?? []}
             getConversatioMessages={() => {
+              window.location.hash = conv.id ?? "";
               setConversatioMessageLoading(true);
 
               setUserInfo(null);

@@ -75,7 +75,7 @@ const StickyChat = () => {
 
         <SupportSvg
           className={clsx(
-            "absolute top-[50%] left-[50%] -translate-x-[50%]  -translate-y-[50%] transition-opacity duration-300",
+            "w-14 h-14 absolute top-[50%] left-[50%] -translate-x-[50%]  -translate-y-[50%] transition-opacity duration-300",
             showChat ? "opacity-0" : "opacity-100"
           )}
         />
@@ -95,11 +95,20 @@ const StickyChat = () => {
             : "opacity-0 scale-0 translate-y-4 pointer-events-none"
         )}
       >
-        به فراچوب خوش آمدید
-        <br />
-        {/* من، دستیار مجازی شما هستم. 🤖
+        <div className="relative">
+          به فراچوب خوش آمدید
+          <br />
+          {/* من، دستیار مجازی شما هستم. 🤖
         <br /> */}
-        برای ارتباط آنلاین با پشتیبانی و تیم فروش روی دکمه پشتیبانی کلیک کنید.
+          برای ارتباط آنلاین با پشتیبانی و تیم فروش روی دکمه پشتیبانی کلیک کنید.
+          <X
+            className="absolute -left-5 -top-5 hover:border rounded-full transition-all duration-200 cursor-pointer opacity-30 hover:bg-white hover:scale-150 hover:opacity-100"
+            size={18}
+            onClick={() => {
+              setShowCTA(false);
+            }}
+          />
+        </div>
       </div>
     </div>
   );

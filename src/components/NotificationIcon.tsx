@@ -7,8 +7,10 @@ import { toast } from "sonner";
 import { useChat } from "../../stores";
 import { getNotificationSound } from "@/lib/sounds";
 import { fetchInitialNotificationCount } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const NotificationIcon = () => {
+  const session = useSession();
   const { open } = useTabular();
   const socket = useChat((state) => state.socket);
 
@@ -21,6 +23,7 @@ const NotificationIcon = () => {
 
   useEffect(() => {
     const addNewNotificationHandler = ({ toUserId }: { toUserId: string }) => {
+      if (session.data?.user.id !== toUserId) return;
       notificationSound?.play();
       toast.info("اعلان جدید دریافت کرده‌اید", {
         position: "top-center",
@@ -41,19 +44,21 @@ const NotificationIcon = () => {
 
   return (
     <div
-      className="flex items-center gap-2 ml-2 pl-2 relative"
+      className="flex items-center gap-2 ml-2 pl-2 relative cursor-pointer"
       onClick={() => {
         open("/notifications", "اعلان‌ها");
       }}
     >
       <Bell
-        className="hover:bg-gray-200 cursor-pointer transition-colors duration-150  rounded-full p-2"
+        className="hover:bg-gray-200 transition-colors duration-150  rounded-full p-2"
         size={45}
       />
 
       {!!notificationCount && (
-        <div className="absolute bottom-0 right-0 rounded-full bg-blue-500 w-4 h-4 flex justify-center items-center text-white/80">
-          <span className="text-sm">{notificationCount}</span>
+        <div className="absolute -bottom-2 -right-[11px] rounded-full bg-red-500 w-8 h-8 flex justify-center items-center text-white">
+          <span className="text-sm">
+            {notificationCount > 99 ? "+99" : notificationCount}
+          </span>
         </div>
       )}
     </div>

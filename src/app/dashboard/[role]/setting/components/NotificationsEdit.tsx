@@ -74,7 +74,7 @@ const NotificationsEdit = ({
   // -------------------------
   const handlePushToggle = (open: boolean) => {
     // اگر subscription هست فقط سوئیچ کن
-    if (subscription) {
+    if (subscription?.endpoint) {
       setUserData((prev) => ({
         ...prev,
         notification: {

@@ -35,7 +35,8 @@ const ChatSideBar = ({ children }: Props) => {
     useDataGetter<{ conversations: Conversation[] }>({
       url: "/dashboard/conversations",
       onSuccess(data: { conversations: Conversation[] }) {
-        setConversations(data?.conversations);
+        const conversations = data?.conversations;
+        setConversations(conversations);
       },
       params: {
         isSecure: true,

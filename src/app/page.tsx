@@ -1,3 +1,4 @@
+import CustomDesignForm from "@/components/CustomDesignForm/CustomDesignForm";
 import HeroSection from "@/components/HeroSection";
 import MakeTrust from "@/components/MakeTrust";
 import NewestProducts from "@/components/NewestProducts";
@@ -10,6 +11,7 @@ export default function HomePage() {
       <HeroSection />
       <MakeTrust />
       <Services />
+      <CustomDesignForm />
       <NewestProducts />
       <ProjectSection />
     </>

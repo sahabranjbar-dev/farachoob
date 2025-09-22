@@ -24,6 +24,7 @@ export enum AppMenu {
   Setting = "setting",
   Chat = "chat",
   Projects = "projects",
+  CustomDesign = "custom-desing",
 }
 
 export enum PermissionKey {
@@ -102,6 +103,10 @@ export enum PermissionKey {
   CreateChat = "create_chat",
   EditChat = "edit_chat",
   DeleteChat = "delete_chat",
+
+  //chat
+  ViewCustomDesign = "view_custom_design",
+  DeleteCustomDesign = "delete_custom_design",
 }
 
 export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
@@ -235,6 +240,15 @@ export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
       create: PermissionKey.CreateProjects,
       edit: PermissionKey.EditProjects,
       delete: PermissionKey.DeleteProjects,
+    },
+  },
+  [AppMenu.CustomDesign]: {
+    href: "/custom-designs",
+    title: "طراحی‌های ارسالی",
+    icon: "Image",
+    permissions: {
+      view: PermissionKey.ViewCustomDesign,
+      create: PermissionKey.DeleteCustomDesign,
     },
   },
 };

@@ -9,10 +9,11 @@ import {
   MessageCircle,
   Package,
   Loader2,
+  CheckCheck,
 } from "lucide-react";
 import useDataGetter from "@/hooks/useDataGetter";
 import clsx from "clsx";
-import { fetchInitialNotificationCount } from "../../../../../../stores/notificationStore";
+import { fetchInitialNotificationCount } from "@/lib/utils";
 
 export const typeIconMap: Record<string, React.ReactNode> = {
   INFO: <Info className="text-blue-500" />,
@@ -93,9 +94,10 @@ const NotificationItem = ({
           {!isNotificationRead && (
             <button
               onClick={markAsReadNotification}
-              className="text-sm text-blue-500 hover:underline"
+              className="text-sm text-blue-500 hover:underline flex justify-center items-center gap-2"
             >
               علامت خوانده شده
+              <CheckCheck />
             </button>
           )}
         </div>
