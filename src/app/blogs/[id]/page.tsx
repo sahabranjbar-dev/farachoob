@@ -16,8 +16,9 @@ export default function BlogPage() {
   const id = params;
 
   const { data: article } = useDataGetter({
-    url: "/articles",
-    params: { id },
+    url: "/blogs",
+    body: { id },
+    method: "POST",
   });
   if (!article) return notFound();
 
