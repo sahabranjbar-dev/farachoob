@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Link from "next/link";
-import "./assets/ProjectSectionCard.css";
+import styles from "./assets/ProjectSectionCard.module.css";
 
 export interface Projects {
   id: string;
@@ -20,7 +20,6 @@ export interface Projects {
   userId: string;
   authorId: string;
 }
-[];
 
 interface Props {
   projects: Projects[];
@@ -30,62 +29,47 @@ const ProjectSectionCard = ({ projects }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <div className="project-slider-container">
+    <div className={styles.projectSliderContainer}>
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         spaceBetween={30}
         slidesPerView={1}
         centeredSlides={true}
         loop={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
-        pagination={{
-          clickable: true,
-          dynamicBullets: true,
-        }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        pagination={{ clickable: true, dynamicBullets: true }}
         navigation={true}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-        className="project-swiper"
         breakpoints={{
-          640: {
-            slidesPerView: 1,
-          },
-          768: {
-            slidesPerView: 1.2,
-          },
-          1024: {
-            slidesPerView: 1.5,
-          },
+          640: { slidesPerView: 1 },
+          768: { slidesPerView: 1.2 },
+          1024: { slidesPerView: 1.5 },
         }}
       >
         {projects?.map((item, index) => (
           <SwiperSlide key={item.id || index}>
-            <div className="project-card">
-              <div className="image-container">
+            <div className={styles.projectCard}>
+              <div className={styles.imageContainer}>
                 <Image
                   alt={item.title}
                   src={item.images[0] || "/images/placeholder.png"}
                   fill
-                  className="project-image"
+                  className={styles.projectImage}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                 />
-                <div className="image-overlay"></div>
-                <div className="project-number">{index + 1}</div>
+                <div className={styles.imageOverlay}></div>
+                <div className={styles.projectNumber}>{index + 1}</div>
               </div>
 
-              <div className="project-content dark:text-white">
-                <h3 className="project-title line-clamp-1 ">{item.title}</h3>
-                <p className="project-description line-clamp-2">
-                  {item.description}
-                </p>
+              <div className={styles.projectContent}>
+                <h3 className={styles.projectTitle}>{item.title}</h3>
+                <p className={styles.projectDescription}>{item.description}</p>
 
                 <Link
                   href={`/projects/${item.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="project-link"
+                  className={styles.projectLink}
                 >
                   جزئیات پروژه
                   <svg
