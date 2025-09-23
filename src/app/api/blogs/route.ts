@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const id = await request.json();
+    const { id } = await request.json();
 
     if (!id) {
       return NextResponse.json(
@@ -17,9 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const article = await prisma.article.findUnique({
-      where: {
-        id,
-      },
+      where: { id: id },
     });
 
     if (!article) {
@@ -28,6 +26,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(article, { status: 200 });
   } catch (error) {
+    console.log({ error });
+
     return NextResponse.json({ message: "خطای سرور" }, { status: 500 });
   }
 }

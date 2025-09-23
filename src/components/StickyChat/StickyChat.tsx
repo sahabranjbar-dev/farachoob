@@ -21,6 +21,10 @@ const StickyChat = () => {
   const conversationData = useStickyChat((state) => state.conversationData);
 
   useEffect(() => {
+    if (pathname !== "/") {
+      setShowCTA(false);
+      return;
+    }
     const timeOut = setTimeout(() => {
       if (showChat) return;
 
@@ -30,7 +34,7 @@ const StickyChat = () => {
     return () => {
       clearTimeout(timeOut);
     };
-  }, [showChat]);
+  }, [showChat, pathname]);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
