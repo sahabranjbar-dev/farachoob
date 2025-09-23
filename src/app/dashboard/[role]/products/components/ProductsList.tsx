@@ -52,6 +52,7 @@ const ProductsList = () => {
       {
         field: "id",
         title: "عملیات",
+        width: "100px",
         render(v, row, meta) {
           return (
             <RowFormButtons
