@@ -51,8 +51,6 @@ const ConversationInformation = ({ children }: PropsWithChildren) => {
     (item) => item.userId !== session.data?.user.id
   );
 
-  if (!participant) return null;
-
   const handleDeleteChat = async () => {};
 
   const handleBlockUser = async () => {
@@ -111,6 +109,7 @@ const ConversationInformation = ({ children }: PropsWithChildren) => {
       });
     });
   };
+  if (!participant) return null;
 
   return (
     <Dialog>

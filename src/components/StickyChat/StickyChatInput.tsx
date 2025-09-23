@@ -153,4 +153,6 @@ const StickyChatInput = memo(() => {
   );
 });
 
+StickyChatInput.displayName = "StickyChatInput";
+
 export default StickyChatInput;

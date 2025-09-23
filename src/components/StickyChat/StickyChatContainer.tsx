@@ -33,4 +33,5 @@ const StickyChatContainer = forwardRef<HTMLDivElement, PropsWithChildren>(
   }
 );
 
+StickyChatContainer.displayName = "StickyChatContainer";
 export default StickyChatContainer;
