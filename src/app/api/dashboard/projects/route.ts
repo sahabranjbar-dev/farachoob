@@ -1,20 +1,8 @@
+import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { uploadFile } from "@/lib/uploadFile";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "@/lib/auth";
-import cloudinary from "@/lib/cloudinary";
-
-const uploadFile = async (file: File, folder = "projects") => {
-  const buffer = Buffer.from(await file.arrayBuffer()); // ← اینجا await در تابع async
-  return new Promise<string>((resolve, reject) => {
-    cloudinary.uploader
-      .upload_stream({ folder }, (err, result) => {
-        if (err) reject(err);
-        else resolve(result?.secure_url!);
-      })
-      .end(buffer);
-  });
-};
 
 export const GET = async (requst: NextRequest) => {
   try {

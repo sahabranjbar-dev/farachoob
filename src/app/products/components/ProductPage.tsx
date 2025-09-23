@@ -60,6 +60,7 @@ export default function ProductDataPage({ productData }: IProductDataPage) {
                   fill
                   className="object-contain p-8 transition-all duration-300"
                   priority
+                  unoptimized
                 />
               </motion.div>
             </AnimatePresence>
@@ -257,7 +258,7 @@ export default function ProductDataPage({ productData }: IProductDataPage) {
                   d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                 />
               </svg>
-              <span className="text-sm text-gray-500 dark:text-gray-300 dark:text-gray-300">
+              <span className="text-sm text-gray-500 dark:text-gray-300">
                 ارسال رایگان برای خریدهای بالای ۱ میلیون تومان
               </span>
             </div>

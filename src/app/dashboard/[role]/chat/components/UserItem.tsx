@@ -53,6 +53,7 @@ const UserItem = ({
             width={openSidebar ? 40 : 32}
             height={openSidebar ? 40 : 32}
             className="rounded-full object-cover"
+            unoptimized
           />
         ) : (
           user.firstName?.[0] ?? "?"

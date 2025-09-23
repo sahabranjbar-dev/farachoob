@@ -62,6 +62,7 @@ const CartPage = () => {
                 width={80}
                 height={80}
                 className="rounded-xl object-cover"
+                unoptimized
               />
               <div className="flex-1">
                 <p className="font-semibold">{item.name}</p>

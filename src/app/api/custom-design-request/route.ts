@@ -64,8 +64,7 @@ export async function POST(req: NextRequest) {
       if (validFiles.length > 0) {
         const uploadedImages = await Promise.all(
           validFiles.slice(0, 10).map(async (file) => {
-            const buffer = Buffer.from(await file.arrayBuffer());
-            const url = await uploadFile(buffer, "custom-designs");
+            const url = await uploadFile(file, "custom-designs");
 
             return prisma.customDesignRequestImage.create({
               data: {

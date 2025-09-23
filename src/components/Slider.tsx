@@ -45,6 +45,7 @@ const Slider = ({ intems }: Props) => {
             style={{ width: "100%", height: "auto" }}
             loading="lazy"
             className="swiper-lazy"
+            unoptimized
           />
           <div className="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
         </SwiperSlide>

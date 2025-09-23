@@ -25,6 +25,7 @@ const ProjectSlider = ({ images }: Props) => {
           width={800}
           height={200}
           className="object-contain"
+          unoptimized
         />
       ) : (
         <Swiper
@@ -54,6 +55,7 @@ const ProjectSlider = ({ images }: Props) => {
                   fill
                   style={{ objectFit: "contain" }} // حفظ نسبت و کامل بودن تصویر
                   className="rounded-lg"
+                  unoptimized
                 />
               </div>
             </SwiperSlide>

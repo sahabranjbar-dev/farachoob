@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary"; // فرض بر اینه که کانفیگ cloudinary داری
 import { authOptions } from "@/lib/auth";
+import { uploadFile } from "@/lib/uploadFile";
 
 // آپدیت مقاله
 export async function PUT(req: Request) {
@@ -33,16 +33,7 @@ export async function PUT(req: Request) {
       if (!newImage.type.startsWith("image/")) {
         return NextResponse.json({ error: "فایل معتبر نیست" }, { status: 400 });
       }
-      const buffer = Buffer.from(await newImage.arrayBuffer());
-      const uploadRes = await new Promise((resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "articles" }, (err, result) => {
-            if (err) reject(err);
-            else resolve(result);
-          })
-          .end(buffer);
-      });
-      coverImageUrl = (uploadRes as any).secure_url;
+      coverImageUrl = await uploadFile(newImage, "blogs");
     }
 
     const updatedArticle = await prisma.article.update({

@@ -14,6 +14,7 @@ const ProjectCard = ({ project }: Props) => {
           alt={project.title}
           fill
           className="object-cover"
+          unoptimized
         />
         {project.active || (
           <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm">

@@ -195,6 +195,7 @@ const ProjectsForm = ({ initialData }: Props) => {
                       width={200}
                       height={200}
                       className="border rounded object-cover w-full h-40"
+                      unoptimized
                     />
                     <button
                       type="button"

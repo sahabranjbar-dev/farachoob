@@ -1,31 +1,14 @@
 import prisma from "@/lib/prisma";
-import { v2 as cloudinary } from "cloudinary";
+import { uploadFile } from "@/lib/uploadFile";
+
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
-// تنظیمات Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// 🟢 آپلود فایل به لیارا
 
-const uploadFile = async (file: File, folder = "products") => {
-  const buffer = Buffer.from(await file.arrayBuffer()); // ← اینجا await در تابع async
-  return new Promise<string>((resolve, reject) => {
-    cloudinary.uploader
-      .upload_stream({ folder }, (err, result) => {
-        if (err) reject(err);
-        else resolve(result?.secure_url!);
-      })
-      .end(buffer);
-  });
-};
-
+// ------------------ GET ------------------
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-
     const brandId = searchParams.get("brand") || undefined;
     const categoryId = searchParams.get("category") || undefined;
     const sort = searchParams.get("sort") || "latest";
@@ -33,19 +16,15 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1", 10);
     const pageSize = parseInt(searchParams.get("pageSize") || "9", 10);
 
-    if (isNaN(page) || page < 1) {
+    if (isNaN(page) || page < 1)
       return NextResponse.json({ error: "صفحه نامعتبر است." }, { status: 400 });
-    }
-
-    if (isNaN(pageSize) || pageSize < 1 || pageSize > 100) {
+    if (isNaN(pageSize) || pageSize < 1 || pageSize > 100)
       return NextResponse.json(
         { error: "pageSize نامعتبر است." },
         { status: 400 }
       );
-    }
 
     const skip = (page - 1) * pageSize;
-
     const where: any = {};
     if (brandId) where.brandId = brandId;
     if (categoryId) where.categoryId = categoryId;
@@ -75,10 +54,7 @@ export async function GET(req: NextRequest) {
         orderBy,
         skip,
         take: pageSize,
-        include: {
-          brand: true,
-          category: true,
-        },
+        include: { brand: true, category: true },
       }),
       prisma.product.count({ where }),
     ]);
@@ -104,53 +80,11 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// اجازه دریافت FormData
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-const variationSchema = z.object({
-  colorName: z.string().optional(),
-  colorCode: z.string().optional(),
-  price: z.preprocess((val) => {
-    if (typeof val === "string") return Number(val.replace(/,/g, ""));
-    return val;
-  }, z.number().nonnegative()),
-  stock: z.preprocess((val) => {
-    if (typeof val === "string") return Number(val);
-    return val;
-  }, z.number().int().nonnegative()),
-  images: z.array(z.string().url()).optional().default([]),
-});
-
-const productSchema = z.object({
-  farsiTitle: z.string().min(1, "نام فارسی محصول الزامی است."),
-  englishTitle: z.string().min(1, "نام انگلیسی محصول الزامی است."),
-  price: z.preprocess((val) => {
-    if (typeof val === "string") return Number(val.replace(/,/g, ""));
-    return val;
-  }, z.number().nonnegative("قیمت نمی‌تواند منفی باشد.")),
-  stock: z
-    .preprocess((val) => {
-      if (typeof val === "string") return Number(val);
-      return val;
-    }, z.number().int().nonnegative())
-    .optional()
-    .default(0),
-  brandId: z.string().optional(),
-  categoryId: z.string().optional(),
-  description: z.string().optional(),
-  comments: z.array(z.string()).optional().default([]),
-  variations: z.array(variationSchema).optional().default([]),
-});
-
+// ------------------ POST ------------------
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
 
-    // 🟢 فیلدهای اصلی محصول
     const farsiTitle = formData.get("farsiTitle") as string;
     const englishTitle = formData.get("englishTitle") as string;
     const price = Number(formData.get("price"));
@@ -158,9 +92,8 @@ export async function POST(req: Request) {
     const description = (formData.get("description") as string) || null;
     const brandId = (formData.get("brandId") as string) || null;
     const categoryId = (formData.get("categoryId") as string) || null;
-    const comments = formData.getAll("comments") as string[];
+    const comments = (formData.getAll("comments") as string[]).filter(Boolean);
 
-    // 🟢 گرفتن ورییشن‌ها از فرم
     const variations: any[] = [];
     let i = 0;
     while (
@@ -172,17 +105,13 @@ export async function POST(req: Request) {
       const vPrice = Number(formData.get(`variations[${i}].price`));
       const vStock = Number(formData.get(`variations[${i}].stock`) ?? 0);
 
-      // 🖼️ آپلود عکس‌های ورییشن
-      const files = formData.getAll(`variations[${i}].image`) as File[];
-      const uploadedUrls: string[] = [];
+      const files = (
+        formData.getAll(`variations[${i}].image`) as File[]
+      ).filter((f) => f && f.size > 0 && f.type?.startsWith("image/"));
 
-      for (const file of files) {
-        if (file && file.size > 0 && file.type.startsWith("image/")) {
-          const url = await uploadFile(file, "products/variations");
-
-          uploadedUrls.push(url);
-        }
-      }
+      const uploadedUrls = [];
+      for (const file of files)
+        uploadedUrls.push(await uploadFile(file, "products/variations"));
 
       variations.push({
         colorName,
@@ -191,11 +120,9 @@ export async function POST(req: Request) {
         stock: vStock,
         images: uploadedUrls,
       });
-
       i++;
     }
 
-    // 🟢 ذخیره در دیتابیس
     const product = await prisma.product.create({
       data: {
         farsiTitle,
@@ -212,17 +139,11 @@ export async function POST(req: Request) {
             colorCode: v.colorCode,
             price: v.price,
             stock: v.stock,
-            images: {
-              create: v.images.map((url: string) => ({ url })),
-            },
+            images: { create: v.images.map((url: string) => ({ url })) },
           })),
         },
       },
-      include: {
-        variations: {
-          include: { images: true, product: true },
-        },
-      },
+      include: { variations: { include: { images: true, product: true } } },
     });
 
     return NextResponse.json(product, { status: 201 });
@@ -232,34 +153,17 @@ export async function POST(req: Request) {
   }
 }
 
-// اسکیما برای اعتبارسنجی PUT
-const productUpdateSchema = z.object({
-  id: z.string().min(1),
-  farsiTitle: z.string().min(1, "نام فارسی محصول الزامی است."),
-  englishTitle: z.string().min(1, "نام انگلیسی محصول الزامی است."),
-  price: z.string().optional(),
-  stock: z.string().optional(),
-  brandId: z.string().optional(),
-  categoryId: z.string().optional(),
-  description: z.string().optional(),
-  colors: z.array(z.string()).optional().default([]),
-  comments: z.array(z.string()).optional().default([]),
-  image: z.any().optional(),
-});
+// ------------------ PUT ------------------
 export async function PUT(req: Request) {
   try {
     const formData = await req.formData();
-
-    // 🟢 گرفتن id محصول
     const productId = formData.get("id") as string;
-    if (!productId) {
+    if (!productId)
       return NextResponse.json(
         { error: "شناسه محصول الزامی است." },
         { status: 400 }
       );
-    }
 
-    // 🟢 فیلدهای اصلی
     const farsiTitle = formData.get("farsiTitle") as string;
     const englishTitle = formData.get("englishTitle") as string;
     const price = Number(formData.get("price"));
@@ -267,9 +171,8 @@ export async function PUT(req: Request) {
     const description = (formData.get("description") as string) || null;
     const brandId = (formData.get("brandId") as string) || null;
     const categoryId = (formData.get("categoryId") as string) || null;
-    const comments = formData.getAll("comments") as string[];
+    const comments = (formData.getAll("comments") as string[]).filter(Boolean);
 
-    // 🟢 گرفتن ورییشن‌ها
     const variations: any[] = [];
     let i = 0;
     while (
@@ -281,15 +184,13 @@ export async function PUT(req: Request) {
       const vPrice = Number(formData.get(`variations[${i}].price`));
       const vStock = Number(formData.get(`variations[${i}].stock`) ?? 0);
 
-      const files = formData.getAll(`variations[${i}].image`) as File[];
-      const uploadedUrls: string[] = [];
+      const files = (
+        formData.getAll(`variations[${i}].image`) as File[]
+      ).filter((f) => f && f.size > 0 && f.type?.startsWith("image/"));
 
-      for (const file of files) {
-        if (file && file.size > 0 && file.type.startsWith("image/")) {
-          const url = await uploadFile(file, "products/variations");
-          uploadedUrls.push(url);
-        }
-      }
+      const uploadedUrls = [];
+      for (const file of files)
+        uploadedUrls.push(await uploadFile(file, "products/variations"));
 
       variations.push({
         colorName,
@@ -298,11 +199,9 @@ export async function PUT(req: Request) {
         stock: vStock,
         images: uploadedUrls,
       });
-
       i++;
     }
 
-    // 🟢 آپدیت در دیتابیس
     const product = await prisma.product.update({
       where: { id: productId },
       data: {
@@ -314,26 +213,18 @@ export async function PUT(req: Request) {
         comments,
         ...(brandId && { brand: { connect: { id: brandId } } }),
         ...(categoryId && { category: { connect: { id: categoryId } } }),
-
-        // ورییشن‌های قبلی پاک میشن و دوباره ساخته میشن
         variations: {
-          deleteMany: {}, // حذف همه ورییشن‌های قبلی
+          deleteMany: {},
           create: variations.map((v) => ({
             colorName: v.colorName,
             colorCode: v.colorCode,
             price: v.price,
             stock: v.stock,
-            images: {
-              create: v.images.map((url: string) => ({ url })),
-            },
+            images: { create: v.images.map((url: string) => ({ url })) },
           })),
         },
       },
-      include: {
-        variations: {
-          include: { images: true, product: true },
-        },
-      },
+      include: { variations: { include: { images: true, product: true } } },
     });
 
     return NextResponse.json(product, { status: 200 });

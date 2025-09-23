@@ -133,6 +133,7 @@ const PremiumServices = () => {
                   alt={service.title}
                   width={32}
                   height={32}
+                  unoptimized
                 />
               </div>
               <h3 className="text-xl font-semibold text-center text-gray-900 dark:text-white mb-3">

@@ -13,8 +13,12 @@ const nextConfig: NextConfig = {
         hostname: "assets3.lottiefiles.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "storage.c2.liara.space/nervous-banzai-str7guku5",
+        pathname: "/**",
+      },
     ],
-    domains: ["res.cloudinary.com", "assets3.lottiefiles.com"],
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -56,6 +56,7 @@ const ProjectSectionCard = ({ projects }: Props) => {
                   fill
                   className={styles.projectImage}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                  unoptimized
                 />
                 <div className={styles.imageOverlay}></div>
                 <div className={styles.projectNumber}>{index + 1}</div>

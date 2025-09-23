@@ -1,8 +1,8 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary"; // کانفیگ جدا برای cloudinary بساز
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { uploadFile } from "@/lib/uploadFile";
 
 export async function GET(request: Request) {
   try {
@@ -105,21 +105,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "فایل معتبر نیست" }, { status: 400 });
     }
 
-    const buffer = Buffer.from(await image.arrayBuffer());
-
-    const uploadRes = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: "articles" }, (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        })
-        .end(buffer);
-    });
+    const coverImage = await uploadFile(image, "blogs");
 
     const newArticle = {
       title: formData.get("title") as string,
       content: formData.get("content") as string,
-      coverImage: (uploadRes as any).secure_url,
+      coverImage,
       published: formData.get("published") === "true",
       author: {
         connect: { id: session.user.id },

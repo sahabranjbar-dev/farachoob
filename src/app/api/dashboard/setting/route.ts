@@ -83,8 +83,7 @@ export async function PUT(request: NextRequest) {
     const imageFile = formData.get("image") as unknown as File | null;
 
     if (imageFile) {
-      const buffer = Buffer.from(await imageFile.arrayBuffer()); // ← اینجا کار می‌کنه
-      imageUrl = await uploadFile(buffer, "user");
+      imageUrl = await uploadFile(imageFile, "user");
     }
 
     // آپدیت دیتابیس

@@ -22,6 +22,7 @@ const TrustCard = ({
           width={350}
           height={350}
           className="md:w-[350px] w-[100px] h-[100px] object-contain"
+          unoptimized
         />
       </div>
 

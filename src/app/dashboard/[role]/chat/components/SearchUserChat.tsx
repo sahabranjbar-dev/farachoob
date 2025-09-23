@@ -174,6 +174,7 @@ const SearchUserChat = () => {
                         width={48}
                         height={48}
                         className="rounded-full object-cover border w-12 h-12"
+                        unoptimized
                       />
                       <div className="flex flex-col">
                         <span className="font-medium">{`${

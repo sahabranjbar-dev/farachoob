@@ -84,6 +84,7 @@ const HeroSection = () => {
           height={700}
           className="mx-auto"
           priority
+          unoptimized
         />
       </div>
 

@@ -198,6 +198,7 @@ const BlogForm = ({ initialData }: Props) => {
                       alt="پیش‌نمایش تصویر"
                       fill
                       className="object-contain bg-gray-50"
+                      unoptimized
                     />
                   </div>
                 )}

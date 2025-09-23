@@ -36,6 +36,7 @@ export default function BlogPage() {
               fill
               className="object-cover"
               priority
+              unoptimized
             />
           </div>
 

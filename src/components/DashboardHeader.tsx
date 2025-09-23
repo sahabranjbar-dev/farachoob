@@ -63,6 +63,7 @@ export default function DashboardHeader({ user }: Props) {
                   src={user.avatarUrl}
                   alt="User avatar"
                   className="w-8 h-8 rounded-full object-cover"
+                  unoptimized
                 />
               ) : (
                 <User className="h-6 w-6" />

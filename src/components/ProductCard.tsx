@@ -38,6 +38,7 @@ const ProductCard = ({
             src={imageSrc}
             width={imageWidth}
             height={imageHeight}
+            unoptimized
           />
         ) : (
           <Image

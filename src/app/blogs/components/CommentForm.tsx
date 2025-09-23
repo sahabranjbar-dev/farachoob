@@ -126,6 +126,7 @@ export default function CommentForm({
             src={URL.createObjectURL(data)}
             alt="CAPTCHA"
             className="cursor-pointer rounded border border-gray-300"
+            unoptimized
           />
         ) : (
           <div className="h-10 w-32 animate-pulse rounded bg-gray-200"></div>

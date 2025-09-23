@@ -15,6 +15,7 @@ export default function BestSellingProductsCard({ product }: Props) {
           alt={product.farsiTitle}
           fill
           className="object-cover"
+          unoptimized
         />
       </div>
 

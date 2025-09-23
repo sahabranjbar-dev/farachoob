@@ -89,6 +89,7 @@ export default async function Blogs() {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   style={{ objectPosition: "center" }}
+                  unoptimized
                 />
 
                 <Tooltip>
