@@ -127,6 +127,8 @@ export default function CommentForm({
             alt="CAPTCHA"
             className="cursor-pointer rounded border border-gray-300"
             unoptimized
+            width={100}
+            height={50}
           />
         ) : (
           <div className="h-10 w-32 animate-pulse rounded bg-gray-200"></div>

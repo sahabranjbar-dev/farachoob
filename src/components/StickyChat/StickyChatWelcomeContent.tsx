@@ -78,9 +78,9 @@ const StickyChatWelcomeContent = () => {
               <div className="grid gap-3">
                 <button
                   onClick={() => {
-                    window.open(`https://t.me/${PHONE_NUMBER}`, "_blank");
+                    window.open(`https://t.me/+${PHONE_NUMBER}`, "_blank");
                   }}
-                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
+                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition cursor-pointer"
                 >
                   <Send className="w-5 h-5 text-blue-500" />
                   <span className="text-gray-700">تلگرام</span>
@@ -88,20 +88,23 @@ const StickyChatWelcomeContent = () => {
 
                 <button
                   onClick={() =>
-                    window.open(`https://wa.me/${PHONE_NUMBER}`, "_blank")
+                    window.open(`https://wa.me/+${PHONE_NUMBER}`, "_blank")
                   }
-                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
+                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition cursor-pointer"
                 >
                   <Smartphone className="w-5 h-5 text-green-500" />
                   <span className="text-gray-700">واتساپ</span>
                 </button>
 
-                <button
-                  onClick={() => window.open(`tel:${PHONE_NUMBER}`)}
-                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
-                >
-                  <Phone className="w-5 h-5 text-red-500" />
-                  <span className="text-gray-700">تماس تلفنی</span>
+                <button>
+                  <a
+                    href={`tel:${PHONE_NUMBER}`}
+                    target="_blank"
+                    className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
+                  >
+                    <Phone className="w-5 h-5 text-red-500" />
+                    <span className="text-gray-700">تماس تلفنی</span>
+                  </a>
                 </button>
 
                 <button
