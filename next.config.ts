@@ -29,6 +29,7 @@ const nextConfig: NextConfig = {
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     JWT_SECRET: process.env.JWT_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    CHAT_SERVER_URL: process.env.CHAT_SERVER_URL,
   },
 };
 
