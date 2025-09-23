@@ -21,14 +21,12 @@ export default function BlogPage() {
     method: "POST",
   });
 
-  if (loading)
+  if (loading || !article)
     return (
       <div className="w-full h-full flex justify-center items-center">
         <Loader2 className="animate-spin" />
       </div>
     );
-
-  const safeContent = DOMPurify.sanitize(article.content);
 
   return (
     <main className="container mx-auto px-4 sm:px-6 py-10">
@@ -59,7 +57,13 @@ export default function BlogPage() {
               <CalendarDays size={16} />
             </div>
 
-            <Article safeContent={safeContent} />
+            {article.content ? (
+              <Article safeContent={DOMPurify.sanitize(article.content)} />
+            ) : (
+              <div className="w-full h-full flex justify-center items-center">
+                <Loader2 className="animate-spin" />
+              </div>
+            )}
           </div>
 
           {/* بخش کامنت‌ها */}
