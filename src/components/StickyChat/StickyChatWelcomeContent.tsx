@@ -9,6 +9,7 @@ import {
 import { useStickyChat } from "../../../stores/stickyChat";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import PrePareForChatForm from "./PrePareForChatForm";
+import { PHONE_NUMBER } from "./meta/constants";
 
 const StickyChatWelcomeContent = () => {
   const setShowChatForm = useStickyChat((state) => state.setShowChatForm);
@@ -75,17 +76,30 @@ const StickyChatWelcomeContent = () => {
               </p>
 
               <div className="grid gap-3">
-                <button className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition">
+                <button
+                  onClick={() => {
+                    window.open(`https://t.me/${PHONE_NUMBER}`, "_blank");
+                  }}
+                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
+                >
                   <Send className="w-5 h-5 text-blue-500" />
                   <span className="text-gray-700">تلگرام</span>
                 </button>
 
-                <button className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition">
+                <button
+                  onClick={() =>
+                    window.open(`https://wa.me/${PHONE_NUMBER}`, "_blank")
+                  }
+                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
+                >
                   <Smartphone className="w-5 h-5 text-green-500" />
                   <span className="text-gray-700">واتساپ</span>
                 </button>
 
-                <button className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition">
+                <button
+                  onClick={() => window.open(`tel:${PHONE_NUMBER}`)}
+                  className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
+                >
                   <Phone className="w-5 h-5 text-red-500" />
                   <span className="text-gray-700">تماس تلفنی</span>
                 </button>

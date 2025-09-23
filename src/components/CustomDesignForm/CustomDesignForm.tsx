@@ -42,7 +42,7 @@ const formSchema = z.object({
   material: z.string().min(2, "جنس الزامی است"),
   color: z.string(),
   description: z.string().optional(),
-  captcha: z.string().min(4, "کپچا الزامی است"),
+  captcha: z.string().min(4, "کد امنیتی الزامی است"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -465,7 +465,7 @@ export default function CustomDesignForm() {
 
             <div className="">
               <Input
-                placeholder="کپچا"
+                placeholder="کد امنیتی"
                 {...register("captcha")}
                 required={false}
                 className="dark:bg-gray-800"

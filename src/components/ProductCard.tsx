@@ -21,8 +21,8 @@ const ProductCard = ({
   description,
   className,
   style,
-  imageWidth = 350,
-  imageHeight = 500,
+  imageWidth = 300,
+  imageHeight = 350,
   id,
 }: Props) => {
   return (
@@ -39,6 +39,7 @@ const ProductCard = ({
             width={imageWidth}
             height={imageHeight}
             unoptimized
+            className="max-h-80"
           />
         ) : (
           <Image
