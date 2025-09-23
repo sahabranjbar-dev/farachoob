@@ -16,11 +16,29 @@ export interface Product {
   comments?: any[];
   brandId?: string | null;
   categoryId?: string | null;
+  variations?: variations[];
+}
+
+export interface variations {
+  images: Image[];
+}
+
+export interface Image {
+  id: string;
+  url: string;
+  variationId: string;
 }
 
 export default async function BestSellingProducts() {
   const products = await prisma?.product.findMany({
     take: 3,
+    include: {
+      variations: {
+        select: {
+          images: true,
+        },
+      },
+    },
   });
 
   if (!products || products.length === 0) {

@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { SwitchRtl } from "@/components/SwitchRtl";
-import { CheckIcon, X, Upload, Trash2 } from "lucide-react";
+import { CheckIcon, X, Upload, Trash2, Loader2 } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
@@ -250,16 +250,16 @@ const BlogForm = ({ initialData }: Props) => {
                 disabled={loading}
                 className="flex items-center gap-2"
               >
-                <CheckIcon size={18} />
-                {loading ? "در حال ذخیره..." : "ذخیره"}
+                {loading ? <Loader2 className="animate-spin" /> : "ذخیره"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={closeCurrentTab}
                 className="flex items-center gap-2"
+                left={<X size={18} />}
               >
-                <X size={18} /> بستن
+                بستن
               </Button>
             </div>
           </form>
