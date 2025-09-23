@@ -6,12 +6,15 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "assets3.lottiefiles.com",
+        pathname: "/**",
       },
     ],
+    domains: ["res.cloudinary.com", "assets3.lottiefiles.com"],
   },
   eslint: {
     ignoreDuringBuilds: true,
