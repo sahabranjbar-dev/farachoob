@@ -183,14 +183,19 @@ export async function PUT(req: Request) {
       const colorCode = formData.get(`variations[${i}].colorCode`) as string;
       const vPrice = Number(formData.get(`variations[${i}].price`));
       const vStock = Number(formData.get(`variations[${i}].stock`) ?? 0);
+      const prevImageUrl = formData.get(`variations[${i}].imageUrl`) as string;
 
       const files = (
         formData.getAll(`variations[${i}].image`) as File[]
       ).filter((f) => f && f.size > 0 && f.type?.startsWith("image/"));
 
-      const uploadedUrls = [];
-      for (const file of files)
-        uploadedUrls.push(await uploadFile(file, "products/variations"));
+      const uploadedUrls = files.length
+        ? await Promise.all(
+            files.map((file) => uploadFile(file, "products/variations"))
+          )
+        : prevImageUrl
+        ? [prevImageUrl]
+        : [];
 
       variations.push({
         colorName,
