@@ -1,25 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Send,
-  Loader2,
-  CheckCircle,
-  Phone,
-  Mail,
-  MapPin,
-  RefreshCcw,
-} from "lucide-react";
-import axios from "axios";
-import { toast } from "sonner";
-import Captcha from "@/components/Captcha/Captcha";
-import { cn } from "@/lib/utils";
-import useDataGetter from "@/hooks/useDataGetter";
 import { Button } from "@/components/ui/button";
+import useDataGetter from "@/hooks/useDataGetter";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { Loader2, Mail, MapPin, Phone, RefreshCcw, Send } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const ContactUsSchema = z.object({
   name: z.string().min(2, "نام باید حداقل ۲ کاراکتر باشد"),

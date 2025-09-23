@@ -4,8 +4,34 @@ import React, { useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { Bell, Package } from "lucide-react";
 
+// Define types for your data
+interface Order {
+  id: string;
+  product: string;
+  category: string;
+  status: string;
+  amount: number;
+}
+
+interface Notification {
+  id: number;
+  message: string;
+  time: string;
+}
+
+interface Activity {
+  id: number;
+  action: string;
+  time: string;
+}
+
+interface CategoryData {
+  name: string;
+  value: number;
+}
+
 const CustomerDashboard = () => {
-  const [orders, setOrders] = useState([
+  const [orders, setOrders] = useState<Order[]>([
     {
       id: "ORD001",
       product: "کفش اسپرت",
@@ -43,22 +69,23 @@ const CustomerDashboard = () => {
     },
   ]);
 
-  const [notifications, setNotifications] = useState([
+  const [notifications, setNotifications] = useState<Notification[]>([
     { id: 1, message: "سفارش ORD002 هنوز پرداخت نشده", time: "2 ساعت پیش" },
     { id: 2, message: "تخفیف 10٪ برای خرید بعدی فعال شد", time: "1 روز پیش" },
   ]);
 
-  const [activities, setActivities] = useState([
+  const [activities, setActivities] = useState<Activity[]>([
     { id: 1, action: "سفارش ORD001 تحویل داده شد", time: "1 روز پیش" },
     { id: 2, action: "پرداخت ORD002 انجام نشد", time: "2 روز پیش" },
     { id: 3, action: "نظرات برای محصول هدفون ثبت شد", time: "3 روز پیش" },
   ]);
 
-  // محاسبه داده برای Pie Chart
-  const categoryData = Object.values(
-    orders.reduce((acc: any, order) => {
-      if (!acc[order.category])
+  // محاسبه داده برای Pie Chart با تایپ صحیح
+  const categoryData: CategoryData[] = Object.values(
+    orders.reduce((acc: Record<string, CategoryData>, order) => {
+      if (!acc[order.category]) {
         acc[order.category] = { name: order.category, value: 0 };
+      }
       acc[order.category].value += 1;
       return acc;
     }, {})
@@ -78,13 +105,13 @@ const CustomerDashboard = () => {
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={categoryData}
+                // data={categoryData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                label={(entry) => `${entry.name} (${entry.value})`}
+                // label={(entry: CategoryData) => `${entry.name} (${entry.value})`}
               >
                 {categoryData.map((entry, index) => (
                   <Cell

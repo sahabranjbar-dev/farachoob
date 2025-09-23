@@ -150,4 +150,6 @@ const ChatInput = memo(() => {
   );
 });
 
+ChatInput.displayName = "ChatInput";
+
 export default ChatInput;

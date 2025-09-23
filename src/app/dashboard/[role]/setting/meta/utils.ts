@@ -10,7 +10,7 @@ export function setProfileData(sessionData: any) {
     isActive: sessionData?.isActive ?? false,
     isVerified: sessionData?.isVerified ?? false,
     location: "",
-    bio: "",
+    biography: "",
     notification: {
       email: false,
       pushNotification: false,

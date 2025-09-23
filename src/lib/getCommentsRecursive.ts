@@ -19,6 +19,7 @@ export async function getCommentsRecursive(
   return Promise.all(
     comments.map(async (comment) => ({
       ...comment,
+      articleId,
       replies: await getCommentsRecursive(comment.id, articleId),
     }))
   );

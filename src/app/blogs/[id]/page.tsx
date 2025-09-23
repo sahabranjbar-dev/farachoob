@@ -1,5 +1,4 @@
-// app/blogs/[id]/page.tsx
-import prisma from "@/lib/prisma";
+"use client";
 import Image from "next/image";
 import { CalendarDays } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -8,29 +7,17 @@ import CommentForm from "../components/CommentForm";
 import BestSellingProducts from "../components/BestSellingProducts";
 import Comments from "@/components/Comments/Comments";
 import Article from "../components/Article";
+import useDataGetter from "@/hooks/useDataGetter";
+import useParams from "@/hooks/useParams";
 
-interface BlogPageProps {
-  params: Promise<{ id: string }>;
-}
+export default function BlogPage() {
+  const { params } = useParams();
 
-export const revalidate = 3600;
+  const id = params;
 
-export default async function BlogPage({ params }: BlogPageProps) {
-  const resolvedParams = await params;
-
-  const { id } = resolvedParams;
-  const article = await prisma.article.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      author: true,
-      comments: {
-        include: {
-          user: true,
-        },
-      },
-    },
+  const { data: article } = useDataGetter({
+    url: "/articles",
+    params: { id },
   });
   if (!article) return notFound();
 
