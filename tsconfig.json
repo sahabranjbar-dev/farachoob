@@ -33,7 +33,7 @@
     "types/**/*.d.ts",
     ".next/types/**/*.ts",
     "prisma/seed.js",
-    "server.js"
+    "custom-server.js"
   ],
   "exclude": ["node_modules"]
 }
