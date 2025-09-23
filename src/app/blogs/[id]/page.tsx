@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Loader2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import DOMPurify from "isomorphic-dompurify";
 import CommentForm from "../components/CommentForm";
@@ -15,12 +15,18 @@ export default function BlogPage() {
 
   const id = params;
 
-  const { data: article } = useDataGetter({
+  const { data: article, loading } = useDataGetter({
     url: "/blogs",
     body: { id },
     method: "POST",
   });
-  if (!article) return notFound();
+
+  if (loading)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
 
   const safeContent = DOMPurify.sanitize(article.content);
 
