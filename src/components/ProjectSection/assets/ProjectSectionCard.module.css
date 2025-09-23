@@ -107,21 +107,21 @@
   transition: gap 0.3s ease;
 }
 
-/* Swiper global classes */
-:global(.swiper-pagination-bullet) {
+/* Swiper wrapper برای CSS Modules */
+.swiperWrapper :global(.swiper-pagination-bullet) {
   background: gray;
   opacity: 0.7;
   width: 10px;
   height: 10px;
 }
 
-:global(.swiper-pagination-bullet-active) {
+.swiperWrapper :global(.swiper-pagination-bullet-active) {
   background: orange;
   opacity: 1;
 }
 
-:global(.swiper-button-next),
-:global(.swiper-button-prev) {
+.swiperWrapper :global(.swiper-button-next),
+.swiperWrapper :global(.swiper-button-prev) {
   color: orange;
 }
 

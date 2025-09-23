@@ -29,7 +29,7 @@ const ProjectSectionCard = ({ projects }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <div className={styles.projectSliderContainer}>
+    <div className={`${styles.projectSliderContainer} ${styles.swiperWrapper}`}>
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         spaceBetween={30}
