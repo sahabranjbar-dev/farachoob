@@ -5,7 +5,7 @@ import { AlignJustify } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginAndRegister from "./LoginAndRegister";
 import { ModeToggle } from "./ModeToggle";
 import Navbar from "./Navbar";
@@ -15,6 +15,33 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 const Header = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLElement &&
+        (event.target.tagName === "INPUT" ||
+          event.target.tagName === "TEXTAREA" ||
+          event.target.isContentEditable)
+      ) {
+        return;
+      }
+      if (
+        event.shiftKey &&
+        (event.key === "P" || event.key === "p" || event.code === "KeyP")
+      ) {
+        event.preventDefault();
+        window.open("/dashboard", "_blank");
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  }, []);
+
   const isAuthPage =
     pathname?.startsWith("/auth") || pathname?.startsWith("/dashboard");
   if (isAuthPage) return;

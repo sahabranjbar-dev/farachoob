@@ -25,6 +25,7 @@ export enum AppMenu {
   Chat = "chat",
   Projects = "projects",
   CustomDesign = "custom-desing",
+  ContactMessages = "contact-messages",
 }
 
 export enum PermissionKey {
@@ -93,6 +94,12 @@ export enum PermissionKey {
   CreateProjects = "create_projects",
   EditProjects = "edit_projects",
   DeleteProjects = "delete_projects",
+
+  //ContactMessages
+  ViewContactMessages = "view_contact_messages",
+  CreateContactMessages = "create_contact_messages",
+  EditContactMessages = "edit_contact_messages",
+  DeleteContactMessages = "delete_contact_messages",
 
   //export and import
   CanExport = "can_export",
@@ -249,6 +256,17 @@ export const MENU_CONFIG: Record<AppMenu, MenuConfig> = {
     permissions: {
       view: PermissionKey.ViewCustomDesign,
       create: PermissionKey.DeleteCustomDesign,
+    },
+  },
+  [AppMenu.ContactMessages]: {
+    href: "/contact-messages",
+    title: "پیام‌های دریافتی",
+    icon: "Inbox",
+    permissions: {
+      view: PermissionKey.ViewContactMessages,
+      create: PermissionKey.CreateContactMessages,
+      edit: PermissionKey.EditContactMessages,
+      delete: PermissionKey.DeleteContactMessages,
     },
   },
 };

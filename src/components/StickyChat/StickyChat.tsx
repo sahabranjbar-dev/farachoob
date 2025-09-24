@@ -16,7 +16,10 @@ const StickyChat = () => {
 
   const stickyChatContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const { setShowChat, showChat, showCTA, setShowCTA } = useStickyChat();
+  const setShowChat = useStickyChat((state) => state.setShowChat);
+  const showChat = useStickyChat((state) => state.showChat);
+  const showCTA = useStickyChat((state) => state.showCTA);
+  const setShowCTA = useStickyChat((state) => state.setShowCTA);
 
   const conversationData = useStickyChat((state) => state.conversationData);
 
@@ -35,6 +38,32 @@ const StickyChat = () => {
       clearTimeout(timeOut);
     };
   }, [showChat, pathname]);
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLElement &&
+        (event.target.tagName === "INPUT" ||
+          event.target.tagName === "TEXTAREA" ||
+          event.target.isContentEditable)
+      ) {
+        return;
+      }
+      if (
+        event.shiftKey &&
+        (event.key === "S" || event.key === "s" || event.code === "KeyS")
+      ) {
+        event.preventDefault();
+        setShowChat(true);
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {

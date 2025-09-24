@@ -46,11 +46,11 @@ export const metadata = {
     title: "فراچوب | تولیدکننده ممتاز میز و صندلی اداری | Farachoob",
     description:
       "صنایع چوب فراچوب - تولیدکننده تخصصی میز اداری، صندلی مدیرتی و مبلمان اداری با ۳ دهه تجربه | کیفیت درجه یک با قیمت رقابتی",
-    url: "https://farachoob.ir",
+    url: "https://farachob.com",
     siteName: "فراچوب | Farachoob",
     images: [
       {
-        url: "https://farachoob.ir/images/og-banner.jpg",
+        url: "https://farachob.com/images/og-banner.jpg",
         width: 1200,
         height: 630,
         alt: "نمونه محصولات فراچوب - میز اداری مدرن و صندلی مدیرتی لوکس",
@@ -64,12 +64,12 @@ export const metadata = {
     title: "فراچوب | تولیدکننده ممتاز میز و صندلی اداری",
     description:
       "تولیدات چوبی اداری با کیفیت عالی و طراحی مدرن - مناسب برای دفاتر کار، شرکتها و سازمانها",
-    images: ["https://farachoob.ir/images/twitter-card.jpg"],
+    images: ["https://farachob.com/images/twitter-card.jpg"],
   },
   alternates: {
-    canonical: "https://farachoob.ir",
+    canonical: "https://farachob.com",
   },
-  metadataBase: new URL("https://farachoob.ir"),
+  metadataBase: new URL("https://farachob.com"),
   robots: {
     index: true,
     follow: true,

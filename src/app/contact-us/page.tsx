@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import useDataGetter from "@/hooks/useDataGetter";
-import { cn } from "@/lib/utils";
+import { emitSocket } from "@/lib/socket";
+import { cn, normalizePhoneNumber } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Loader2, Mail, MapPin, Phone, RefreshCcw, Send } from "lucide-react";
@@ -13,8 +14,20 @@ import { z } from "zod";
 const ContactUsSchema = z.object({
   name: z.string().min(2, "نام باید حداقل ۲ کاراکتر باشد"),
   email: z.string().email("ایمیل معتبر نیست"),
-  message: z.string().min(5, "پیام باید حداقل ۵ کاراکتر باشد"),
+  message: z
+    .string()
+    .min(5, "پیام باید حداقل ۵ کاراکتر باشد")
+    .max(500, "پیام میتواند حداکثر ۵۰۰ کاراکتر باشد"),
   captcha: z.string().min(1, "کد امنیتی الزامی است"),
+  mobile: z.string().superRefine((val, ctx) => {
+    const normalized = normalizePhoneNumber(val);
+    if (!/^09\d{9}$/.test(normalized)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "شماره موبایل معتبر نیست (باید با 09 شروع شود)",
+      });
+    }
+  }),
 });
 
 type ContactUsFormValues = z.infer<typeof ContactUsSchema>;
@@ -26,6 +39,8 @@ export interface Data {
   name: string;
   email: string;
   createdAt: string;
+  adminUsersIds?: { id: string }[];
+  mobile?: string;
 }
 
 const ContactUs = () => {
@@ -34,6 +49,7 @@ const ContactUs = () => {
     handleSubmit,
     reset,
     setValue,
+    setError,
     formState: { errors },
   } = useForm<ContactUsFormValues>({
     resolver: zodResolver(ContactUsSchema),
@@ -48,7 +64,15 @@ const ContactUs = () => {
     immediatelyFetch: false,
     method: "POST",
     onFailure(error) {
+      console.log(error?.response?.data, "error.response.data");
+
       toast.error(error?.response?.data?.message);
+      if (error?.response?.data?.reason === "captcha") {
+        setError("captcha", {
+          message: error.response.data.message,
+          type: "validate",
+        });
+      }
       fetchCaptcha?.({});
     },
     onSuccess(data) {
@@ -60,8 +84,15 @@ const ContactUs = () => {
   const onSubmit = async (data: ContactUsFormValues) => {
     fetch?.({
       inputBody: { ...data },
+    }).then((data) => {
+      console.log({ data });
+
+      data?.adminUsersIds?.forEach((item) => {
+        emitSocket("new-notification", { toUserId: item.id });
+      });
     });
   };
+  console.log({ data });
 
   if (data?.id)
     return (
@@ -169,6 +200,25 @@ const ContactUs = () => {
                 )}
               </div>
 
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+                  شماره موبایل <span className="text-red-500">*</span>
+                </label>
+                <input
+                  {...register("mobile")}
+                  className={cn(
+                    "w-full px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                    errors.name ? "border-red-500" : "border-gray-300"
+                  )}
+                  placeholder="شماره موبایل خود را وارد کنید..."
+                />
+                {errors.mobile && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.mobile?.message}
+                  </p>
+                )}
+              </div>
+
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
@@ -204,6 +254,7 @@ const ContactUs = () => {
                   errors.message ? "border-red-500" : "border-gray-300"
                 )}
                 placeholder="متن پیام خود را اینجا بنویسید..."
+                maxLength={501}
               />
               {errors.message && (
                 <p className="mt-1 text-sm text-red-500">
