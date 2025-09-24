@@ -26,9 +26,7 @@ export const uploadFile = async (file: File, folder = "products") => {
     Key: key,
   });
 
-  const url = await getSignedUrl(s3, uploadedCommand, {
-    expiresIn: Infinity,
-  });
+  const url = await getSignedUrl(s3, uploadedCommand);
 
   return url;
 };
