@@ -55,7 +55,7 @@ const NotificationIcon = () => {
       />
 
       {!!notificationCount && (
-        <div className="absolute -bottom-2 -right-[11px] rounded-full bg-red-500 w-8 h-8 flex justify-center items-center text-white">
+        <div className="absolute -bottom-2 -right-[11px] rounded-full bg-blue-700/90 w-8 h-8 flex justify-center items-center text-white">
           <span className="text-sm">
             {notificationCount > 99 ? "+99" : notificationCount}
           </span>

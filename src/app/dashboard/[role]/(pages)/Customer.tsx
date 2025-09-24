@@ -1,190 +1,85 @@
 "use client";
 
-import React, { useState } from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-import { Bell, Package } from "lucide-react";
-
-// Define types for your data
-interface Order {
-  id: string;
-  product: string;
-  category: string;
-  status: string;
-  amount: number;
-}
-
-interface Notification {
-  id: number;
-  message: string;
-  time: string;
-}
-
-interface Activity {
-  id: number;
-  action: string;
-  time: string;
-}
-
-interface CategoryData {
-  name: string;
-  value: number;
-}
+import useDataGetter from "@/hooks/useDataGetter";
+import { Notifications } from "@/types/common";
+import { Bell, Inbox, Loader2, RefreshCcw, XCircle } from "lucide-react";
+import NotificationItem from "../notifications/components/NotificationItem";
+import PersianCalendar from "@/components/PersianCalender/PersianCalender";
+import { useState } from "react";
+import clsx from "clsx";
 
 const CustomerDashboard = () => {
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      id: "ORD001",
-      product: "کفش اسپرت",
-      category: "لباس",
-      status: "ارسال شد",
-      amount: 1200000,
-    },
-    {
-      id: "ORD002",
-      product: "پیراهن مردانه",
-      category: "لباس",
-      status: "در انتظار پرداخت",
-      amount: 650000,
-    },
-    {
-      id: "ORD003",
-      product: "هدفون بی‌سیم",
-      category: "الکترونیک",
-      status: "تحویل داده شد",
-      amount: 980000,
-    },
-    {
-      id: "ORD004",
-      product: "کتاب داستان",
-      category: "کتاب",
-      status: "ارسال شد",
-      amount: 200000,
-    },
-    {
-      id: "ORD005",
-      product: "کفش رسمی",
-      category: "لباس",
-      status: "تحویل داده شد",
-      amount: 850000,
-    },
-  ]);
+  const { data, error, fetch, loading } = useDataGetter<Notifications[]>({
+    url: "/dashboard/notifications",
+  });
 
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { id: 1, message: "سفارش ORD002 هنوز پرداخت نشده", time: "2 ساعت پیش" },
-    { id: 2, message: "تخفیف 10٪ برای خرید بعدی فعال شد", time: "1 روز پیش" },
-  ]);
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
-  const [activities, setActivities] = useState<Activity[]>([
-    { id: 1, action: "سفارش ORD001 تحویل داده شد", time: "1 روز پیش" },
-    { id: 2, action: "پرداخت ORD002 انجام نشد", time: "2 روز پیش" },
-    { id: 3, action: "نظرات برای محصول هدفون ثبت شد", time: "3 روز پیش" },
-  ]);
-
-  // محاسبه داده برای Pie Chart با تایپ صحیح
-  const categoryData: CategoryData[] = Object.values(
-    orders.reduce((acc: Record<string, CategoryData>, order) => {
-      if (!acc[order.category]) {
-        acc[order.category] = { name: order.category, value: 0 };
-      }
-      acc[order.category].value += 1;
-      return acc;
-    }, {})
-  );
-
-  const COLORS = ["#3b82f6", "#f97316", "#10b981", "#f43f5e", "#8b5cf6"];
+  const handleDateSelect = (date: string) => {
+    setSelectedDate(date);
+  };
 
   return (
     <div className="p-6 space-y-6">
       {/* ردیف بالا: نمودار و اعلان‌ها کنار هم */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* نمودار دایره‌ای */}
-        <div className="bg-white shadow-lg rounded-2xl p-4">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-            <Package size={20} /> نسبت سفارشات بر اساس دسته‌بندی
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                // data={categoryData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                // label={(entry: CategoryData) => `${entry.name} (${entry.value})`}
-              >
-                {categoryData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
         {/* اعلان‌ها */}
         <div className="bg-white shadow-lg rounded-2xl p-4">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
             <Bell size={20} /> اعلان‌ها
+            <RefreshCcw
+              onClick={() => {
+                if (loading) return;
+                fetch?.({});
+              }}
+              className={clsx(
+                loading ? "cursor-not-allowed  text-gray-400" : "cursor-pointer"
+              )}
+            />
           </h2>
-          <ul className="space-y-2 max-h-72 overflow-y-auto">
-            {notifications.map((n) => (
-              <li key={n.id} className="p-3 border rounded-lg hover:bg-gray-50">
-                <p>{n.message}</p>
-                <span className="text-xs text-gray-400">{n.time}</span>
-              </li>
-            ))}
+          <ul className="space-y-2 overflow-y-scroll h-full">
+            {loading ? (
+              <div className="flex justify-center items-center h-full">
+                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-10 gap-8">
+                <XCircle className="w-12 h-12 mb-2 text-red-500" />
+                <div className="text-lg font-medium flex justify-center items-center gap-4">
+                  <span className="text-red-500">
+                    خطایی رخ داده است. دوباره تلاش کنید.
+                  </span>
+                </div>
+              </div>
+            ) : data?.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                <Inbox className="w-12 h-12 mb-2" />
+                <p className="text-lg">اعلانی وجود ندارد</p>
+              </div>
+            ) : (
+              data?.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  id={notification.id}
+                  isRead={notification.isRead}
+                  message={notification.message}
+                  title={notification.title}
+                  createdAt={notification.createdAt}
+                  iconType={notification.type}
+                />
+              ))
+            )}
           </ul>
         </div>
-      </div>
 
-      {/* جدول آخرین سفارش‌ها */}
-      <div className="bg-white shadow-lg rounded-2xl p-4">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
-          <Package size={20} /> آخرین سفارش‌ها
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-right table-auto border-collapse">
-            <thead>
-              <tr className="border-b bg-gray-50">
-                <th className="p-2">کد سفارش</th>
-                <th className="p-2">محصول</th>
-                <th className="p-2">دسته‌بندی</th>
-                <th className="p-2">وضعیت</th>
-                <th className="p-2">مبلغ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id} className="border-b hover:bg-gray-50">
-                  <td className="p-2">{order.id}</td>
-                  <td className="p-2">{order.product}</td>
-                  <td className="p-2">{order.category}</td>
-                  <td className="p-2">{order.status}</td>
-                  <td className="p-2">{order.amount.toLocaleString()} تومان</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="flex-1">
+          <PersianCalendar
+            onDateSelect={handleDateSelect}
+            selectedDate={selectedDate}
+            showTodayButton={true}
+            className="w-full"
+          />
         </div>
-      </div>
-
-      {/* گزارش فعالیت‌های کاربر */}
-      <div className="bg-white shadow-lg rounded-2xl p-4">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">
-          گزارش فعالیت‌ها
-        </h2>
-        <ul className="space-y-2 max-h-72 overflow-y-auto">
-          {activities.map((a) => (
-            <li key={a.id} className="p-3 border rounded-lg hover:bg-gray-50">
-              <p>{a.action}</p>
-              <span className="text-xs text-gray-400">{a.time}</span>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

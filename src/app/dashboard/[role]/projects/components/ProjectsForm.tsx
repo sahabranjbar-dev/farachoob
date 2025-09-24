@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Trash, Trash2, Upload, X } from "lucide-react";
+import { Loader2, Trash, Trash2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useTabular from "@/hooks/useTabular";
 import axios from "axios";
@@ -217,7 +217,11 @@ const ProjectsForm = ({ initialData }: Props) => {
                 className="px-8"
                 disabled={projectLoading}
               >
-                {projectLoading ? "در حال ذخیره..." : "ذخیره"}
+                {projectLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "ذخیره"
+                )}
               </Button>
               <Button
                 type="button"

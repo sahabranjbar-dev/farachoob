@@ -2,19 +2,24 @@
 import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
+import { usePermissions } from "@/container/PermissionProvider/context/PermissionProviderContext";
 import { ITableColumns } from "@/types/table";
 import React, { useMemo } from "react";
 
 const ProductsList = () => {
+  const { userPermissions } = usePermissions();
+
   const columns = useMemo<ITableColumns[]>(
     () => [
       {
         field: "rowNumber",
         title: "ردیف",
+        width: "30px",
       },
       {
         field: "farsiTitle",
         title: "نام فارسی محصول",
+        width: "100px",
       },
       {
         field: "englishTitle",
@@ -24,31 +29,35 @@ const ProductsList = () => {
         field: "description",
         title: "توضیحات",
       },
-      {
-        field: "price",
-        title: "قیمت",
-        render(v, row, meta) {
-          return Number(v).toLocaleString("fa");
-        },
-      },
-      {
-        field: "stock",
-        title: "موجودی",
-      },
-      {
-        field: "discount",
-        title: "تخفیف",
-      },
-      {
-        field: "createdAt",
-        title: "تاریخ ایجاد",
-        hasDateFormatter: true,
-      },
-      {
-        field: "updateAt",
-        title: "تاریخ ویرایش",
-        hasDateFormatter: true,
-      },
+      ...(userPermissions?.hasEdit
+        ? [
+            {
+              field: "price",
+              title: "قیمت",
+              render(v: string) {
+                return Number(v).toLocaleString("fa");
+              },
+            },
+            {
+              field: "stock",
+              title: "موجودی",
+            },
+            {
+              field: "discount",
+              title: "تخفیف",
+            },
+            {
+              field: "createdAt",
+              title: "تاریخ ایجاد",
+              hasDateFormatter: true,
+            },
+            {
+              field: "updateAt",
+              title: "تاریخ ویرایش",
+              hasDateFormatter: true,
+            },
+          ]
+        : []),
       {
         field: "id",
         title: "عملیات",

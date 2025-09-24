@@ -84,8 +84,10 @@ export async function GET(req: NextRequest) {
           likes: {
             select: {
               id: true,
+              user: true,
             },
           },
+          replies: true,
         },
       }),
       prisma.comment.count({ where }),

@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useDataGetter from "@/hooks/useDataGetter";
 import useSWR, { mutate } from "swr";
 import Image from "next/image";
+import { emitSocket } from "@/lib/socket";
 
 // ✅ اسکیمای ولیدیشن
 const CommentSchema = z.object({
@@ -70,10 +71,12 @@ export default function CommentForm({
     onSuccess: (data) => {
       toast.success(data?.message, {
         position: "bottom-center",
+        duration: 5000,
       });
       reset();
       mutate?.();
       closeForm?.();
+      emitSocket("new-notification", { toUserId: data?.adminId });
     },
     onFailure(error) {
       toast.error(error?.response?.data?.error, {

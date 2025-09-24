@@ -18,6 +18,8 @@ import {
   Reply,
   ChevronDown,
   ChevronUp,
+  Check,
+  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +28,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import clsx from "clsx";
+import { useList } from "@/container/ListContainer/ListContainer";
 
 interface UserInfo {
   id: string;
@@ -78,7 +82,7 @@ const ApproveComments: React.FC<ApproveCommentsProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAllReplies, setShowAllReplies] = useState(false);
-
+  const { fetch: refreshList } = useList();
   const handleAction = async (actionType: "approve" | "reject") => {
     if (!onApprove || !onReject) return;
 
@@ -90,6 +94,7 @@ const ApproveComments: React.FC<ApproveCommentsProps> = ({
         ? onApprove(comment.id)
         : onReject(comment.id));
       setIsDialogOpen(false);
+      refreshList?.({});
     } catch (err) {
       setError("خطا در انجام عملیات. لطفاً دوباره تلاش کنید.");
       console.error("Operation failed:", err);
@@ -115,9 +120,12 @@ const ApproveComments: React.FC<ApproveCommentsProps> = ({
   return (
     <>
       <Button
-        variant="outline"
+        variant="ghost"
         onClick={() => setIsDialogOpen(true)}
-        className={className}
+        className={clsx(
+          className,
+          "bg-blue-500 text-white hover:bg-blue-600 hover:text-white"
+        )}
         size="sm"
       >
         <MessageSquare className="w-4 h-4 ml-2" />
@@ -127,9 +135,11 @@ const ApproveComments: React.FC<ApproveCommentsProps> = ({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 h-full mx-auto">
               <MessageSquare className="w-5 h-5" />
-              مدیریت نظر کاربر
+              <div className="text-2xl font-bold text-gray-900">
+                مدیریت نظر کاربر
+              </div>
             </DialogTitle>
           </DialogHeader>
 
@@ -182,7 +192,7 @@ const ApproveComments: React.FC<ApproveCommentsProps> = ({
                 <section className="space-y-4">
                   <h4 className="font-semibold flex items-center gap-2 text-muted-foreground">
                     <Reply className="w-4 h-4" />
-                    پاسخ‌های کامنت والد
+                    در پاسخ کامنت:
                   </h4>
 
                   {/* کامنت والد */}
@@ -292,27 +302,28 @@ const ApproveComments: React.FC<ApproveCommentsProps> = ({
 
             <div className="flex gap-2 sm:order-2">
               <Button
-                variant="destructive"
-                onClick={() => handleAction("reject")}
-                disabled={isLoading}
-                className="flex-1"
-              >
-                {isLoading ? (
-                  <Loader2 className="animate-spin w-4 h-4 ml-2" />
-                ) : null}
-                رد نظر
-              </Button>
-
-              <Button
-                variant="default"
+                variant="outline"
                 onClick={() => handleAction("approve")}
                 disabled={isLoading}
-                className="flex-1"
+                left={<Check />}
+                className="flex-1 bg-blue-500 text-white hover:bg-blue-600 hover:text-white"
               >
                 {isLoading ? (
                   <Loader2 className="animate-spin w-4 h-4 ml-2" />
                 ) : null}
                 تایید نظر
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleAction("reject")}
+                disabled={isLoading}
+                className="flex-1"
+                left={<X />}
+              >
+                {isLoading ? (
+                  <Loader2 className="animate-spin w-4 h-4 ml-2" />
+                ) : null}
+                رد نظر
               </Button>
             </div>
           </DialogFooter>

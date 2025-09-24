@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { getCommentsRecursive } from "@/lib/getCommentsRecursive";
+import { createNnotification } from "@/lib/sendNotification";
+import { NotificationType } from "@/types/common";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -97,11 +99,51 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const adminUser = await prisma.user.findFirst({
+      where: {
+        role: {
+          englishTitle: "admin",
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const adminId = adminUser?.id;
+    if (!adminId)
+      return NextResponse.json({
+        message: "خطایی رخ داده است، دوباره تلاش کنید",
+      });
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user?.id)
+      return NextResponse.json({
+        message: "خطایی رخ داده است، دوباره تلاش کنید",
+      });
+
+    const result = await createNnotification(
+      "کامنت جدید در سایت ایجاد شد",
+      adminId,
+      `${user?.firstName ?? "کاربر جدید"} در سایت کامنت جدید ایجاد کرد`,
+      NotificationType.INFO
+    );
+
+    if (!result)
+      return NextResponse.json({
+        message: "خطایی رخ داده است، دوباره تلاش کنید",
+      });
+
     return NextResponse.json(
       {
         status: 200,
-        message: "کامنت با موفقیت ثبت شد",
+        message: "کامنت ثبت شد، پس از تایید در سایت قرار میگیرد",
         comment: newComment,
+        adminId,
       },
       { status: 200 }
     );

@@ -7,7 +7,7 @@ export async function getCommentsRecursive(
   articleId: string
 ): Promise<Comment[]> {
   const comments = await prisma.comment.findMany({
-    where: { parentId, articleId },
+    where: { parentId, articleId, isApproved: true },
     include: {
       user: true,
       likes: true,
