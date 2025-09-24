@@ -26,7 +26,9 @@ const BlogsList = () => {
       {
         field: "id",
         title: "عملیات",
-        render: (id) => <RowFormButtons id={id} />,
+        render: (id) => (
+          <RowFormButtons id={id} deleterUrl={`/dashboard/blogs?id=${id}`} />
+        ),
       },
     ],
     []
