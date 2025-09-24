@@ -60,14 +60,14 @@ export interface FormValues {
   variations?: Variation[];
 }
 
-type Variation = {
+export type Variation = {
   colorName?: string;
   colorCode?: string;
   price?: number;
   stock?: number;
-  imageUrl?: File | string;
+  imageUrl?: any;
   id?: string;
-  image?: File | null;
+  image?: any;
 };
 
 interface Props {
@@ -89,10 +89,12 @@ const ProductsForm = ({ initialData }: Props) => {
       description: "",
       variations: [
         {
-          colorCode: "",
+          colorCode: "#000000",
           colorName: "",
           price: 0,
           stock: 0,
+          image: null,
+          imageUrl: "",
         },
       ],
       ...initialData,
@@ -183,6 +185,7 @@ const ProductsForm = ({ initialData }: Props) => {
     name: "variations",
     control: form.control,
   });
+
   return (
     <Card>
       <CardHeader>
@@ -226,7 +229,6 @@ const ProductsForm = ({ initialData }: Props) => {
                   )}
                 />
               ))}
-
               <FormField
                 control={form.control}
                 name="price"
@@ -256,7 +258,6 @@ const ProductsForm = ({ initialData }: Props) => {
                   </FormItem>
                 )}
               />
-
               {[
                 {
                   name: "brandId",
@@ -359,7 +360,6 @@ const ProductsForm = ({ initialData }: Props) => {
                   />
                 )
               )}
-
               <FormField
                 control={form.control}
                 name="stock"
@@ -373,7 +373,6 @@ const ProductsForm = ({ initialData }: Props) => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="description"
@@ -390,7 +389,6 @@ const ProductsForm = ({ initialData }: Props) => {
                   </FormItem>
                 )}
               />
-
               <ImagesUpload
                 fields={fields}
                 append={append}

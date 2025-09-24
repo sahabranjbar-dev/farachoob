@@ -177,7 +177,7 @@ const ContactUs = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
-              <div>
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                   نام کامل <span className="text-red-500">*</span>
                 </label>

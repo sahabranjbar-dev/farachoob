@@ -1,4 +1,5 @@
 import React, {
+  forwardRef,
   KeyboardEvent,
   memo,
   useCallback,
@@ -16,8 +17,13 @@ import { Message } from "@/types/common";
 import { v4 as uuid } from "uuid";
 import { emitSocket } from "@/lib/socket";
 import clsx from "clsx";
+interface StickyChatInputProps
+  extends React.InputHTMLAttributes<HTMLTextAreaElement> {}
 
-const StickyChatInput = memo(() => {
+const StickyChatInputBase = forwardRef<
+  HTMLTextAreaElement,
+  StickyChatInputProps
+>(({}, ref) => {
   const [direction, setDirection] = useState<"rtl" | "ltr">("rtl");
   const { messages, conversationData, setMessages } = useStickyChat();
   const [value, setValue] = useState<string>("");
@@ -136,6 +142,7 @@ const StickyChatInput = memo(() => {
             sendMessageHandler();
           }
         }}
+        ref={ref}
       />
 
       <div className="absolute bottom-[50%] left-2 translate-y-[50%]">
@@ -153,6 +160,6 @@ const StickyChatInput = memo(() => {
   );
 });
 
-StickyChatInput.displayName = "StickyChatInput";
+StickyChatInputBase.displayName = "StickyChatInput";
 
-export default StickyChatInput;
+export const StickyChatInput = memo(StickyChatInputBase);
