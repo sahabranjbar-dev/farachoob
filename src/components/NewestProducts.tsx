@@ -95,11 +95,11 @@ const NewestProducts = () => {
             products?.resultList?.map((product: IProduct) => (
               <SwiperSlide key={product.id} className="!w-80 !h-auto">
                 <ProductCard
-                  id={product.id}
-                  imageSrc={product.variations[0].images[0].url}
-                  imageAlt={product.englishTitle}
-                  title={product.farsiTitle}
-                  description={product.description}
+                  id={product?.id}
+                  imageSrc={product?.variations?.[0]?.images?.[0]?.url}
+                  imageAlt={product?.englishTitle}
+                  title={product?.farsiTitle}
+                  description={product?.description}
                   className="cursor-pointer bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col"
                 />
               </SwiperSlide>
