@@ -18,7 +18,6 @@ export default function Comments({ articleId }: Props) {
     fetcher,
     {
       revalidateOnFocus: false,
-      revalidateOnMount: false,
     }
   );
 

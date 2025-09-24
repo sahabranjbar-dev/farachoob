@@ -16,6 +16,7 @@ export const uploadFile = async (file: File, folder = "products") => {
     Key: key,
     Body: buffer,
     ContentType: file.type,
+    ACL: "public-read",
   });
 
   await s3.send(command);
@@ -25,8 +26,9 @@ export const uploadFile = async (file: File, folder = "products") => {
     Key: key,
   });
 
-  const url = await getSignedUrl(s3, uploadedCommand);
-  console.log({ url });
+  const url = await getSignedUrl(s3, uploadedCommand, {
+    expiresIn: Infinity,
+  });
 
   return url;
 };

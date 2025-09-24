@@ -14,6 +14,9 @@ export default async function BlogPage({ params }: Props) {
   if (id) {
     const article = await prisma.article.findUnique({
       where: { id },
+      include: {
+        comments: true,
+      },
     });
 
     return <ArticlePage data={article} />;
