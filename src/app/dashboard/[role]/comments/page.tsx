@@ -7,7 +7,7 @@ import PermissionProvider from "@/container/PermissionProvider/PermissionProvide
 const CommentsTable = () => {
   return (
     <PermissionProvider moduleName="comments">
-      <ListContainer url="/comment/all">
+      <ListContainer url="/dashboard/comments">
         <CommentsHeader />
         <CommentsList />
       </ListContainer>

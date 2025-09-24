@@ -13,7 +13,6 @@ export async function sendNotification(message: string, userId: string) {
   );
 
   const result = await response.json();
-  console.log({ result });
 
   return response;
 }
@@ -38,7 +37,6 @@ export async function createNnotification(
   );
 
   const result = await response.json();
-  console.log({ result });
 
   return response;
 }

@@ -18587,6 +18587,7 @@ export namespace Prisma {
     content: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isApproved: boolean | null
     userId: string | null
     articleId: string | null
     projectId: string | null
@@ -18598,6 +18599,7 @@ export namespace Prisma {
     content: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isApproved: boolean | null
     userId: string | null
     articleId: string | null
     projectId: string | null
@@ -18609,6 +18611,7 @@ export namespace Prisma {
     content: number
     createdAt: number
     updatedAt: number
+    isApproved: number
     userId: number
     articleId: number
     projectId: number
@@ -18622,6 +18625,7 @@ export namespace Prisma {
     content?: true
     createdAt?: true
     updatedAt?: true
+    isApproved?: true
     userId?: true
     articleId?: true
     projectId?: true
@@ -18633,6 +18637,7 @@ export namespace Prisma {
     content?: true
     createdAt?: true
     updatedAt?: true
+    isApproved?: true
     userId?: true
     articleId?: true
     projectId?: true
@@ -18644,6 +18649,7 @@ export namespace Prisma {
     content?: true
     createdAt?: true
     updatedAt?: true
+    isApproved?: true
     userId?: true
     articleId?: true
     projectId?: true
@@ -18728,6 +18734,7 @@ export namespace Prisma {
     content: string
     createdAt: Date
     updatedAt: Date
+    isApproved: boolean | null
     userId: string
     articleId: string | null
     projectId: string | null
@@ -18756,6 +18763,7 @@ export namespace Prisma {
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isApproved?: boolean
     userId?: boolean
     articleId?: boolean
     projectId?: boolean
@@ -18774,6 +18782,7 @@ export namespace Prisma {
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isApproved?: boolean
     userId?: boolean
     articleId?: boolean
     projectId?: boolean
@@ -18789,6 +18798,7 @@ export namespace Prisma {
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isApproved?: boolean
     userId?: boolean
     articleId?: boolean
     projectId?: boolean
@@ -18804,13 +18814,14 @@ export namespace Prisma {
     content?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isApproved?: boolean
     userId?: boolean
     articleId?: boolean
     projectId?: boolean
     parentId?: boolean
   }
 
-  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "userId" | "articleId" | "projectId" | "parentId", ExtArgs["result"]["comment"]>
+  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "updatedAt" | "isApproved" | "userId" | "articleId" | "projectId" | "parentId", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     article?: boolean | Comment$articleArgs<ExtArgs>
@@ -18848,6 +18859,7 @@ export namespace Prisma {
       content: string
       createdAt: Date
       updatedAt: Date
+      isApproved: boolean | null
       userId: string
       articleId: string | null
       projectId: string | null
@@ -19285,6 +19297,7 @@ export namespace Prisma {
     readonly content: FieldRef<"Comment", 'String'>
     readonly createdAt: FieldRef<"Comment", 'DateTime'>
     readonly updatedAt: FieldRef<"Comment", 'DateTime'>
+    readonly isApproved: FieldRef<"Comment", 'Boolean'>
     readonly userId: FieldRef<"Comment", 'String'>
     readonly articleId: FieldRef<"Comment", 'String'>
     readonly projectId: FieldRef<"Comment", 'String'>
@@ -31996,6 +32009,7 @@ export namespace Prisma {
     content: 'content',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    isApproved: 'isApproved',
     userId: 'userId',
     articleId: 'articleId',
     projectId: 'projectId',
@@ -33264,6 +33278,7 @@ export namespace Prisma {
     content?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
+    isApproved?: BoolNullableFilter<"Comment"> | boolean | null
     userId?: StringFilter<"Comment"> | string
     articleId?: StringNullableFilter<"Comment"> | string | null
     projectId?: StringNullableFilter<"Comment"> | string | null
@@ -33281,6 +33296,7 @@ export namespace Prisma {
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isApproved?: SortOrderInput | SortOrder
     userId?: SortOrder
     articleId?: SortOrderInput | SortOrder
     projectId?: SortOrderInput | SortOrder
@@ -33301,6 +33317,7 @@ export namespace Prisma {
     content?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
+    isApproved?: BoolNullableFilter<"Comment"> | boolean | null
     userId?: StringFilter<"Comment"> | string
     articleId?: StringNullableFilter<"Comment"> | string | null
     projectId?: StringNullableFilter<"Comment"> | string | null
@@ -33318,6 +33335,7 @@ export namespace Prisma {
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isApproved?: SortOrderInput | SortOrder
     userId?: SortOrder
     articleId?: SortOrderInput | SortOrder
     projectId?: SortOrderInput | SortOrder
@@ -33335,6 +33353,7 @@ export namespace Prisma {
     content?: StringWithAggregatesFilter<"Comment"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
+    isApproved?: BoolNullableWithAggregatesFilter<"Comment"> | boolean | null
     userId?: StringWithAggregatesFilter<"Comment"> | string
     articleId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
     projectId?: StringNullableWithAggregatesFilter<"Comment"> | string | null
@@ -35081,6 +35100,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     user: UserCreateNestedOneWithoutCommentsInput
     article?: ArticleCreateNestedOneWithoutCommentsInput
     project?: ProjectCreateNestedOneWithoutCommentInput
@@ -35094,6 +35114,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     projectId?: string | null
@@ -35107,6 +35128,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
     article?: ArticleUpdateOneWithoutCommentsNestedInput
     project?: ProjectUpdateOneWithoutCommentNestedInput
@@ -35120,6 +35142,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -35133,6 +35156,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     projectId?: string | null
@@ -35144,6 +35168,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type CommentUncheckedUpdateManyInput = {
@@ -35151,6 +35176,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -36854,6 +36880,7 @@ export namespace Prisma {
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isApproved?: SortOrder
     userId?: SortOrder
     articleId?: SortOrder
     projectId?: SortOrder
@@ -36865,6 +36892,7 @@ export namespace Prisma {
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isApproved?: SortOrder
     userId?: SortOrder
     articleId?: SortOrder
     projectId?: SortOrder
@@ -36876,6 +36904,7 @@ export namespace Prisma {
     content?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isApproved?: SortOrder
     userId?: SortOrder
     articleId?: SortOrder
     projectId?: SortOrder
@@ -39386,6 +39415,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     article?: ArticleCreateNestedOneWithoutCommentsInput
     project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
@@ -39398,6 +39428,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     articleId?: string | null
     projectId?: string | null
     parentId?: string | null
@@ -39768,6 +39799,7 @@ export namespace Prisma {
     content?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
     updatedAt?: DateTimeFilter<"Comment"> | Date | string
+    isApproved?: BoolNullableFilter<"Comment"> | boolean | null
     userId?: StringFilter<"Comment"> | string
     articleId?: StringNullableFilter<"Comment"> | string | null
     projectId?: StringNullableFilter<"Comment"> | string | null
@@ -41407,6 +41439,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     user: UserCreateNestedOneWithoutCommentsInput
     project?: ProjectCreateNestedOneWithoutCommentInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
@@ -41419,6 +41452,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     projectId?: string | null
     parentId?: string | null
@@ -41671,6 +41705,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     user: UserCreateNestedOneWithoutCommentsInput
     article?: ArticleCreateNestedOneWithoutCommentsInput
     project?: ProjectCreateNestedOneWithoutCommentInput
@@ -41683,6 +41718,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     projectId?: string | null
@@ -41700,6 +41736,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     user: UserCreateNestedOneWithoutCommentsInput
     article?: ArticleCreateNestedOneWithoutCommentsInput
     project?: ProjectCreateNestedOneWithoutCommentInput
@@ -41712,6 +41749,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     projectId?: string | null
@@ -41918,6 +41956,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
     article?: ArticleUpdateOneWithoutCommentsNestedInput
     project?: ProjectUpdateOneWithoutCommentNestedInput
@@ -41930,6 +41969,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41974,6 +42014,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     user: UserCreateNestedOneWithoutCommentsInput
     article?: ArticleCreateNestedOneWithoutCommentsInput
     project?: ProjectCreateNestedOneWithoutCommentInput
@@ -41986,6 +42027,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     projectId?: string | null
@@ -42089,6 +42131,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
     article?: ArticleUpdateOneWithoutCommentsNestedInput
     project?: ProjectUpdateOneWithoutCommentNestedInput
@@ -42101,6 +42144,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43217,6 +43261,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     user: UserCreateNestedOneWithoutCommentsInput
     article?: ArticleCreateNestedOneWithoutCommentsInput
     parent?: CommentCreateNestedOneWithoutRepliesInput
@@ -43229,6 +43274,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     parentId?: string | null
@@ -43776,6 +43822,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     articleId?: string | null
     projectId?: string | null
     parentId?: string | null
@@ -43878,6 +43925,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     article?: ArticleUpdateOneWithoutCommentsNestedInput
     project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
@@ -43890,6 +43938,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43902,6 +43951,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44648,6 +44698,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     projectId?: string | null
     parentId?: string | null
@@ -44658,6 +44709,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
     project?: ProjectUpdateOneWithoutCommentNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
@@ -44670,6 +44722,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44682,6 +44735,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44692,6 +44746,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     projectId?: string | null
@@ -44708,6 +44763,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
     article?: ArticleUpdateOneWithoutCommentsNestedInput
     project?: ProjectUpdateOneWithoutCommentNestedInput
@@ -44720,6 +44776,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44732,6 +44789,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44862,6 +44920,7 @@ export namespace Prisma {
     content: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    isApproved?: boolean | null
     userId: string
     articleId?: string | null
     parentId?: string | null
@@ -44872,6 +44931,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     user?: UserUpdateOneRequiredWithoutCommentsNestedInput
     article?: ArticleUpdateOneWithoutCommentsNestedInput
     parent?: CommentUpdateOneWithoutRepliesNestedInput
@@ -44884,6 +44944,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44896,6 +44957,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isApproved?: NullableBoolFieldUpdateOperationsInput | boolean | null
     userId?: StringFieldUpdateOperationsInput | string
     articleId?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null

@@ -10,39 +10,94 @@ export default function useSubscribe() {
     null
   );
 
+  // بررسی پشتیبانی مرورگر از Push Notifications
+  const isPushSupported = () => {
+    return (
+      typeof window !== "undefined" &&
+      "serviceWorker" in navigator &&
+      "PushManager" in window &&
+      "Notification" in window
+    );
+  };
+
   const subscribe = async ({ userId }: Props) => {
-    const permission = await Notification.requestPermission();
-    if (permission !== "granted") {
-      alert("اجازه نوتیفیکیشن داده نشد!");
-      return;
+    // بررسی پشتیبانی
+    if (!isPushSupported()) {
+      alert("مرورگر شما از نوتیفیکیشن پشتیبانی نمی‌کند!");
+      return { error: "Browser not supported" };
     }
 
-    const registration = await navigator.serviceWorker.ready;
-    const sub = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(
-        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
-      ),
-    });
+    // بررسی سیستم عامل - iOS پشتیبانی نمی‌کند
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      alert(
+        "نوتیفیکیشن در iOS از طریق مرورگر قابل استفاده نیست. لطفاً از اپلیکیشن استفاده کنید."
+      );
+      return { error: "iOS not supported" };
+    }
 
-    setSubscription(sub);
+    try {
+      const permission = await Notification.requestPermission((permission) => {
+        console.log(permission);
+      });
+      if (permission !== "granted") {
+        alert("اجازه نوتیفیکیشن داده نشد!");
+        return { error: "Permission denied" };
+      }
 
-    // ارسال به سرور
-    const response = await fetch(`/api/save-subscription?userId=${userId}`, {
-      method: "POST",
-      body: JSON.stringify(sub),
-      headers: { "Content-Type": "application/json" },
-    });
+      const registration = await navigator.serviceWorker.ready;
 
-    const result = await response.json();
+      // بررسی وجود subscription قبلی
+      let sub = await registration.pushManager.getSubscription();
 
-    return result;
+      if (!sub) {
+        sub = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
+          ),
+        });
+      }
+
+      setSubscription(sub);
+
+      // ارسال به سرور
+      const response = await fetch(`/api/save-subscription?userId=${userId}`, {
+        method: "POST",
+        body: JSON.stringify(sub),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save subscription");
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error in subscription:", error);
+      alert("خطا در فعال‌سازی نوتیفیکیشن!");
+      return { error: "Subscription failed" };
+    }
+  };
+
+  // تابع برای بررسی وضعیت subscription
+  const checkSubscription = async () => {
+    if (!isPushSupported()) return null;
+
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      return await registration.pushManager.getSubscription();
+    } catch (error) {
+      return null;
+    }
   };
 
   return {
     subscribe,
     setSubscription,
     subscription,
+    isPushSupported,
+    checkSubscription,
   };
 }
 
