@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const session = await getServerSession(authOptions);
 
     if (
-      session?.user.role?.englishTitle !== "admin" ||
+      session?.user.role?.englishTitle !== "admin" &&
       session?.user.role?.englishTitle !== "manager"
     ) {
       return NextResponse.json({ message: "UnAuthorized" }, { status: 403 });
@@ -64,6 +64,7 @@ export async function GET(request: Request) {
         email: contactMessage.email,
         mobile: contactMessage.mobile,
         createdAt: contactMessage.createdAt,
+        message: contactMessage.message,
       })
     );
 

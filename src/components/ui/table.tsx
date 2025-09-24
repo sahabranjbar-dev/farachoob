@@ -7,6 +7,7 @@ import { useList } from "../../container/ListContainer/ListContainer";
 import { Skeleton } from "./skeleton";
 import { AlertTriangle } from "lucide-react";
 import PaginationWrapper from "../Pagination";
+
 function Table({
   className,
   columns,
@@ -14,6 +15,7 @@ function Table({
   const { data, loading, error, fetch } = useList();
 
   const listData = data?.resultList;
+
   const renderCellContent = (
     column: ITableColumns,
     item: any,
@@ -47,8 +49,8 @@ function Table({
         <TableCell
           key={i}
           style={{
-            width: column.width || "50px",
-            maxWidth: column.width || "50px",
+            width: column.width || "auto",
+            minWidth: column.width || "100px",
           }}
         >
           <Skeleton className="h-5 w-full bg-gray-300/50 rounded" />
@@ -66,8 +68,8 @@ function Table({
               key={column.field}
               className="text-center truncate px-2 py-3"
               style={{
-                width: column.width || "50px",
-                maxWidth: column.width || "50px",
+                width: column.width || "auto",
+                minWidth: column.width || "100px",
               }}
             >
               {renderCellContent(column, item, index)}
@@ -76,100 +78,92 @@ function Table({
         </TableRow>
       ))
     ) : (
-      // If no data, show a single row with a message
       <TableRow>
         <TableCell colSpan={columns.length} className="text-center py-6">
           <p className="text-gray-500">هیچ داده‌ای برای نمایش وجود ندارد.</p>
         </TableCell>
       </TableRow>
     );
-  listData?.map((item: any, index: number) => (
-    <TableRow key={index}>
-      {columns.map((column) => (
-        <TableCell
-          key={column.field}
-          className="text-center truncate px-2 py-3"
-          style={{
-            width: column.width || "50px",
-            maxWidth: column.width || "50px",
-          }}
-        >
-          {renderCellContent(column, item, index)}
-        </TableCell>
-      ))}
-    </TableRow>
-  ));
 
   return (
-    <div className="relative w-full overflow-x-auto border rounded-md shadow-sm mb-32">
-      <table className={cn("w-full text-sm caption-bottom ", className)}>
-        <TableHeader>
-          <TableRow className="bg-muted/30">
-            {columns.map((column) => (
-              <TableHead
-                key={column.field}
-                className="text-center px-2 py-3 whitespace-nowrap font-semibold text-gray-800 overflow-hidden"
-                style={{
-                  width: column.width || "50px",
-                  maxWidth: column.width || "50px",
-                }}
-              >
-                {column.title}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-
-        <TableBody
-          className="[&>tr>td]:whitespace-nowrap [&>tr>td]:truncate [&>tr>td]:text-ellipsis"
-          style={{ minHeight: "220px", display: "table-row-group" }}
-        >
-          {loading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <React.Fragment key={i}>{renderLoadingState()}</React.Fragment>
-            ))
-          ) : error ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="text-center py-6">
-                <div className="flex flex-col items-center gap-2 text-red-600">
-                  <AlertTriangle className="w-8 h-8" />
-                  <p className="text-sm font-medium">
-                    متاسفانه مشکلی در دریافت اطلاعات رخ داده است.
-                  </p>
-                </div>
-              </TableCell>
-            </TableRow>
-          ) : (
-            <>{renderDataRows()}</>
+    <div className="relative w-full border rounded-md shadow-sm mb-32">
+      {/* Container برای اسکرول افقی */}
+      <div className="overflow-x-auto w-full">
+        <table
+          className={cn(
+            "w-full text-sm caption-bottom min-w-full", // مهم: min-w-full
+            className
           )}
-        </TableBody>
-
-        {!error && (
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={columns.length}>
-                <PaginationWrapper
-                  loading={loading ?? true}
-                  currentPage={data?.page}
-                  totalCount={data?.totalItems}
-                  totalPages={data?.totalPages}
-                  onPageChange={(page) => {
-                    fetch?.({
-                      inputParams: {
-                        page,
-                      },
-                    });
+        >
+          <TableHeader>
+            <TableRow className="bg-muted/30">
+              {columns.map((column) => (
+                <TableHead
+                  key={column.field}
+                  className="text-center px-2 py-3 whitespace-nowrap font-semibold text-gray-800"
+                  style={{
+                    width: column.width || "auto",
+                    minWidth: column.width || "100px", // مهم: minWidth
                   }}
-                />
-              </TableCell>
+                >
+                  {column.title}
+                </TableHead>
+              ))}
             </TableRow>
-          </TableFooter>
-        )}
-      </table>
+          </TableHeader>
+
+          <TableBody>
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <React.Fragment key={i}>{renderLoadingState()}</React.Fragment>
+              ))
+            ) : error ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="text-center py-6"
+                >
+                  <div className="flex flex-col items-center gap-2 text-red-600">
+                    <AlertTriangle className="w-8 h-8" />
+                    <p className="text-sm font-medium">
+                      متاسفانه مشکلی در دریافت اطلاعات رخ داده است.
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : (
+              renderDataRows()
+            )}
+          </TableBody>
+
+          {!error && (
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <PaginationWrapper
+                    loading={loading ?? true}
+                    currentPage={data?.page}
+                    totalCount={data?.totalItems}
+                    totalPages={data?.totalPages}
+                    onPageChange={(page) => {
+                      fetch?.({
+                        inputParams: {
+                          page,
+                        },
+                      });
+                    }}
+                  />
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          )}
+        </table>
+      </div>
     </div>
   );
 }
 
+// بقیه کامپوننت‌ها بدون تغییر...
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
   return (
     <thead
