@@ -244,6 +244,7 @@ model ContactMessage {
   name      String
   email     String
   message   String
+  mobile    String?
   createdAt DateTime @default(now())
 }
 
@@ -335,6 +336,12 @@ enum PermissionKey {
   create_projects
   edit_projects
   delete_projects
+
+  //ContactMessages
+  view_Messages
+  create_Messages
+  edit_Messages
+  delete_Messages
 
   //export and import
   can_export

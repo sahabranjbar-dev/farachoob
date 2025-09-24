@@ -280,6 +280,7 @@ exports.Prisma.ContactMessageScalarFieldEnum = {
   name: 'name',
   email: 'email',
   message: 'message',
+  mobile: 'mobile',
   createdAt: 'createdAt'
 };
 
@@ -448,6 +449,10 @@ exports.PermissionKey = exports.$Enums.PermissionKey = {
   create_projects: 'create_projects',
   edit_projects: 'edit_projects',
   delete_projects: 'delete_projects',
+  view_Messages: 'view_Messages',
+  create_Messages: 'create_Messages',
+  edit_Messages: 'edit_Messages',
+  delete_Messages: 'delete_Messages',
   can_export: 'can_export',
   can_import: 'can_import',
   view_chat: 'view_chat',
