@@ -98,7 +98,7 @@ const StickyChatWelcomeContent = () => {
 
                 <button>
                   <a
-                    href={`tel:${PHONE_NUMBER}`}
+                    href={`tel:+${PHONE_NUMBER}`}
                     target="_blank"
                     className="flex items-center gap-3 p-3 rounded-xl border hover:bg-gray-50 transition"
                   >
