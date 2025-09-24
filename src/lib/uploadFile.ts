@@ -1,7 +1,5 @@
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { s3 } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3 } from "@/lib/s3";
 import { randomUUID } from "crypto";
 
 export const uploadFile = async (file: File, folder = "products") => {
@@ -11,22 +9,25 @@ export const uploadFile = async (file: File, folder = "products") => {
   const key = `${folder}/${Date.now()}-${randomUUID()}.${ext}`;
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const command = new PutObjectCommand({
-    Bucket: process.env.LIARA_BUCKET_NAME,
-    Key: key,
-    Body: buffer,
-    ContentType: file.type,
-    ACL: "public-read",
-  });
 
-  await s3.send(command);
+  try {
+    const command = new PutObjectCommand({
+      Bucket: process.env.LIARA_BUCKET_NAME,
+      Key: key,
+      Body: buffer,
+      ContentType: file.type,
+      ACL: "public-read",
+    });
 
-  const uploadedCommand = new GetObjectCommand({
-    Bucket: process.env.LIARA_BUCKET_NAME,
-    Key: key,
-  });
+    await s3.send(command);
 
-  const url = await getSignedUrl(s3, uploadedCommand);
+    // چند روش مختلف برای ساخت لینک دائمی
+    const permanentUrl = `https://${process.env.LIARA_BUCKET_NAME}.storage.c2.liara.space/${key}`;
 
-  return url;
+    console.log("File uploaded successfully:", permanentUrl);
+    return permanentUrl;
+  } catch (error) {
+    console.error("Upload error:", error);
+    throw new Error("آپلود فایل失敗 شد");
+  }
 };

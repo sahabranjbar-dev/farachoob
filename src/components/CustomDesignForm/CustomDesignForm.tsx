@@ -237,9 +237,6 @@ export default function CustomDesignForm() {
       <div className="container mx-auto px-4 max-w-4xl">
         {/* هدر */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center p-4 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-5">
-            <Box className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-          </div>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
             طراحی اختصاصی <span className="text-blue-600">فراچوب</span>
           </h2>

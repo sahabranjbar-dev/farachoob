@@ -7,7 +7,7 @@ import { cn, normalizePhoneNumber } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Loader2, Mail, MapPin, Phone, RefreshCcw, Send } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -49,6 +49,7 @@ const ContactUs = () => {
     handleSubmit,
     reset,
     setValue,
+    control,
     setError,
     formState: { errors },
   } = useForm<ContactUsFormValues>({
@@ -64,8 +65,6 @@ const ContactUs = () => {
     immediatelyFetch: false,
     method: "POST",
     onFailure(error) {
-      console.log(error?.response?.data, "error.response.data");
-
       toast.error(error?.response?.data?.message);
       if (error?.response?.data?.reason === "captcha") {
         setError("captcha", {
@@ -85,14 +84,11 @@ const ContactUs = () => {
     fetch?.({
       inputBody: { ...data },
     }).then((data) => {
-      console.log({ data });
-
       data?.adminUsersIds?.forEach((item) => {
         emitSocket("new-notification", { toUserId: item.id });
       });
     });
   };
-  console.log({ data });
 
   if (data?.id)
     return (
@@ -181,7 +177,7 @@ const ContactUs = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Name */}
-              <div>
+              <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                   نام کامل <span className="text-red-500">*</span>
                 </label>
@@ -242,26 +238,39 @@ const ContactUs = () => {
             </div>
 
             {/* Message */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
-                پیام شما <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                rows={4}
-                {...register("message")}
-                className={cn(
-                  "w-full px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                  errors.message ? "border-red-500" : "border-gray-300"
-                )}
-                placeholder="متن پیام خود را اینجا بنویسید..."
-                maxLength={501}
-              />
-              {errors.message && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.message.message}
-                </p>
-              )}
-            </div>
+            <Controller
+              name="message"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+                      پیام شما <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      {...register("message")}
+                      className={cn(
+                        "w-full px-4 py-3 rounded-lg border transition-all focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                        errors.message ? "border-red-500" : "border-gray-300"
+                      )}
+                      placeholder="متن پیام خود را اینجا بنویسید..."
+                      maxLength={501}
+                    />
+                    {errors.message && (
+                      <p className="mt-1 text-sm text-red-500">
+                        {errors.message.message}
+                      </p>
+                    )}
+                    {!!field?.value?.length && (
+                      <span className="text-sm text-muted-foreground">
+                        {field?.value?.length} کاراکتر
+                      </span>
+                    )}
+                  </div>
+                );
+              }}
+            />
 
             {/* Captcha */}
             <div>

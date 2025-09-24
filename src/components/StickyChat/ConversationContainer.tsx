@@ -1,3 +1,4 @@
+"use client";
 import useDataGetter from "@/hooks/useDataGetter";
 import { Message } from "@/types/common";
 import clsx from "clsx";
@@ -8,14 +9,14 @@ import { useChat } from "../../../stores";
 import { useStickyChat } from "../../../stores/stickyChat";
 import ChatHeader from "./ChatHeader";
 import EmptyChat from "./EmptyChat";
-import StickyChatInput from "./StickyChatInput";
 import { emitSocket } from "@/lib/socket";
+import { StickyChatInput } from "./StickyChatInput";
 
 const ConversationContainer = () => {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const observedMessages = useRef(new Set<string>());
   const messagesRefs = useRef<(HTMLLIElement | null)[]>([]);
-
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const session = useSession();
 
   const userId = session.data?.user.id;
@@ -110,6 +111,21 @@ const ConversationContainer = () => {
     return () => {
       socket.off("mark-message-read", setReadMarkHandler);
     };
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const active = document.activeElement;
+
+      if (active && active.tagName === "INPUT") return;
+
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   function getDirection(text: string): "rtl" | "ltr" {
@@ -230,7 +246,7 @@ const ConversationContainer = () => {
       </div>
 
       <div className="absolute bottom-0 right-0 left-0 z-10 border-t p-2 bg-white">
-        <StickyChatInput />
+        <StickyChatInput ref={inputRef} />
       </div>
     </div>
   );

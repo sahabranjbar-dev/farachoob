@@ -146,3 +146,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "آپلود ناموفق" }, { status: 500 });
   }
 }
+
+// حذف مقاله
+export async function DELETE(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const articleId = searchParams.get("id");
+    if (!articleId)
+      return NextResponse.json(
+        { error: "شناسه مقاله الزامی است" },
+        { status: 400 }
+      );
+
+    await prisma.article.delete({ where: { id: articleId } });
+
+    return NextResponse.json({ message: "مقاله با موفقیت حذف شد" });
+  } catch (error) {
+    console.error("DELETE /articles error:", error);
+    return NextResponse.json({ error: "خطا در حذف مقاله" }, { status: 500 });
+  }
+}

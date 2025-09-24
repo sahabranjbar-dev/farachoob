@@ -1,5 +1,6 @@
 "use client";
 import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
+import TruncatedText from "@/components/TruncatedText";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { usePermissions } from "@/container/PermissionProvider/context/PermissionProviderContext";
@@ -28,6 +29,11 @@ const ProductsList = () => {
       {
         field: "description",
         title: "توضیحات",
+        render(v, row, meta) {
+          return TruncatedText({
+            text: v,
+          });
+        },
       },
       ...(userPermissions?.hasEdit
         ? [
