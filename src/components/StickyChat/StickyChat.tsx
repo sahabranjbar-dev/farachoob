@@ -122,17 +122,15 @@ const StickyChat = () => {
       </StickyChatContainer>
       <div
         className={clsx(
-          "text-xs p-4 w-50 h-24 bg-white border rounded-2xl shadow-lg transition-all duration-300 ease-in-out absolute bottom-24 right-10",
+          "text-xs p-4 w-50 h-24 bg-white dark:bg-black dark:text-white border rounded-2xl shadow-lg transition-all duration-300 ease-in-out absolute bottom-24 right-10",
           showCTA
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-0 translate-y-4 pointer-events-none"
         )}
       >
-        <div className="relative">
+        <div className="relative ">
           به فراچوب خوش آمدید
           <br />
-          {/* من، دستیار مجازی شما هستم. 🤖
-        <br /> */}
           برای ارتباط آنلاین با پشتیبانی و تیم فروش روی دکمه پشتیبانی کلیک کنید.
           <X
             className="absolute -left-5 -top-5 hover:border rounded-full transition-all duration-200 cursor-pointer opacity-30 hover:bg-white hover:scale-150 hover:opacity-100"
