@@ -74,7 +74,7 @@ const StickyNav = () => {
                 />
               </div>
               <span
-                className={cn("text-xs", {
+                className={cn("text-xs text-nowrap overflow-ellipsis", {
                   "font-bold text-primary": item.url === pathname,
                   "text-muted-foreground": item.url !== pathname,
                 })}
