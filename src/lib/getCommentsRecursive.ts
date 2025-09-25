@@ -13,7 +13,7 @@ export async function getCommentsRecursive(
       likes: true,
       replies: true,
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
   });
 
   return Promise.all(

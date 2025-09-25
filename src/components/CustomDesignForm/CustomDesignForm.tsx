@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   Phone,
   FileImage,
   RefreshCcw,
+  Send,
 } from "lucide-react";
 import { useState, useRef } from "react";
 import useDataGetter from "@/hooks/useDataGetter";
@@ -130,6 +131,7 @@ export default function CustomDesignForm() {
     watch,
     formState: { errors },
     setError,
+    control,
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -259,7 +261,13 @@ export default function CustomDesignForm() {
             </label>
             <Input
               placeholder="مثلاً علی رضایی"
-              {...register("name")}
+              {...register("name", {
+                maxLength: {
+                  value: 10,
+                  message: "حداکثر ۱۰ کاراکتر مجاز است",
+                },
+              })}
+              maxLength={10}
               className="py-6 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             />
             {errors.name && (
@@ -278,7 +286,13 @@ export default function CustomDesignForm() {
             </label>
             <Input
               placeholder="09123456789"
-              {...register("mobile")}
+              {...register("mobile", {
+                maxLength: {
+                  value: 11,
+                  message: "حداکثر ۱۰ کاراکتر مجاز است",
+                },
+              })}
+              maxLength={11}
               className="py-6 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             />
             {errors.mobile && (
@@ -297,7 +311,13 @@ export default function CustomDesignForm() {
             </label>
             <Input
               placeholder="میز، صندلی، تخت ..."
-              {...register("productType")}
+              {...register("productType", {
+                maxLength: {
+                  value: 10,
+                  message: "حداکثر ۱۰ کاراکتر مجاز است",
+                },
+              })}
+              maxLength={10}
               className="py-6 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             />
             {errors.productType && (
@@ -316,7 +336,13 @@ export default function CustomDesignForm() {
             </label>
             <Input
               placeholder="مثلاً 120x80 سانتی‌متر"
-              {...register("dimensions")}
+              {...register("dimensions", {
+                maxLength: {
+                  value: 10,
+                  message: "حداکثر ۱۰ کاراکتر مجاز است",
+                },
+              })}
+              maxLength={10}
               className="py-6 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             />
             {errors.dimensions && (
@@ -333,10 +359,18 @@ export default function CustomDesignForm() {
               جنس محصول <span className="text-red-500">*</span>
             </label>
             <Input
+              type="text"
               placeholder="چوب، فلز، ترکیبی ..."
-              {...register("material")}
+              {...register("material", {
+                maxLength: {
+                  value: 10,
+                  message: "حداکثر ۱۰ کاراکتر مجاز است",
+                },
+              })}
+              maxLength={10}
               className="py-6 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
             />
+
             {errors.material && (
               <span className="text-red-500 text-sm mt-2 flex items-center gap-1">
                 <X size={14} />
@@ -357,16 +391,32 @@ export default function CustomDesignForm() {
           </div>
 
           {/* توضیحات */}
-          <div className="flex flex-col md:col-span-2">
-            <label className="font-medium text-gray-700 dark:text-gray-300 mb-2">
-              توضیحات اضافی
-            </label>
-            <Textarea
-              placeholder="اگر توضیحات بیشتری دارید اینجا بنویسید..."
-              {...register("description")}
-              className="min-h-32 py-4 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
-            />
-          </div>
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => {
+              return (
+                <div className="flex flex-col md:col-span-2">
+                  <label className="font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    توضیحات اضافی
+                  </label>
+                  <Textarea
+                    placeholder="اگر توضیحات بیشتری دارید اینجا بنویسید..."
+                    {...register("description", {
+                      maxLength: 500,
+                    })}
+                    className="min-h-32 py-4 px-4 rounded-xl border-gray-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white"
+                    maxLength={500}
+                  />
+                  {!!field.value?.length && (
+                    <span className="text-xs text-gray-700 m-4">
+                      {field.value?.length} کاراکتر
+                    </span>
+                  )}
+                </div>
+              );
+            }}
+          />
 
           {/* آپلود فایل */}
           <div className="flex flex-col md:col-span-2">
@@ -463,9 +513,15 @@ export default function CustomDesignForm() {
             <div className="">
               <Input
                 placeholder="کد امنیتی"
-                {...register("captcha")}
+                {...register("captcha", {
+                  maxLength: {
+                    value: 5,
+                    message: "حداکثر 5 کاراکتر مجاز است",
+                  },
+                })}
+                maxLength={5}
                 required={false}
-                className="dark:bg-gray-800"
+                className="dark:bg-gray-800 m-2"
               />
               {errors.captcha && (
                 <p className="mt-1 text-sm text-red-500">
@@ -476,7 +532,9 @@ export default function CustomDesignForm() {
             <Button
               type="submit"
               disabled={loading}
-              className="px-12 py-6 text-lg rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 transition-all shadow-lg hover:shadow-blue-500/25"
+              left={<Send />}
+              variant={"default"}
+              className="m-4 px-12 py-6 text-lg rounded-xl  transition-all shadow-lg hover:shadow-blue-500/25"
             >
               {loading ? (
                 <div className="flex items-center gap-2">
@@ -484,7 +542,7 @@ export default function CustomDesignForm() {
                   در حال ارسال...
                 </div>
               ) : (
-                "ثبت سفارش طراحی"
+                "ارسال طراحی"
               )}
             </Button>
           </div>

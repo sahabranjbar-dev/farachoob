@@ -1,5 +1,6 @@
 "use client";
 import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
+import TruncatedText from "@/components/TruncatedText";
 import { Button } from "@/components/ui/button";
 import { Table } from "@/components/ui/table";
 import {
@@ -48,6 +49,11 @@ const CustomDesignList = () => {
       {
         field: "description",
         title: "توضیحات",
+        render: (v) =>
+          TruncatedText({
+            text: v,
+            maxLengthDesktop: 50,
+          }),
       },
       {
         field: "id",

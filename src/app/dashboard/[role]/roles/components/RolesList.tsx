@@ -1,5 +1,6 @@
 "use client";
 import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
+import TruncatedText from "@/components/TruncatedText";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
@@ -25,7 +26,10 @@ const RolesList = () => {
         title: "دسترسی‌های این نقش",
         render(v, row, meta) {
           return v?.length
-            ? v?.map((item: any) => item?.permission?.title).join(",")
+            ? TruncatedText({
+                text: v?.map((item: any) => item?.permission?.title).join(","),
+                maxLengthDesktop: 50,
+              })
             : "---";
         },
       },

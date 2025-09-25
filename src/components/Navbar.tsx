@@ -158,9 +158,12 @@ const Navbar = () => {
             className="flex gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
-              {product.variations[0].images[0].id ? (
+              {product?.variations?.[0]?.images?.[0]?.id ? (
                 <Image
-                  src={product.variations[0].images[0].url}
+                  src={
+                    product?.variations?.[0]?.images?.[0]?.url ||
+                    "/images/placeholder.png"
+                  }
                   alt={product.farsiTitle}
                   fill
                   className="object-cover"

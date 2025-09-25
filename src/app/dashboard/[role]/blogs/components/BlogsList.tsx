@@ -9,6 +9,10 @@ const BlogsList = () => {
   const columns: ITableColumns[] = useMemo(
     () => [
       {
+        field: "rowNumber",
+        title: "ردیف",
+      },
+      {
         field: "title",
         title: "عنوان",
       },

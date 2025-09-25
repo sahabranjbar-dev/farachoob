@@ -32,6 +32,7 @@ const ProductsList = () => {
         render(v, row, meta) {
           return TruncatedText({
             text: v,
+            maxLengthDesktop: 50,
           });
         },
       },

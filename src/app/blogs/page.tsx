@@ -44,7 +44,7 @@ export const revalidate = 3600;
 export default async function Blogs() {
   const articles = await prisma.article.findMany({
     where: { published: true },
-    orderBy: { publishedAt: "desc" },
+    orderBy: { publishedAt: "asc" },
     include: { author: true, comments: true },
   });
 

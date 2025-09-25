@@ -22,6 +22,10 @@ const UsersList = () => {
         title: "ایمیل",
       },
       {
+        field: "mobile",
+        title: "موبایل",
+      },
+      {
         field: "roleFarsiTitle",
         title: "نقش",
       },
