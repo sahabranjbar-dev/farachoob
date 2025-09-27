@@ -72,7 +72,7 @@ const Footer = () => {
           {/* درباره فراچوب */}
           <div className="md:col-span-2 space-y-4">
             <h4 className="text-lg font-bold text-white">فراچوب</h4>
-            <p className="text-gray-300 text-sm leading-6 text-justify">
+            <p className="text-gray-300 text-sm leading-6 text-justify select-none">
               صنایع تولیدی تجهیزات اداری فراچوب با اراده، همت و صرف فعل خواستن
               جناب آقای علی شعبانی در سال ۱۳۶۷ و با سرمایه‌گذاری ۲۰۰ هزار تومان
               و یک کارگر ساده، کار خود را آغاز نمود. امروز، فراچوب بزرگترین

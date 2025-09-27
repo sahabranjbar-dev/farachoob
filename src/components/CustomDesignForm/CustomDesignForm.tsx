@@ -260,7 +260,7 @@ export default function CustomDesignForm() {
               نام و نام خانوادگی <span className="text-red-500">*</span>
             </label>
             <Input
-              placeholder="مثلاً علی رضایی"
+              placeholder="نام و نام‌خانوادگی خود را وارد کنید..."
               {...register("name", {
                 maxLength: {
                   value: 10,
@@ -285,7 +285,7 @@ export default function CustomDesignForm() {
               شماره موبایل <span className="text-red-500">*</span>
             </label>
             <Input
-              placeholder="09123456789"
+              placeholder="شماره موبایل خود را وارد کنید..."
               {...register("mobile", {
                 maxLength: {
                   value: 11,
@@ -335,7 +335,7 @@ export default function CustomDesignForm() {
               ابعاد محصول <span className="text-red-500">*</span>
             </label>
             <Input
-              placeholder="مثلاً 120x80 سانتی‌متر"
+              placeholder=" 120x80 سانتی‌متر"
               {...register("dimensions", {
                 maxLength: {
                   value: 10,
