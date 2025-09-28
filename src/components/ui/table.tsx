@@ -138,7 +138,7 @@ function Table({
 
           {!error && (
             <TableFooter>
-              <TableRow className="max-w-full min-h-32 absolute right-0 left-0 -bottom-5">
+              <TableRow className="max-w-full min-h-32 absolute right-0 left-0 ">
                 <TableCell
                   colSpan={columns.length}
                   className="flex justify-between items-center"
