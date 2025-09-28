@@ -1,6 +1,7 @@
 "use client";
 
 import RowFormButtons from "@/components/RowFormButtons/RowFormButtons";
+import TruncatedText from "@/components/TruncatedText";
 import { Table } from "@/components/ui/table";
 import ListDataProvider from "@/container/ListDataProvider/ListDataProvider";
 import { ITableColumns } from "@/types/table";
@@ -38,7 +39,9 @@ const UsersList = () => {
         field: "permissions",
         title: "دسترسی",
         render: (v) => {
-          return v.length > 0 ? v.join(", ") : "بدون دسترسی";
+          return v.length > 0
+            ? TruncatedText({ text: v.join(", ") })
+            : "بدون دسترسی";
         },
       },
       {

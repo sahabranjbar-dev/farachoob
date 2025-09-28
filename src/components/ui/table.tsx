@@ -138,8 +138,11 @@ function Table({
 
           {!error && (
             <TableFooter>
-              <TableRow>
-                <TableCell colSpan={columns.length}>
+              <TableRow className="max-w-full min-h-32 absolute right-0 left-0 -bottom-5">
+                <TableCell
+                  colSpan={columns.length}
+                  className="flex justify-between items-center"
+                >
                   <PaginationWrapper
                     loading={loading ?? true}
                     currentPage={data?.page}
